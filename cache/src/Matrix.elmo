@@ -1,0 +1,141 @@
+Elm.Matrix = Elm.Matrix || {};
+Elm.Matrix.make = function (elm) {
+   elm.Matrix = elm.Matrix || {};
+   if (elm.Matrix.values)
+   return elm.Matrix.values;
+   var N = Elm.Native,
+   _N = N.Utils.make(elm),
+   _L = N.List.make(elm),
+   _E = N.Error.make(elm),
+   _J = N.JavaScript.make(elm),
+   $moduleName = "Matrix";
+   var Text = Elm.Text.make(elm);
+   var Text = Elm.Text.make(elm);
+   var Basics = Elm.Basics.make(elm);
+   var Signal = Elm.Signal.make(elm);
+   var List = Elm.List.make(elm);
+   var Maybe = Elm.Maybe.make(elm);
+   var Time = Elm.Time.make(elm);
+   var Prelude = Elm.Prelude.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Element = Elm.Graphics.Element.make(elm);
+   var Color = Elm.Color.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Collage = Elm.Graphics.Collage.make(elm);
+   var Dict = Elm.Dict.make(elm);
+   var Maybe = Elm.Maybe.make(elm);
+   var _op = {};
+   var position = F2(function (row,
+   col) {
+      return {ctor: "_Tuple2"
+             ,_0: row
+             ,_1: col};
+   });
+   var matrix = F3(function (elems,
+   rows,
+   cols) {
+      return {_: {}
+             ,cols: cols
+             ,elems: elems
+             ,rows: rows};
+   });
+   var isWithinBounds = F2(function (arg1,
+   arg0) {
+      return function () {
+         return function () {
+            switch (arg1.ctor)
+            {case "_Tuple2":
+               return function () {
+                    var isBtwn = F2(function (x,
+                    arg0) {
+                       return function () {
+                          switch (arg0.ctor)
+                          {case "_Tuple2":
+                             return _N.cmp(x,
+                               arg0._0) > -1 && _N.cmp(x,
+                               arg0._1) < 1;}
+                          _E.Case($moduleName,
+                          "on line 21, column 69 to 83");
+                       }();
+                    });
+                    return A2(isBtwn,
+                    arg1._0,
+                    {ctor: "_Tuple2"
+                    ,_0: 0
+                    ,_1: arg0.rows}) && A2(isBtwn,
+                    arg1._1,
+                    {ctor: "_Tuple2"
+                    ,_0: 0
+                    ,_1: arg0.cols});
+                 }();}
+            _E.Case($moduleName,
+            "between lines 21 and 23");
+         }();
+      }();
+   });
+   var remove = F2(function (arg1,
+   pos) {
+      return function () {
+         return function () {
+            var mat = A3(matrix,
+            arg1.elems,
+            arg1.rows,
+            arg1.cols);
+            return A2(isWithinBounds,
+            pos,
+            mat) ? Maybe.Just(A3(matrix,
+            A2(Dict.remove,pos,arg1.elems),
+            arg1.rows,
+            arg1.cols)) : Maybe.Nothing;
+         }();
+      }();
+   });
+   var get = F2(function (arg1,
+   pos) {
+      return function () {
+         return A2(Dict.lookup,
+         pos,
+         arg1.elems);
+      }();
+   });
+   var empty = matrix(Dict.empty);
+   var add = F3(function (arg2,
+   pos,
+   elem) {
+      return function () {
+         return function () {
+            var mat = A3(matrix,
+            arg2.elems,
+            arg2.rows,
+            arg2.cols);
+            return A2(isWithinBounds,
+            pos,
+            mat) ? Maybe.Just(A3(matrix,
+            A3(Dict.insert,
+            pos,
+            elem,
+            arg2.elems),
+            arg2.rows,
+            arg2.cols)) : Maybe.Nothing;
+         }();
+      }();
+   });
+   var Matrix = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,cols: c
+             ,elems: a
+             ,rows: b};
+   });
+   elm.Matrix.values = {_op: _op
+                       ,position: position
+                       ,matrix: matrix
+                       ,empty: empty
+                       ,isWithinBounds: isWithinBounds
+                       ,add: add
+                       ,get: get
+                       ,remove: remove
+                       ,Matrix: Matrix};
+   return elm.Matrix.values;
+};

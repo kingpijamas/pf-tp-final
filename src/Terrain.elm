@@ -1,10 +1,13 @@
 module Area where
-import Matrix
+import src/Area.elm as Area
 
-type Terrain = Matrix Locatable
+type Terrain = Area.Area Tile
 
-type Locatable a = { a | whr:Terrain, coords:Position }
+type Tile = { solid:Either Moveable Rigid
+			, scent:Maybe Smellable
+			}
 
+type Smellable = Either Pheromone Food
 
 
 
