@@ -36,8 +36,10 @@ Elm.Main.make = function (elm) {
    Graphics.Collage = Elm.Graphics.Collage.make(elm);
    var Matrix = Elm.Matrix.make(elm);
    var _op = {};
+   var pepe = Matrix.empty;
    var main = Text.plainText("Hello, World!");
    elm.Main.values = {_op: _op
+                     ,pepe: pepe
                      ,main: main};
    return elm.Main.values;
 };Elm.Matrix = Elm.Matrix || {};

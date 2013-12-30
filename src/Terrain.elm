@@ -3,7 +3,7 @@ import src/Area.elm as Area
 
 type Terrain = Area.Area Tile
 
-type Tile = { solid:Either Moveable Rigid
+type Tile = { solid:Either Moving Rigid
 			, scent:Maybe Smellable
 			}
 

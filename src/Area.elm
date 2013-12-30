@@ -20,7 +20,7 @@ getY loc = loc.col
                        Left coord   ->  coord
                        Right dir    ->  asCoords dir
           in
-             case b' of
+            case b' of
                 Nothing     ->  Nothing
                 Just coord  ->  coords ((getX a)+(getX b)) ((getY a)+(getY b))
 
@@ -33,3 +33,19 @@ asCoords dir = case dir of
                     _       ->  Nothing
 
 type Locatable a = { a | area:Area a, location:Coords }
+
+type DirectionalSignal a = { who:Locatable a
+                           , targetDir:CardinalDirs
+                           }
+
+type LocationSignal a = { who:Locatable a
+                        , target:Coords
+                        }
+
+inDir:((LocationSignal a)->b)->(DirectionalSignal a)->(Maybe b)
+inDir f dSig = let from = dSig.who
+                   proposed = from+(dSig.targetDir)
+                in
+                  case proposed of
+                      Nothing -> Nothing
+                      Just target -> f {who=from, target=target}
