@@ -1,11 +1,10 @@
 module Area where
-import src/utils/Matrix.elm as M
-import src/CardinalDirs.elm as C
+import src/utils/Matrix.elm as Matrix
+import src/geography/Directions.elm as Dirs
 
-type Area a = M.Matrix a
+type Area a = Matrix.Matrix a
 
-type Coords = M.Position
-
+type Coords = Matrix.Position
 coords = position
 
 getX:Coords->Int
@@ -14,7 +13,7 @@ getX loc = loc.row
 getY:Coords->Int
 getY loc = loc.col
 
-(+):Coords->(Either Coords C.CardinalDirs)->Maybe(Coords)
+(+):Coords->(Either Coords Dirs.Directions)->Maybe(Coords)
 (+) a b = let
              b' = case b of
                        Left coord   ->  coord
@@ -24,18 +23,22 @@ getY loc = loc.col
                 Nothing     ->  Nothing
                 Just coord  ->  coords ((getX a)+(getX b)) ((getY a)+(getY b))
 
-asCoords:C.CardinalDirs->Maybe(Coords)
+asCoords:Dirs.Directions->Maybe(Coords)
 asCoords dir = case dir of
-                    North   ->  Just (coords (-1) 0)
-                    East    ->  Just (coords 0 1)
-                    South   ->  Just (coords 1 0)
-                    West    ->  Just (coords 0 (-1))
-                    _       ->  Nothing
+                    N   ->  Just (coords (-1) 0)
+                    NE  ->  Just (coords (-1) 1)
+                    E   ->  Just (coords 0 1)
+                    SE  ->  Just (coords 1 1)
+                    S   ->  Just (coords 1 0)
+                    SW  ->  Just (coords 1 (-1))
+                    W   ->  Just (coords 0 (-1))
+                    NW  ->  Just (coords (-1) (-1))
+                    _   ->  Nothing
 
 type Locatable a = { a | area:Area a, location:Coords }
 
 type DirectionalSignal a = { who:Locatable a
-                           , targetDir:CardinalDirs
+                           , targetDir:Directions
                            }
 
 type LocationSignal a = { who:Locatable a

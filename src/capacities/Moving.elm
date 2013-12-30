@@ -4,11 +4,6 @@ import Area
 
 type Position a = { a | occupied:Bool }
 
-{-- FIXME:
-	the area should either be a M.Matrix (Maybe a) or another type, because
-	'Nothing's symbolise both errors and empty spots in the Matrix
---}
-
 mv:(LocationSignal a)->Maybe(Area a)
 mv sig = let
 			toMv = sig.who
@@ -30,8 +25,3 @@ motor:Motor a
 motor = pure (inDir mv)
 
 type Moving a = { a | motor:(Motor a) }
-
---Draft para hacer esto:
----un motor es un automata. La funcion con la que se crea el motor es la estrategia/el tipo de movimiento-
---{--Ahora bien, viendolo mejor, por no pensar el motor, solo actuar de forma reactiva, 
-----seria SOLO el TIPO de movimiento la funcion, y NO la estrategia--}
