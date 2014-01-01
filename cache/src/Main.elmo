@@ -23,6 +23,7 @@ Elm.Main.make = function (elm) {
    var Graphics = Graphics || {};
    Graphics.Collage = Elm.Graphics.Collage.make(elm);
    var Matrix = Elm.Matrix.make(elm);
+   var Area = Elm.Area.make(elm);
    var _op = {};
    var pepe = Matrix.empty;
    var main = Text.plainText("Hello, World!");

@@ -1,6 +1,8 @@
 module Main where
-import open Matrix
+import Matrix as M
+import Area
 
-pepe = empty
+
+pepe = M.empty
 
 main = plainText "Hello, World!"

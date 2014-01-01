@@ -4,19 +4,21 @@ import Area
 
 type Position a = { a | occupied:Bool }
 
+type MovementSignal a = LocationSignal a
+
 mv:(LocationSignal a)->Maybe(Area a)
 mv sig = let
-			toMv = sig.who
-			newPos = sig.target
+      toMv = sig.who
+      newPos = sig.target
 
-			whr = toMv.area
+      whr = toMv.area
             from = toMv.location
             setPos toMv newPos = (toMv | location <- newPos)
           in
             case whr `get` newPos of
-              	Just pos -> if pos.occupied
-         					then Nothing
-                    		else add (whr `remove` toMv) (toMv `setPos` newPos) newPos
+                Just pos -> if pos.occupied
+                  then Nothing
+                        else add (whr `remove` toMv) (toMv `setPos` newPos) newPos
                 _ -> Nothing
 
 type Motor a = Automaton (DirectionalSignal a) Maybe(Area a)

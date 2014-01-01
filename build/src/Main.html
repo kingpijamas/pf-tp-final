@@ -35,6 +35,7 @@ Elm.Main.make = function (elm) {
    var Graphics = Graphics || {};
    Graphics.Collage = Elm.Graphics.Collage.make(elm);
    var Matrix = Elm.Matrix.make(elm);
+   var Area = Elm.Area.make(elm);
    var _op = {};
    var pepe = Matrix.empty;
    var main = Text.plainText("Hello, World!");
@@ -42,6 +43,225 @@ Elm.Main.make = function (elm) {
                      ,pepe: pepe
                      ,main: main};
    return elm.Main.values;
+};Elm.Area = Elm.Area || {};
+Elm.Area.make = function (elm) {
+   elm.Area = elm.Area || {};
+   if (elm.Area.values)
+   return elm.Area.values;
+   var N = Elm.Native,
+   _N = N.Utils.make(elm),
+   _L = N.List.make(elm),
+   _E = N.Error.make(elm),
+   _J = N.JavaScript.make(elm),
+   $moduleName = "Area";
+   var Text = Elm.Text.make(elm);
+   var Text = Elm.Text.make(elm);
+   var Basics = Elm.Basics.make(elm);
+   var Signal = Elm.Signal.make(elm);
+   var List = Elm.List.make(elm);
+   var Maybe = Elm.Maybe.make(elm);
+   var Time = Elm.Time.make(elm);
+   var Prelude = Elm.Prelude.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Element = Elm.Graphics.Element.make(elm);
+   var Color = Elm.Color.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Collage = Elm.Graphics.Collage.make(elm);
+   var Matrix = Elm.Matrix.make(elm);
+   var Either = Elm.Either.make(elm);
+   var Directions = Elm.Directions.make(elm);
+   var _op = {};
+   var getY = function (coords) {
+      return Matrix.col(coords);
+   };
+   var getX = function (coords) {
+      return Matrix.row(coords);
+   };
+   var coords = Matrix.position;
+   var asCoords = function (dir) {
+      return function () {
+         switch (dir.ctor)
+         {case "E":
+            return Maybe.Just(A2(coords,
+              0,
+              1));
+            case "N":
+            return Maybe.Just(A2(coords,
+              -1,
+              0));
+            case "NE":
+            return Maybe.Just(A2(coords,
+              -1,
+              1));
+            case "NW":
+            return Maybe.Just(A2(coords,
+              -1,
+              -1));
+            case "S":
+            return Maybe.Just(A2(coords,
+              1,
+              0));
+            case "SE":
+            return Maybe.Just(A2(coords,
+              1,
+              1));
+            case "SW":
+            return Maybe.Just(A2(coords,
+              1,
+              -1));
+            case "W":
+            return Maybe.Just(A2(coords,
+              0,
+              -1));}
+         return Maybe.Nothing;
+      }();
+   };
+   var add = F2(function (a,b) {
+      return A2(coords,
+      getX(a) + getX(b),
+      getY(a) + getY(b));
+   });
+   var addDir = F2(function (a,
+   dir) {
+      return function () {
+         var _case1 = asCoords(dir);
+         switch (_case1.ctor)
+         {case "Just":
+            return Maybe.Just(A2(add,
+              a,
+              _case1._0));
+            case "Nothing":
+            return Maybe.Nothing;}
+         _E.Case($moduleName,
+         "between lines 47 and 49");
+      }();
+   });
+   var inDir = F2(function (f,
+   dSig) {
+      return function () {
+         var from = dSig.who.location;
+         var proposed = A2(addDir,
+         from,
+         dSig.targetDir);
+         return function () {
+            switch (proposed.ctor)
+            {case "Just":
+               return Maybe.Just(f({_: {}
+                                   ,target: proposed._0
+                                   ,who: dSig.who}));
+               case "Nothing":
+               return Maybe.Nothing;}
+            _E.Case($moduleName,
+            "between lines 59 and 61");
+         }();
+      }();
+   });
+   var LocationSignal = F2(function (a,
+   b) {
+      return {_: {}
+             ,target: b
+             ,who: a};
+   });
+   var Locatable = F3(function (a,
+   b,
+   c) {
+      return _N.insert("location",
+      b,
+      _N.insert("area",a,c));
+   });
+   var DirectionalSignal = F2(function (a,
+   b) {
+      return {_: {}
+             ,targetDir: b
+             ,who: a};
+   });
+   elm.Area.values = {_op: _op
+                     ,coords: coords
+                     ,getX: getX
+                     ,getY: getY
+                     ,asCoords: asCoords
+                     ,add: add
+                     ,addDir: addDir
+                     ,inDir: inDir
+                     ,Locatable: Locatable
+                     ,LocationSignal: LocationSignal
+                     ,DirectionalSignal: DirectionalSignal};
+   return elm.Area.values;
+};Elm.Directions = Elm.Directions || {};
+Elm.Directions.make = function (elm) {
+   elm.Directions = elm.Directions || {};
+   if (elm.Directions.values)
+   return elm.Directions.values;
+   var N = Elm.Native,
+   _N = N.Utils.make(elm),
+   _L = N.List.make(elm),
+   _E = N.Error.make(elm),
+   _J = N.JavaScript.make(elm),
+   $moduleName = "Directions";
+   var Text = Elm.Text.make(elm);
+   var Text = Elm.Text.make(elm);
+   var Basics = Elm.Basics.make(elm);
+   var Signal = Elm.Signal.make(elm);
+   var List = Elm.List.make(elm);
+   var Maybe = Elm.Maybe.make(elm);
+   var Time = Elm.Time.make(elm);
+   var Prelude = Elm.Prelude.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Element = Elm.Graphics.Element.make(elm);
+   var Color = Elm.Color.make(elm);
+   var Graphics = Graphics || {};
+   Graphics.Collage = Elm.Graphics.Collage.make(elm);
+   var _op = {};
+   var W = {ctor: "W"};
+   var SW = {ctor: "SW"};
+   var SE = {ctor: "SE"};
+   var S = {ctor: "S"};
+   var NW = {ctor: "NW"};
+   var NE = {ctor: "NE"};
+   var N = {ctor: "N"};
+   var E = {ctor: "E"};
+   var lft = function (d) {
+      return function () {
+         switch (d.ctor)
+         {case "E": return NE;
+            case "N": return NW;
+            case "NE": return N;
+            case "NW": return W;
+            case "S": return SE;
+            case "SE": return E;
+            case "SW": return S;
+            case "W": return SW;}
+         _E.Case($moduleName,
+         "between lines 6 and 14");
+      }();
+   };
+   var rght = function (d) {
+      return function () {
+         switch (d.ctor)
+         {case "E": return SE;
+            case "N": return NE;
+            case "NE": return E;
+            case "NW": return N;
+            case "S": return SW;
+            case "SE": return S;
+            case "SW": return W;
+            case "W": return NW;}
+         _E.Case($moduleName,
+         "between lines 17 and 25");
+      }();
+   };
+   elm.Directions.values = {_op: _op
+                           ,lft: lft
+                           ,rght: rght
+                           ,N: N
+                           ,NE: NE
+                           ,E: E
+                           ,SE: SE
+                           ,S: S
+                           ,SW: SW
+                           ,W: W
+                           ,NW: NW};
+   return elm.Directions.values;
 };Elm.Matrix = Elm.Matrix || {};
 Elm.Matrix.make = function (elm) {
    elm.Matrix = elm.Matrix || {};
@@ -69,6 +289,15 @@ Elm.Matrix.make = function (elm) {
    var Dict = Elm.Dict.make(elm);
    var Maybe = Elm.Maybe.make(elm);
    var _op = {};
+   var row = function (arg0) {
+      return function () {
+         switch (arg0.ctor)
+         {case "_Tuple2":
+            return arg0._0;}
+         _E.Case($moduleName,
+         "on line 11, column 15 to 18");
+      }();
+   };
    var position = F2(function (row,
    col) {
       return {ctor: "_Tuple2"
@@ -99,7 +328,7 @@ Elm.Matrix.make = function (elm) {
                                arg0._0) > -1 && _N.cmp(x,
                                arg0._1) < 1;}
                           _E.Case($moduleName,
-                          "on line 21, column 69 to 83");
+                          "on line 27, column 69 to 83");
                        }();
                     });
                     return A2(isBtwn,
@@ -113,7 +342,7 @@ Elm.Matrix.make = function (elm) {
                     ,_1: arg0.cols});
                  }();}
             _E.Case($moduleName,
-            "between lines 21 and 23");
+            "between lines 27 and 29");
          }();
       }();
    });
@@ -143,6 +372,15 @@ Elm.Matrix.make = function (elm) {
       }();
    });
    var empty = matrix(Dict.empty);
+   var col = function (arg0) {
+      return function () {
+         switch (arg0.ctor)
+         {case "_Tuple2":
+            return arg0._1;}
+         _E.Case($moduleName,
+         "on line 14, column 15 to 18");
+      }();
+   };
    var add = F3(function (arg2,
    pos,
    elem) {
@@ -174,6 +412,8 @@ Elm.Matrix.make = function (elm) {
    });
    elm.Matrix.values = {_op: _op
                        ,position: position
+                       ,row: row
+                       ,col: col
                        ,matrix: matrix
                        ,empty: empty
                        ,isWithinBounds: isWithinBounds
