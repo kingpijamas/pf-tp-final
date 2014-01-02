@@ -50,15 +50,15 @@ unload sig = let unldr = sig.who
 
                  loadSignal' ldr = M.return (loadSignal ldr unldr.location)
               in 
-                 (area `A.get` sig.target) 
-                  >>= (loadSignal') 
-                  >>= (load)
+                 (area `A.get` sig.target) -- : Maybe(Carrying a)
+                  >>= (loadSignal')        -- : Carrying a -> Maybe (LoadSignal a)
+                  >>= (load)               -- : LoadSignal a -> Maybe(Area' a)
 
 
 loadProxy : LoadSignal a -> Maybe(Area' a)
 loadProxy sig = case sig.loadAction of
-                      Load -> load sig
-                      Unload -> unload sig
+                  Load -> load sig
+                  Unload -> unload sig
 
 
 type LoadModule a = Auto.Automaton (LoadSignal a) Maybe(Area' a)
