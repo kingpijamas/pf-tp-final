@@ -23,12 +23,6 @@ get = M.get
 add = M.add
 remove = M.remove
 
-
-
---TODO Undoable unless it's either a Matrix of Locatables
---update:(Area a)->(Locatable a)->Maybe (Area a)
---update area elem = M.add area elem.location elem
-
 type LocationSignal a = { who:Locatable a
                         , target:Coords
                         }

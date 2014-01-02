@@ -20,33 +20,26 @@ mv sig = let
              from = toMv.location
              to = sig.target
 
-             getTarget = area `A.get` to
+             getTargetPos = area `A.get` to
 
-             getOccupation pos = M.return (pos.occupied)
+             getOccupiation targetPos = M.return (targetPos.occupied)
                 
-             clearIfTheresRoom occ = if not occ
-                                         then M.return (area `A.remove` from)
-                                         else Nothing
+             clearIfNotOcc occ = if not occ
+                                   then M.return (area `A.remove` from) {-- FIXME sth smells weird here --}
+                                   else Nothing
 
              setPos toMv to = { toMv | location <- to }
 
-             add' area = A.add area to (toMv `setPos` to)
+             mv' area = A.add area to (toMv `setPos` to)
           in
-             getTarget
-              >>= (getOccupation)
-              >>= (clearIfTheresRoom)
-              >>= (add')
-
-
-{-- OLD      Auto.pure (A.get) 
-                 >>> Ext.impure (getOccupation)
-                 >>> Ext.impure (clearIfTheresRoom)
-                 >>> Ext.impure (add')
---}
+             getTargetPos
+              >>= (getOccupiation)
+              >>= (clearIfNotOcc) {--TODO Maybe not the nicest name --}
+              >>= (mv')
 
 type Motor a = Auto.Automaton (DirectionalSignal' a) Maybe(Area' a)
 
 motor : Motor a
 motor = Auto.pure(A.toLocSig) >>> Ext.impure(mv)
 
-type Moving a = { a | motor:(Motor a) }
+type Moving a = { a | motor:(Motor a) } {--TODO--}
