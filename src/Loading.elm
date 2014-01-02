@@ -1,48 +1,48 @@
 module Loading where
-import Automaton
-import Area
+import Automaton as Auto
+import Area as A
 
 data CargoState = Empty | Full
-type Carrying a = Locatable { a | cargo:CargoState }
+type Carrying a = A.Locatable { a | cargo:CargoState }
 
 data LoadActions = Load | Unload
-type LoadSignal a = LocationSignal (Carrying {a | loadAction:LoadActions})
+type LoadSignal a = A.LocationSignal (Carrying {a | loadAction:LoadActions})
 
-load:(LoadSignal a)->Maybe(Area (Carrying a))
+load:(LoadSignal a)->Maybe(A.Area (Carrying a))
 load sig = let ldr = sig.who
                target = sig.target
 
-               whr = ldr.area
-               ldee = whr `get` target
+               area = ldr.A.Area
+               ldee = area `A.get` target
                
-               load' whr ldr = add whr ldr.location {ldr | cargo <- Full}
-               unload' whr ldee = add whr ldee.location {ldee | cargo <- Empty}
+               load' area ldr = A.add area ldr.location {ldr | cargo <- Full}
+               unload' area ldee = A.add area ldee.location {ldee | cargo <- Empty}
             in
                case (ldee, ldr.cargo) of
                     (Just ldee', Empty) -> case ldee'.cargo of
-                                                Full->Just ((whr `unload'` ldee') `load'` ldr)
+                                                Full->Just ((area `unload'` ldee') `load'` ldr)
                                                 Empty->Nothing
                     _ -> Nothing
 
-unload:(LoadSignal a)->Maybe(Area (Carrying a))
+unload:(LoadSignal a)->Maybe(A.Area (Carrying a))
 unload sig = let ldee = sig.who
                  to = sig.target
 
-                 whr = ldr.area
-                 ldr = whr `get` to
+                 area = ldr.A.Area
+                 ldr = area `A.get` to
               in 
                  case ldr of
                     Just ldr' -> load ldr' ldee.location
                     Nothing -> Nothing
 
-process:(LoadSignal a)->Maybe(Area (Carrying a))
+process:(LoadSignal a)->Maybe(A.Area (Carrying a))
 process carrySig = case carrySig.loadAction of
-                        Load -> load sig
-                        Unload -> unload sig
+                        Load -> load carrySig
+                        Unload -> unload carrySig
                         _ -> Nothing
 
 
-type Loader a = Automaton (LoadSignal a) Maybe(Area (Carrying a))
+type Loader a = Auto.Automaton (LoadSignal a) Maybe(A.Area (Carrying a))
 
-loader:LoadModule a
-loader = pure (process)
+loader : Loader a
+loader = Auto.pure (process)

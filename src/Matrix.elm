@@ -21,7 +21,7 @@ type Matrix v = { elems:Dict.Dict Position v
 matrix:(Dict.Dict Position v)->Int->Int->Matrix v
 matrix elems rows cols = {elems=elems, rows=rows, cols=cols}
 
-empty = matrix Dict.empty
+empty = matrix Dict.empty --shouldn't this have rows=0 and cols=0?
 
 isWithinBounds:Position->(Matrix v)->Bool
 isWithinBounds (row,col) {elems,rows,cols} = let isBtwn x (lb,ub) = x>=lb && x<=ub

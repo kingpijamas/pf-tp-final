@@ -2,21 +2,28 @@ module Area where
 import Matrix as M
 import Either as E
 import Directions as D
+import Automaton as A
+import MaybeMonad as Mb
+
+(>>=) = (>>=)  {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
 type Coords = M.Position
 coords = M.position
 
---getX:{a | row:Int}->Int
 getX:Coords->Int
 getX coords = M.row coords
 
---getY:{a | col:Int}->Int
 getY:Coords->Int
 getY coords = M.col coords
 
-
 type Area a = M.Matrix a
 type Locatable a = { a | area:Area a, location:Coords }
+
+get = M.get
+add = M.add
+remove = M.remove
+
+
 
 --TODO Undoable unless it's either a Matrix of Locatables
 --update:(Area a)->(Locatable a)->Maybe (Area a)
@@ -25,6 +32,9 @@ type Locatable a = { a | area:Area a, location:Coords }
 type LocationSignal a = { who:Locatable a
                         , target:Coords
                         }
+
+locationSignal:Locatable a -> Coords -> LocationSignal a
+locationSignal who target = {who=who, target=target}
 
 asCoords:D.Direction->Maybe(Coords)
 asCoords dir = case dir of
@@ -39,23 +49,22 @@ asCoords dir = case dir of
                     _   ->  Nothing
 
 
-
-add:Coords->Coords->M.Position
-add a b = coords ((getX a)+(getX b)) ((getY a)+(getY b))
+addCoord:Coords->Coords->M.Position
+addCoord a b = coords ((getX a)+(getX b)) ((getY a)+(getY b))
 
 addDir:Coords->D.Direction->Maybe(Coords)
 addDir a dir = case (asCoords dir) of
-                  Just b -> Just (add a b)
+                  Just b -> Just (addCoord a b)
                   Nothing -> Nothing
 
 type DirectionalSignal a = { who:Locatable a
                            , targetDir:D.Direction
                            }
 
-inDir:((LocationSignal a)->b)->(DirectionalSignal a)->(Maybe b)
-inDir f dSig = let from = dSig.who.location
-                   proposed = from `addDir` (dSig.targetDir)
-                in
-                  case proposed of
-                      Nothing -> Nothing
-                      Just to -> Just (f {who=dSig.who, target=to})
+toLocSig : DirectionalSignal a -> Maybe (LocationSignal a)
+toLocSig dSig = let 
+                    who = dSig.who
+                    to = (who.location) `addDir` (dSig.targetDir)
+                    locationSignal' to = Mb.return (locationSignal who to)
+                 in
+                    to >>= locationSignal'
