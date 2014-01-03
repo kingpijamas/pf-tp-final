@@ -4,7 +4,7 @@ import Area
 import Moving
 import Loading
 import Scenting
-
+import DirectionExt
 
 pepe = M.empty
 
