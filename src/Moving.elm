@@ -7,11 +7,16 @@ import AutomatonExt as Ext
 (>>=)=(>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 (>>>)=(>>>) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
-type Position a = { a | occupied:Bool }
+data Occupiation = Occupied | Empty
+type Position a = { a | occupiation:Occupiation }
 
 type DirectionalSignal' a = A.DirectionalSignal (Position a)
 type LocationSignal' a = A.LocationSignal (Position a)
-type Area' a = A.Area (Position a)  
+type Area' a = A.Area (Position a)
+
+--IDEA 
+--rigid : a -> Position a
+--rigid x = { x | occupiation <- Occupied }
 
 mv : LocationSignal' a -> Maybe (Area' a)
 mv sig = let 
@@ -22,15 +27,13 @@ mv sig = let
 
              getTargetPos = area `A.get` to
 
-             getOccupiation targetPos = M.return (targetPos.occupied)
+             getOccupiation targetPos = M.return (targetPos.occupiation)
                 
-             clearIfNotOcc occ = if not occ
-                                   then M.return (area `A.remove` from) {-- FIXME sth smells weird here --}
-                                   else Nothing
+             clearIfNotOcc occ = case occ of
+                                   Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Position a))? --}
+                                   Occupied -> Nothing
 
-             setPos toMv to = { toMv | location <- to }
-
-             mv' area = A.add area to (toMv `setPos` to)
+             mv' area = A.add area to { toMv | location <- to }
           in
              getTargetPos
               >>= (getOccupiation)

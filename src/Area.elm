@@ -17,11 +17,13 @@ getY:Coords->Int
 getY coords = M.col coords
 
 type Area a = M.Matrix a
-type Locatable a = { a | area:Area a, location:Coords }
-
 get = M.get
 add = M.add
 remove = M.remove
+
+--type Container a = { a | locatable:Locatable a,  } 
+
+type Locatable a = { a | area:Area a, location:Coords }
 
 type LocationSignal a = { who:Locatable a
                         , target:Coords

@@ -1,6 +1,6 @@
 module AutomatonExt where
 import Automaton as A
-import MaybeMonad as Mb
+import MaybeMonad as M
 
 (>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 

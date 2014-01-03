@@ -2,7 +2,6 @@ module Loading where
 import Area as A
 import Automaton as Auto
 import MaybeMonad as M
-import AutomatonExt as Ext
 
 (>>=)=(>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
@@ -11,8 +10,8 @@ type Carrying a = A.Locatable { a | cargo:CargoState }
 
 data LoadActions = Load | Unload
 
+type LocationSignal' a = A.LocationSignal (Carrying a)
 type Area' a = A.Area (Carrying a)
-
 
 type LoadSignal a = { who:A.Locatable (Carrying a)
                     , target:A.Coords
@@ -25,7 +24,7 @@ loadSignal who target = {who=who, target=target, loadAction=Load}
 unloadSignal : A.Locatable (Carrying a) -> A.Coords -> LoadSignal a
 unloadSignal who target = {who=who, target=target, loadAction=Unload}
 
---load : LoadSignal a -> Maybe(Area' a)
+load : LocationSignal' a -> Maybe(Area' a)
 load sig = let ldr = sig.who
                target = sig.target
                area = ldr.area
@@ -38,7 +37,6 @@ load sig = let ldr = sig.who
                unload' unldr = A.add area (unldr.location) {unldr | cargo <- Empty}
 
                load' area = A.add area (ldr.location) {ldr | cargo <- Full}
-
             in
                (area `A.get` target)
                 >>= (assertLoads)
@@ -46,7 +44,7 @@ load sig = let ldr = sig.who
                 >>= (load')
 
 
---unload : LoadSignal a -> Maybe(Area' a)
+unload : LocationSignal' a -> Maybe(Area' a)
 unload sig = let unldr = sig.who
                  area = unldr.area
 
@@ -58,9 +56,11 @@ unload sig = let unldr = sig.who
 
 
 loadProxy : LoadSignal a -> Maybe(Area' a)
-loadProxy sig = case sig.loadAction of
-                  Load -> load sig
-                  Unload -> unload sig
+loadProxy sig = let sig' = A.locationSignal (sig.who) (sig.target)
+                 in
+                    case sig.loadAction of
+                      Load -> load sig'
+                      Unload -> unload sig'
 
 
 type LoadModule a = Auto.Automaton (LoadSignal a) (Maybe(Area' a))
