@@ -37,7 +37,7 @@ mv sig = let
               >>= (clearIfNotOcc) {--TODO Maybe not the nicest name --}
               >>= (mv')
 
-type Motor a = Auto.Automaton (DirectionalSignal' a) Maybe(Area' a)
+type Motor a = Auto.Automaton (DirectionalSignal' a) (Maybe(Area' a))
 
 motor : Motor a
 motor = Auto.pure(A.toLocSig) >>> Ext.impure(mv)

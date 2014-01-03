@@ -2,6 +2,7 @@ module Loading where
 import Area as A
 import Automaton as Auto
 import MaybeMonad as M
+import AutomatonExt as Ext
 
 (>>=)=(>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
@@ -10,12 +11,13 @@ type Carrying a = A.Locatable { a | cargo:CargoState }
 
 data LoadActions = Load | Unload
 
+type Area' a = A.Area (Carrying a)
+
+
 type LoadSignal a = { who:A.Locatable (Carrying a)
                     , target:A.Coords
                     , loadAction:LoadActions
                     }
-
-type Area' a = A.Area (Carrying a)
 
 loadSignal : A.Locatable (Carrying a) -> A.Coords -> LoadSignal a
 loadSignal who target = {who=who, target=target, loadAction=Load}
@@ -23,7 +25,7 @@ loadSignal who target = {who=who, target=target, loadAction=Load}
 unloadSignal : A.Locatable (Carrying a) -> A.Coords -> LoadSignal a
 unloadSignal who target = {who=who, target=target, loadAction=Unload}
 
-load : LoadSignal a -> Maybe(Area' a)
+--load : LoadSignal a -> Maybe(Area' a)
 load sig = let ldr = sig.who
                target = sig.target
                area = ldr.area
@@ -33,9 +35,9 @@ load sig = let ldr = sig.who
                                      (_,Full) -> Nothing
                                      _ -> M.return unldr
 
-               unload' unldr = A.add area unldr.location {unldr | cargo <- Empty}
+               unload' unldr = A.add area (unldr.location) {unldr | cargo <- Empty}
 
-               load' area = A.add area ldr.location {ldr | cargo <- Full}
+               load' area = A.add area (ldr.location) {ldr | cargo <- Full}
 
             in
                (area `A.get` target)
@@ -44,7 +46,7 @@ load sig = let ldr = sig.who
                 >>= (load')
 
 
-unload : LoadSignal a -> Maybe(Area' a)
+--unload : LoadSignal a -> Maybe(Area' a)
 unload sig = let unldr = sig.who
                  area = unldr.area
 
@@ -61,13 +63,12 @@ loadProxy sig = case sig.loadAction of
                   Unload -> unload sig
 
 
-type LoadModule a = Auto.Automaton (LoadSignal a) Maybe(Area' a)
+type LoadModule a = Auto.Automaton (LoadSignal a) (Maybe(Area' a))
 
 loadModule : LoadModule a
-loadModule = Auto.pure(loadProxy)
+loadModule = Auto.pure (loadProxy)
 
-
-
+ 
 
 
 
