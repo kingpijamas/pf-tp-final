@@ -7,6 +7,7 @@ import Capacities.Loading
 import Capacities.Scenting
 import Capacities.Perceiving
 import Capacities.Seeing
+import Capacities.Smelling
 
 pepe = M.empty
 
