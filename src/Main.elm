@@ -5,6 +5,8 @@ import Geography.DirectionExt as D
 import Capacities.Moving
 import Capacities.Loading
 import Capacities.Scenting
+import Capacities.Perceiving
+import Capacities.Seeing
 
 pepe = M.empty
 

@@ -14,7 +14,10 @@ getY:Coords->Int
 getY coords = M.col coords
 
 addCoord:Coords->Coords->M.Position
-addCoord a b = coords ((getX a)+(getX b)) ((getY a)+(getY b))
+addCoord a b = let x = (getX a)+(getX b)
+                   y = (getY a)+(getY b)
+                in
+                   coords x y 
 
 
 {-- Area --}

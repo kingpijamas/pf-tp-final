@@ -47,12 +47,12 @@ load area sig = let ldr = sig.who
 
 unload : Area' a -> LocationSignal' a -> Maybe(Area' a)
 unload area sig = let unldr = sig.who
-                 
+                      
                       loadSignal' ldr = M.return (loadSignal ldr unldr.location)
                    in 
                       (area `A.get` sig.target) -- : Maybe(Carrying a)
-                      >>= (loadSignal')        -- : Carrying a -> Maybe (LoadSignal a)
-                      >>= (load)               -- : LoadSignal a -> Maybe(Area' a)
+                      >>= (loadSignal')         -- : Carrying a -> Maybe (LoadSignal a)
+                      >>= (load)                -- : LoadSignal a -> Maybe(Area' a)
 
 
 loadProxy : Area' a -> LoadSignal a -> Maybe(Area' a)

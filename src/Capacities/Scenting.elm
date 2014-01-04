@@ -19,34 +19,23 @@ type ScentSignal a = { who:A.Locatable (Scentable a)
                      , scentAction:ScentActions
                      }
 
---IDEA scent:forma de scentear -> A.LocationSignal a -> Maybe(Area' a)
---let the code below serve as a demonstration why this is needed:
 
-scent : Area' a -> LocationSignal' a -> Maybe(Area' a)
-scent area sig = let targetPos = sig.target
+scentUnscent : Area' a -> ScentSignal a -> Maybe(Area' a)
+scentUnscent area sig = let scentUnscent' target = M.return (case sig.scentAction of
+                                                                Scent -> scent target
+                                                                Unscent -> unscent target)
 
-                     scent' target = A.add area targetPos { target | scent <- (target.scent)+1 }
+                            scent target = { target | scent <- (target.sent)+1 }
+                            unscent target = { target | scent <- (target.sent)-1 }
 
-                  in
-                    (area `A.get` targetPos) -- : Maybe (Scentable a)
-                     >>= (scent')            -- : Scentable a -> Maybe (Area' a)
-
-unscent : Area' a -> LocationSignal' a -> Maybe(Area' a)
-unscent area sig = let targetPos = sig.target
-
-                       scent' target = A.add area targetPos { target | scent <- (target.scent)-1 }
-                    in
-                      (area `A.get` targetPos)  -- : Maybe (Scentable a)
-                        >>= (scent')            -- : Scentable a -> Maybe (Area' a)
-
-scentProxy : Area' a -> ScentSignal a -> Maybe(Area' a)
-scentProxy area sig = let sig' = A.locationSignal (sig.who) (sig.target)
-                       in
-                         case sig.scentAction of
-                            Scent -> scent area sig'
-                            Unscent -> unscent area sig'
+                            updateArea target' = A.add area (target'.location) target'
+                         in
+                            (area `A.get` sig.target) 
+                             >>= (scentUnscent')
+                             >>= (updateArea)
+                             
 
 type Scenter a = Auto.Automaton (ScentSignal a) (Maybe(Area' a))
 
 scenter : Area' a -> Scenter a
-scenter area = Auto.pure(scentProxy area)
+scenter area = Auto.pure(scentUnscent area)
