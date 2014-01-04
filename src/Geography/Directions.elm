@@ -1,4 +1,4 @@
-module Directions where
+module Geography.Directions where
 
 data Direction = N | NE | E | SE | S | SW | W | NW
 

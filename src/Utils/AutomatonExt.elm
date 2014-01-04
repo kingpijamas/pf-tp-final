@@ -1,6 +1,6 @@
-module AutomatonExt where
+module Utils.AutomatonExt where
 import Automaton as A
-import MaybeMonad as M
+import Utils.MaybeMonad as M
 
 (>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 

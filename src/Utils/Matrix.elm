@@ -1,4 +1,4 @@
-module Matrix where
+module Utils.Matrix where
 import Dict
 import Maybe
 

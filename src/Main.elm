@@ -1,10 +1,10 @@
 module Main where
-import Matrix as M
-import Area
-import Moving
-import Loading
-import Scenting
-import DirectionExt
+import Utils.Matrix as M
+import Geography.Area as A
+import Geography.DirectionExt as D
+import Capacities.Moving
+import Capacities.Loading
+import Capacities.Scenting
 
 pepe = M.empty
 

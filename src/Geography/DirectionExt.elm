@@ -1,7 +1,9 @@
-module DirectionExt where
-import Area as A
-import Directions as D
-import MaybeMonad as M
+module Geography.DirectionExt where
+
+import Geography.Area as A
+import Geography.Directions as D
+import Utils.MaybeMonad as M
+
 
 (>>=) = (>>=)  {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 

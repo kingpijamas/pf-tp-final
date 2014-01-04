@@ -1,7 +1,9 @@
-module Loading where
-import Area as A
+module Capacities.Loading where
+
+import Geography.Area as A
 import Automaton as Auto
-import MaybeMonad as M
+import Utils.MaybeMonad as M
+
 
 (>>=)=(>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 

@@ -1,5 +1,7 @@
-module Area where
-import Matrix as M
+module Geography.Area where
+
+import Utils.Matrix as M
+
 
 {-- Coords --}
 type Coords = M.Position

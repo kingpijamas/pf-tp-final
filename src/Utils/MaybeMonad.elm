@@ -1,4 +1,4 @@
-module MaybeMonad where
+module Utils.MaybeMonad where
 
 return : a -> Maybe a
 return x = Just x

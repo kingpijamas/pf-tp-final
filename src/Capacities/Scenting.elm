@@ -1,9 +1,11 @@
-module Scenting where
-import Area as A
-import Automaton as Auto
-import MaybeMonad as M
+module Capacities.Scenting where
 
-(>>=) = (>>=)
+import Geography.Area as A
+import Automaton as Auto
+import Utils.MaybeMonad as M
+
+
+(>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
 type Scent = Int
 type Scentable a = A.Locatable { a | scent:Scent }
