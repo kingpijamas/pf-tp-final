@@ -5,7 +5,7 @@ import Automaton as Auto
 import Utils.MaybeMonad as M
 
 
-(>>=)=(>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
+(>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
 data CargoState = Empty | Full
 type Carrying a = A.Locatable { a | cargo:CargoState }
@@ -26,153 +26,44 @@ loadSignal who target = {who=who, target=target, loadAction=Load}
 unloadSignal : A.Locatable (Carrying a) -> A.Coords -> LoadSignal a
 unloadSignal who target = {who=who, target=target, loadAction=Unload}
 
-load : LocationSignal' a -> Maybe(Area' a)
-load sig = let ldr = sig.who
-               target = sig.target
-               area = ldr.area
+load : Area' a -> LocationSignal' a -> Maybe(Area' a)
+load area sig = let ldr = sig.who
+                    target = sig.target
+                 
+                    assertLoads unldr = case (unldr.cargo, ldr.cargo) of
+                                          (Empty,_) ->  Nothing
+                                          (_,Full)  ->  Nothing
+                                          _         ->  M.return unldr
 
-               assertLoads unldr = case (unldr.cargo, ldr.cargo) of
-                                     (Empty,_) -> Nothing
-                                     (_,Full) -> Nothing
-                                     _ -> M.return unldr
+                    unload' unldr = A.add area (unldr.location) {unldr | cargo <- Empty}
 
-               unload' unldr = A.add area (unldr.location) {unldr | cargo <- Empty}
-
-               load' area = A.add area (ldr.location) {ldr | cargo <- Full}
-            in
-               (area `A.get` target)
-                >>= (assertLoads)
-                >>= (unload')
-                >>= (load')
-
-
-unload : LocationSignal' a -> Maybe(Area' a)
-unload sig = let unldr = sig.who
-                 area = unldr.area
-
-                 loadSignal' ldr = M.return (loadSignal ldr unldr.location)
-              in 
-                 (area `A.get` sig.target) -- : Maybe(Carrying a)
-                  >>= (loadSignal')        -- : Carrying a -> Maybe (LoadSignal a)
-                  >>= (load)               -- : LoadSignal a -> Maybe(Area' a)
-
-
-loadProxy : LoadSignal a -> Maybe(Area' a)
-loadProxy sig = let sig' = A.locationSignal (sig.who) (sig.target)
+                    load' area = A.add area (ldr.location) {ldr | cargo <- Full}
                  in
-                    case sig.loadAction of
-                      Load -> load sig'
-                      Unload -> unload sig'
+                    (area `A.get` target)
+                    >>= (assertLoads)
+                    >>= (unload')
+                    >>= (load')
 
 
-type LoadModule a = Auto.Automaton (LoadSignal a) (Maybe(Area' a))
+unload : Area' a -> LocationSignal' a -> Maybe(Area' a)
+unload area sig = let unldr = sig.who
+                 
+                      loadSignal' ldr = M.return (loadSignal ldr unldr.location)
+                   in 
+                      (area `A.get` sig.target) -- : Maybe(Carrying a)
+                      >>= (loadSignal')        -- : Carrying a -> Maybe (LoadSignal a)
+                      >>= (load)               -- : LoadSignal a -> Maybe(Area' a)
 
-loadModule : LoadModule a
-loadModule = Auto.pure (loadProxy)
 
- 
+loadProxy : Area' a -> LoadSignal a -> Maybe(Area' a)
+loadProxy area sig = let sig' = A.locationSignal (sig.who) (sig.target)
+                      in
+                         case sig.loadAction of
+                            Load    ->  load area sig'
+                            Unload  ->  unload area sig'
 
 
+type Loader a = Auto.Automaton (LoadSignal a) (Maybe(Area' a))
 
-
-
-
-
-
-
---load:(LoadSignal a)->Maybe(A.Area (Carrying a))
---load sig = let ldr = sig.who
---               target = sig.target
-
---               area = ldr.A.Area
---               ldee = area `A.get` target
-               
---               load' area ldr = A.add area ldr.location {ldr | cargo <- Full}
---               unload' area ldee = A.add area ldee.location {ldee | cargo <- Empty}
---            in
-
-
-
---               case (ldee, ldr.cargo) of
---                    (Just ldee', Empty) -> case ldee'.cargo of
---                                                Full->Just ((area `unload'` ldee') `load'` ldr)
---                                                Empty->Nothing
---                    _ -> Nothing
-
-
-
---1)
---    ldFrom = area `A.get` target -- : Maybe (Carrying a)
---2)
---    \ldFrom -> case (ldFrom.cargo, ldTo.cargo) of
---                    (Empty,_) -> Nothing
---                    (_,Full) -> Nothing
---                    _ -> return ldFrom
-
---    -- : Carrying a -> Maybe (Carrying a)
-
---    assertLoads ldFrom = case (ldFrom.cargo, ldTo.cargo) of
---                            (Empty,_) -> Nothing
---                            (_,Full) -> Nothing
---                            (_,_) -> return ldFrom
---3)
---    \ldFrom -> area `unload` ldFrom
-
---    -- : Carrying a -> Maybe (Area (Carrying a))
-
---    unload' ldFrom = A.add area ldFrom {ldee | cargo <- Empty}
-
---4)
---    \area -> area `load` ldr
-
---    -- : Area (Carrying a) -> Maybe (Area (Carrying a))
-
---    load' area = A.add area ldTo {ldr | cargo <- Full}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+loader : Area' a -> Loader a
+loader area = Auto.pure (loadProxy area)

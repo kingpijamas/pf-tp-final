@@ -17,31 +17,29 @@ type DirectionalSignal' a = D.DirectionalSignal (Position a)
 type LocationSignal' a = A.LocationSignal (Position a)
 type Area' a = A.Area (Position a)
 
-mv : LocationSignal' a -> Maybe (Area' a)
-mv sig = let 
-             toMv = sig.who
-             area = toMv.area
-             from = toMv.location
-             to = sig.target
+mv : (Area' a) -> LocationSignal' a -> Maybe (Area' a)
+mv area sig = let toMv = sig.who
+                  from = toMv.location
+                  to = sig.target
 
-             getTargetPos = area `A.get` to
+                  getTargetPos = area `A.get` to
 
-             getOccupiation targetPos = M.return (targetPos.occupiation)
+                  getOccupiation targetPos = M.return (targetPos.occupiation)
                 
-             clearIfNotOcc occ = case occ of
-                                   Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Position a))? --}
-                                   Occupied -> Nothing
+                  clearIfNotOcc occ = case occ of
+                                        Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Position a))? --}
+                                        Occupied -> Nothing
 
-             mv' area = A.add area to { toMv | location <- to }
-          in
-             getTargetPos
-              >>= (getOccupiation)
-              >>= (clearIfNotOcc) {--TODO Maybe not the nicest name --}
-              >>= (mv')
+                  mv' area = A.add area to { toMv | location <- to }
+               in
+                 getTargetPos
+                  >>= (getOccupiation)
+                  >>= (clearIfNotOcc) {--TODO Maybe not the nicest name --}
+                  >>= (mv')
 
 type Motor a = Auto.Automaton (DirectionalSignal' a) (Maybe(Area' a))
 
-motor : Motor a
-motor = Auto.pure(D.toLocSig) >>> Ext.impure(mv)
+motor : Area' a -> Motor a
+motor area = Auto.pure(D.toLocSig) >>> Ext.impure(mv area)
 
-type Moving a = { a | motor:(Motor a) } {--TODO--}
+--type Moving a = { a | motor:(Motor a) } {--TODO--}

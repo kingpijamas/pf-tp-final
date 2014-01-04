@@ -25,7 +25,7 @@ remove = M.remove
 
 
 {-- Locatable --}
-type Locatable a = { a | area:Area a, location:Coords }
+type Locatable a = { a | location:Coords }
 
 {-- Signals --}
 type LocationSignal a = { who:Locatable a
