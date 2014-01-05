@@ -9,14 +9,12 @@ import Capacities.Scent.Scent as Sc
 
 type Area' a = A.Area (Sc.Scentable a)
 
-data ScentActions = Scent | Unscent
+data Action = Scent | Unscent
 type ScentSignal a = { target:A.Coords
-                     , action:ScentActions
+                     , action:Action
                      }
 
-type ScentF a = (Sc.Scentable a -> Sc.Scentable a)
-
-scentUnscent : ScentF a -> ScentF a -> Area' a -> ScentSignal a -> Maybe(Area' a)
+scentUnscent : Sc.ScentF a -> Sc.ScentF a -> Area' a -> ScentSignal a -> Maybe(Area' a)
 scentUnscent scent unscent area sig = let tPos = sig.target
 
                                           scentUnscent' t = M.return ( case sig.action of
@@ -33,5 +31,5 @@ scentUnscent scent unscent area sig = let tPos = sig.target
 
 type Scenter a = Auto.Automaton (ScentSignal a) (Maybe(Area' a))
 
-scenter : ScentF a -> ScentF a -> Area' a -> Scenter a
+scenter : Sc.ScentF a -> Sc.ScentF a -> Area' a -> Scenter a
 scenter scent unscent area = Auto.pure(scentUnscent scent unscent area)

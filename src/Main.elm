@@ -1,9 +1,10 @@
 module Main where
 import Utils.Matrix as M
 import Geography.Area as A
-import Geography.DirectionExt as D
+import Geography.DirectionUtils as D
 import Capacities.Moving
-import Capacities.Loading
+--import Capacities.Cargo.Cargo
+import Capacities.Cargo.Loading as L
 import Capacities.Scent.Scenting
 import Capacities.Perceiving
 import Capacities.Seeing

@@ -1,7 +1,7 @@
 module Capacities.Moving where
 
 import Geography.Area as A
-import Geography.DirectionExt as D
+import Geography.DirectionUtils as D
 import Automaton as Auto
 import Utils.MaybeMonad as M
 import Utils.AutomatonExt as Ext

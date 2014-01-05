@@ -1,13 +1,13 @@
-module Geography.DirectionExt where
+module Geography.DirectionUtils where
 
 import Geography.Area as A
-import Geography.Directions as D
+import Geography.Direction as D
 import Utils.MaybeMonad as M
 
 
 (>>=) = (>>=)  {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
-asCoords:D.Direction -> Maybe(A.Coords)
+asCoords : D.Direction -> Maybe(A.Coords)
 asCoords dir = case dir of
                     D.N   ->  Just (A.coords (-1) 0)
                     D.NE  ->  Just (A.coords (-1) 1)
@@ -19,7 +19,7 @@ asCoords dir = case dir of
                     D.NW  ->  Just (A.coords (-1) (-1))
                     _     ->  Nothing
 
-addDir:A.Coords->D.Direction->Maybe(A.Coords)
+addDir : A.Coords->D.Direction->Maybe(A.Coords)
 addDir a dir = case (asCoords dir) of
                   Just b -> Just (A.addCoord a b)
                   Nothing -> Nothing
