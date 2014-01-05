@@ -4,10 +4,11 @@ import Geography.Area as A
 import Geography.DirectionExt as D
 import Capacities.Moving
 import Capacities.Loading
-import Capacities.Scenting
+import Capacities.Scent.Scenting
 import Capacities.Perceiving
 import Capacities.Seeing
-import Capacities.Smelling
+import Capacities.Scent.Smelling
+--import Terrain as T
 
 pepe = M.empty
 

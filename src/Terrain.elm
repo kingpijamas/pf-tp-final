@@ -1,26 +1,58 @@
 module Terrain where
-import Area.elm as Area
+import Geography.Area as A
 
-type Terrain = Area.Area Tile
+import Either as E
 
-type Tile = { solid:Either Moving Rigid
-            , scent:Maybe Smellable
-            }
+import Capacities.Moving as Mv
+import Capacities.Loading as Ld
+import Capacities.Scenting as Sc
+import Capacities.Perceiving as P
+import Capacities.Seeing as See
+import Capacities.Smelling as Sm
 
-type Smellable = Either Pheromone Food
+type Terrain = A.Area Tile
+
+--TODO
+type Food = Int
+--TODO 
+type Ant = Int
+--TODO
+type Rock = Int
+--TODO
+type Pheromone = Int
+
+--FIXME: link Scentable and Occupiable (what about Carrying?) with the elements in Watchable and Smellable
 
 
 
 
 
 
+type Tile = Mv.Occupiable ( 
+                Ld.Carrying (
+                    Sc.Scentable (
+                        See.Watchable (Rock) (Ant) (
+                            Sm.Smellable (Food) (Pheromone) (
+                                A.Locatable {}
+                            )
+                        )
+                    )
+                )
+            )
 
+-- Well, as expected, instancing these is a problem
+pepe : Tile 
+pepe = {}
+--pepe = { occupiation = Mv.Occupied
+--       , cargo = Ld.Empty
+--       , scent = 0
+--       , visibleContent = Just (See.Obstacle(100))
+--       , smellingContent = Just (E.Left(200))
+--       , location = (A.coords 0 0)
+--       }
 
-{-| pun not intended
-    -}
---(+) : Location -> Location -> Location
---(+) {r1,c1} {r2,c2} = {r1+r2, c1+c2}
+            --{ solid:Either Moving Rigid
+   --         , scent:Maybe Smellable
+   --         }
 
---(-) : Location -> Location -> Location
---(-) {r1,c1} {r2,c2} = {r1-r2, c1-c2}
-
+--type Smellable = Either Pheromone Food

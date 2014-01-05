@@ -11,11 +11,11 @@ import Utils.AutomatonExt as Ext
 (>>>) = (>>>) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
 data Occupiation = Occupied | Empty
-type Position a = { a | occupiation:Occupiation }
+type Occupiable a = { a | occupiation:Occupiation }
 
-type DirectionalSignal' a = D.DirectionalSignal (Position a)
-type LocationSignal' a = A.LocationSignal (Position a)
-type Area' a = A.Area (Position a)
+type DirectionalSignal' a = D.DirectionalSignal (Occupiable a)
+type LocationSignal' a = A.LocationSignal (Occupiable a)
+type Area' a = A.Area (Occupiable a)
 
 mv : (Area' a) -> LocationSignal' a -> Maybe (Area' a)
 mv area sig = let toMv = sig.who
@@ -27,7 +27,7 @@ mv area sig = let toMv = sig.who
                   getOccupiation targetPos = M.return (targetPos.occupiation)
                 
                   clearIfNotOcc occ = case occ of
-                                        Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Position a))? --}
+                                        Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Occupiable a))? --}
                                         Occupied -> Nothing
 
                   mv' area = A.add area to { toMv | location <- to }
