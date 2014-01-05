@@ -10,36 +10,41 @@ import Utils.AutomatonExt as Ext
 (>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 (>>>) = (>>>) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
-data Occupiation = Occupied | Empty
-type Occupiable a = { a | occupiation:Occupiation }
+type Occupiable a b = { a | occupant:(Maybe a) }
 
-type DirectionalSignal' a = D.DirectionalSignal (Occupiable a)
-type LocationSignal' a = A.LocationSignal (Occupiable a)
-type Area' a = A.Area (Occupiable a)
+type Area' a b = A.Area (Occupiable a b)
 
-mv : (Area' a) -> LocationSignal' a -> Maybe (Area' a)
+type MovementSignal a b = { who:a
+                          , from:A.Coords
+                          , target:A.Coords
+                          }
+
+mv : (Area' a b) -> (MovementSignal a b) -> Maybe (Area' a b)
 mv area sig = let toMv = sig.who
-                  from = toMv.location
+                  from = sig.from
                   to = sig.target
 
-                  getTargetPos = area `A.get` to
+                  getFromPos = area `A.get` from
 
-                  getOccupiation targetPos = M.return (targetPos.occupiation)
-                
-                  clearIfNotOcc occ = case occ of
-                                        Empty -> M.return (area `A.remove` from) {-- FIXME sth smells weird here; wouldn't this be a Maybe(Maybe(Occupiable a))? --}
-                                        Occupied -> Nothing
+                  getTargetPos fPos = (fPos, area `A.get` to)
+                  
+                  mv' fPos tPos = case (tPos.occupant) of
+                                    Nothing -> M.return ({fPos | occupant <- Nothing},{tPos | occupant <- toMv})
+                                    _       -> Nothing
 
-                  mv' area = A.add area to { toMv | location <- to }
+                  updateFrom (fPos', tPos') = (A.add area from fPos', tPos')
+
+                  updateTo (area', tPos') = A.add area' to tPos'
                in
-                 getTargetPos
-                  >>= (getOccupiation)
-                  >>= (clearIfNotOcc) {--TODO Maybe not the nicest name --}
-                  >>= (mv')
+                  getFromPos              -- : Maybe (Occupiable a b)
+                   >>= getTargetPos       -- : Occupiable a b -> Maybe(Occupiable a b, Occupiable a b)
+                   >>= mv'                -- : (Occupiable a b, Occupiable a b) -> Maybe (Occupiable a b, Occupiable a b)
+                   >>= updateFrom         -- : (Occupiable a b, Occupiable a b) -> Maybe (Area' a b, Occupiable a b)
+                   >>= updateTo           -- : (Area' a b, Occupiable a b) -> Maybe(Area' a b)
 
-type Motor a = Auto.Automaton (DirectionalSignal' a) (Maybe(Area' a))
+type Motor a b = Auto.Automaton (D.DirectionalSignal) (Maybe(Area' a b))
 
-motor : Area' a -> Motor a
+motor : (Area' a b) -> (Motor a b)
 motor area = Auto.pure(D.toLocSig) >>> Ext.impure(mv area)
 
 --type Moving a = { a | motor:(Motor a) } {--TODO--}

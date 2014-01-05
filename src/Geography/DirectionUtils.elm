@@ -24,14 +24,14 @@ addDir a dir = case (asCoords dir) of
                   Just b -> Just (A.addCoord a b)
                   Nothing -> Nothing
 
-type DirectionalSignal a = { who:A.Locatable a
-                           , targetDir:D.Direction
-                           }
+type DirectionalSignal = { from:A.Coords
+                         , targetDir:D.Direction
+                         }
 
-toLocSig : DirectionalSignal a -> Maybe (A.LocationSignal a)
+toLocSig : DirectionalSignal -> Maybe (A.LocationSignal)
 toLocSig dSig = let 
-                    who = dSig.who
-                    to = (who.location) `addDir` (dSig.targetDir)
-                    locationSignal' to = M.return (A.locationSignal who to)
+                    from = dSig.from
+                    to = from `addDir` (dSig.targetDir)
+                    locationSignal' to = M.return (A.locationSignal from to)
                  in
                     to >>= locationSignal'

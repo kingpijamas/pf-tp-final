@@ -7,13 +7,13 @@ import Utils.Matrix as M
 type Coords = M.Position
 coords = M.position
 
-getX:Coords->Int
+getX : Coords -> Int
 getX coords = M.row coords
 
-getY:Coords->Int
+getY : Coords -> Int
 getY coords = M.col coords
 
-addCoord:Coords->Coords->M.Position
+addCoord : Coords -> Coords -> M.Position
 addCoord a b = let x = (getX a)+(getX b)
                    y = (getY a)+(getY b)
                 in
@@ -31,9 +31,9 @@ remove = M.remove
 type Locatable a = { a | location:Coords }
 
 {-- Signals --}
-type LocationSignal a = { who:Locatable a
-                        , target:Coords
-                        }
+type LocationSignal = { from:Coords
+                      , target:Coords
+                      }
 
-locationSignal:Locatable a -> Coords -> LocationSignal a
-locationSignal who target = {who=who, target=target}
+locationSignal : Coords -> Coords -> LocationSignal
+locationSignal from target = {from=from, target=target}
