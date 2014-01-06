@@ -10,7 +10,7 @@ import Utils.AutomatonExt as Ext
 (>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 (>>>) = (>>>) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
 
-type Occupiable a b = { a | occupant:(Maybe a) }
+type Occupiable a b = { b | occupant:(Maybe a) }
 
 type Area' a b = A.Area (Occupiable a b)
 
@@ -27,7 +27,7 @@ mv area sig = let toMv = sig.who
                   getFromPos = area `A.get` from
 
                   getTargetPos fPos = (fPos, area `A.get` to)
-                  
+
                   mv' fPos tPos = case (tPos.occupant) of
                                     Nothing -> M.return ({fPos | occupant <- Nothing},{tPos | occupant <- toMv})
                                     _       -> Nothing

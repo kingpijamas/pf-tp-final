@@ -15,14 +15,14 @@ perceptionSignal location perceived = { perceived=perceived, location=location }
 
 type PerceptionF a b = (a -> Maybe b)
 
-perceive : (A.Area a) -> (PerceptionF a b) -> (A.LocationSignal a) -> (Maybe(PerceptionSignal b))
+perceive : (A.Area a) -> (PerceptionF a b) -> A.LocationSignal -> (Maybe(PerceptionSignal b))
 perceive area pf sig = let perceptionSignal' = (perceptionSignal sig.target)
                         in
                           (area `A.get` sig.target)
                             >>= (pf)
                             >>= (perceptionSignal')
 
-type Perceiver a b = Auto.Automaton (A.LocationSignal a) (Maybe(PerceptionSignal b))
+type Perceiver a b = Auto.Automaton (A.LocationSignal) (Maybe(PerceptionSignal b))
 
 perceiver : (A.Area a) -> (PerceptionF a b) -> (Perceiver a b)
 perceiver area pf = Auto.pure (perceive area pf)

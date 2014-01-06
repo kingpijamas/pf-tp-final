@@ -4,55 +4,33 @@ import Geography.Area as A
 import Either as E
 
 import Capacities.Moving as Mv
-import Capacities.Loading as Ld
-import Capacities.Scenting as Sc
-import Capacities.Perceiving as P
+import Capacities.Cargo.Cargo as Ld
+import Capacities.Scent.Scent as Sc
 import Capacities.Seeing as See
-import Capacities.Smelling as Sm
 
 type Terrain = A.Area Tile
 
 --TODO
-type Food = Int
+type Food = (Int,Int,Int)
 --TODO 
-type Ant = Int
+type Ant = String
 --TODO
-type Rock = Int
---TODO
-type Pheromone = Int
+type Rock = (Int,Int)
 
 --FIXME: link Scentable and Occupiable (what about Carrying?) with the elements in Watchable and Smellable
 
 
-
-
-
-
-type Tile = Mv.Occupiable ( 
-                Ld.Carrying (
-                    Sc.Scentable (
-                        See.Watchable (Rock) (Ant) (
-                            Sm.Smellable (Food) (Pheromone) (
-                                A.Locatable {}
-                            )
-                        )
+type Tile = Sc.Scentable (
+                See.Watchable (Ant) (Rock) (
+                    Mv.Occupiable (E.Either Ant Rock) (
+                        Ld.Carrying (Food) {}
                     )
                 )
             )
 
--- Well, as expected, instancing these is a problem
 pepe : Tile 
-pepe = {}
---pepe = { occupiation = Mv.Occupied
---       , cargo = Ld.Empty
---       , scent = 0
---       , visibleContent = Just (See.Obstacle(100))
---       , smellingContent = Just (E.Left(200))
---       , location = (A.coords 0 0)
---       }
-
-            --{ solid:Either Moving Rigid
-   --         , scent:Maybe Smellable
-   --         }
-
---type Smellable = Either Pheromone Food
+pepe = { scent = 0
+        ,visibleContent = Just(See.Obstacle("ant"))
+        ,occupant = Just(E.Left("ant"))
+        ,cargo = Just((2,3,5))
+       }
