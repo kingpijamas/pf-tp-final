@@ -10,15 +10,15 @@ import Capacities.Seeing as See
 
 type Terrain = A.Area Tile
 
---TODO
+--TODO (Dummy just to see)
 type Food = (Int,Int,Int)
---TODO 
+--TODO (Dummy just to see)
 type Ant = String
---TODO
+--TODO (Dummy just to see)
 type Rock = (Int,Int)
 
 --FIXME: link Scentable and Occupiable (what about Carrying?) with the elements in Watchable and Smellable
-
+--This below seems right, the constructor
 
 type Tile = Sc.Scentable (
                 See.Watchable (Ant) (Rock) (

@@ -1,19 +1,19 @@
 module Geography.Area where
 
-import Utils.Matrix as M
+import open Utils.Matrix
 
 
 {-- Coords --}
-type Coords = M.Position
-coords = M.position
+type Coords = Position
+coords = position
 
 getX : Coords -> Int
-getX coords = M.row coords
+getX coords = row coords
 
 getY : Coords -> Int
-getY coords = M.col coords
+getY coords = col coords
 
-addCoord : Coords -> Coords -> M.Position
+addCoord : Coords -> Coords -> Position
 addCoord a b = let x = (getX a)+(getX b)
                    y = (getY a)+(getY b)
                 in
@@ -21,10 +21,10 @@ addCoord a b = let x = (getX a)+(getX b)
 
 
 {-- Area --}
-type Area a = M.Matrix a
-get = M.get
-add = M.add
-remove = M.remove
+type Area a = Matrix a
+get = get
+add = add
+remove = remove
 
 
 {-- Locatable --}

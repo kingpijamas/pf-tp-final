@@ -1,20 +1,19 @@
 module Capacities.Scent.Smelling where
 
-import Either as E
-import Geography.Area as A
-import Capacities.Perceiving as P
+import open Geography.Area
+import open Capacities.Perceiving
 import Capacities.Scent.Scent as Sc
 
 
 type Smellable a = Sc.Scentable a
 type Smell = Sc.Scent
 
-smell : P.PerceptionF (Smellable a) (Smell)
+smell : PerceptionF (Smellable a) (Smell)
 smell smellable = if (smellable.scent == 0)
                     then Nothing
                     else Just smellable.scent
 
-type Smeller a = P.Perceiver (Smellable a) (Smell)
+type Smeller a = Perceiver (Smellable a) (Smell)
 
-smeller : A.Area(Smellable a) -> (Smeller a)
-smeller area = P.perceiver area smell
+smeller : Area(Smellable a) -> (Smeller a)
+smeller area = perceiver area smell

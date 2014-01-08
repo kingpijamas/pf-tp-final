@@ -1,40 +1,34 @@
 module Capacities.Moving where
 
-import Geography.Area as A
-import Geography.DirectionUtils as D
-import Automaton as Auto
-import Utils.MaybeMonad as M
-import Utils.AutomatonExt as Ext
-
-
-(>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
-(>>>) = (>>>) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
+import open Geography.Area
+import open Geography.DirectionUtils
+import open Automaton
+import open Utils.MaybeMonad
+import open Utils.AutomatonUtils
 
 type Occupiable a b = { b | occupant:(Maybe a) }
 
-type Area' a b = A.Area (Occupiable a b)
+type Area' a b = Area (Occupiable a b)
 
-type MovementSignal a b = { who:a
-                          , from:A.Coords
-                          , target:A.Coords
-                          }
-
-mv : (Area' a b) -> (MovementSignal a b) -> Maybe (Area' a b)
-mv area sig = let toMv = sig.who
-                  from = sig.from
+mv : (Area' a b) -> LocationSignal -> Maybe (Area' a b)
+mv area sig = let from = sig.from
                   to = sig.target
 
-                  getFromPos = area `A.get` from
+                  getFromPos = area `get` from
 
-                  getTargetPos fPos = (fPos, area `A.get` to)
+                  getTargetPos fPos = case (area `get` to) of
+                                            Just tPos -> return ((fPos,tPos))
+                                            _ -> Nothing
 
-                  mv' fPos tPos = case (tPos.occupant) of
-                                    Nothing -> M.return ({fPos | occupant <- Nothing},{tPos | occupant <- toMv})
-                                    _       -> Nothing
+                  mv' (fPos,tPos) = case (tPos.occupant) of
+                                        Nothing -> return ({fPos | occupant <- Nothing},{tPos | occupant <- fPos.occupant})
+                                        _       -> Nothing
 
-                  updateFrom (fPos', tPos') = (A.add area from fPos', tPos')
+                  updateFrom (fPos', tPos') = case (add area from fPos') of
+                                                Just area' -> return ((area',tPos'))
+                                                _          -> Nothing
 
-                  updateTo (area', tPos') = A.add area' to tPos'
+                  updateTo (area', tPos') = add area' to tPos'
                in
                   getFromPos              -- : Maybe (Occupiable a b)
                    >>= getTargetPos       -- : Occupiable a b -> Maybe(Occupiable a b, Occupiable a b)
@@ -42,9 +36,9 @@ mv area sig = let toMv = sig.who
                    >>= updateFrom         -- : (Occupiable a b, Occupiable a b) -> Maybe (Area' a b, Occupiable a b)
                    >>= updateTo           -- : (Area' a b, Occupiable a b) -> Maybe(Area' a b)
 
-type Motor a b = Auto.Automaton (D.DirectionalSignal) (Maybe(Area' a b))
+type Motor a b = Automaton (DirectionalSignal) (Maybe(Area' a b))
 
 motor : (Area' a b) -> (Motor a b)
-motor area = Auto.pure(D.toLocSig) >>> Ext.impure(mv area)
+motor area = pure(toLocSig) >>> impure(mv area)
 
 --type Moving a = { a | motor:(Motor a) } {--TODO--}

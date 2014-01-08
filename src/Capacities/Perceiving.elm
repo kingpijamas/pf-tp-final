@@ -1,28 +1,26 @@
 module Capacities.Perceiving where
 
-import Geography.Area as A
-import Utils.MaybeMonad as M
-import Automaton as Auto
-
-(>>=) = (>>=) {-- FIXME Hack, works this way apparently... neither Auto.>>> nor Auto.(>>>) work --}
+import open Geography.Area
+import open Utils.MaybeMonad
+import open Automaton
 
 type PerceptionSignal a = { perceived:a
-                          , location:A.Coords
+                          , location:Coords
                           }
 
-perceptionSignal : A.Coords -> a -> PerceptionSignal a
+perceptionSignal : Coords -> a -> PerceptionSignal a
 perceptionSignal location perceived = { perceived=perceived, location=location }
 
 type PerceptionF a b = (a -> Maybe b)
 
-perceive : (A.Area a) -> (PerceptionF a b) -> A.LocationSignal -> (Maybe(PerceptionSignal b))
-perceive area pf sig = let perceptionSignal' = (perceptionSignal sig.target)
+perceive : (Area a) -> (PerceptionF a b) -> LocationSignal -> (Maybe(PerceptionSignal b))
+perceive area pf sig = let perceptionSignal' location = return (perceptionSignal sig.target location)
                         in
-                          (area `A.get` sig.target)
-                            >>= (pf)
-                            >>= (perceptionSignal')
+                          (area `get` sig.target)       -- : Maybe (a)
+                            >>= (pf)                    -- : a -> Maybe(b)
+                            >>= (perceptionSignal')     -- : b -> Maybe(PerceptionSignal b)
 
-type Perceiver a b = Auto.Automaton (A.LocationSignal) (Maybe(PerceptionSignal b))
+type Perceiver a b = Automaton (LocationSignal) (Maybe(PerceptionSignal b))
 
-perceiver : (A.Area a) -> (PerceptionF a b) -> (Perceiver a b)
-perceiver area pf = Auto.pure (perceive area pf)
+perceiver : (Area a) -> (PerceptionF a b) -> (Perceiver a b)
+perceiver area pf = pure (perceive area pf)
