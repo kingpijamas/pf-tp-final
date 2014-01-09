@@ -6,39 +6,22 @@ import open Automaton
 import open Utils.MaybeMonad
 import open Utils.AutomatonUtils
 
-type Occupiable a b = { b | occupant:(Maybe a) }
+type OccupationF a = (Area a) -> Coords -> a -> Maybe (Area a)
 
-type Area' a b = Area (Occupiable a b)
+type EvictionF a = (Area a) -> Coords -> Maybe ((Area a), a)
 
-mv : (Area' a b) -> LocationSignal -> Maybe (Area' a b)
-mv area sig = let from = sig.from
-                  to = sig.target
+mv : (OccupationF a) -> (EvictionF a) -> (Area a) -> LocationSignal -> Maybe (Area a)
+mv occupy evict area sig = let from = sig.from
+                               to = sig.target
 
-                  getFromPos = area `get` from
+                               occupyWith (area', mver) = occupy area' to mver
+                            in
+                               (area `evict` from)                  -- : Maybe (Area a, a)
+                                >>= (occupyWith)                    -- : (Area a, a) -> Maybe(Area a)
 
-                  getTargetPos fPos = case (area `get` to) of
-                                            Just tPos -> return ((fPos,tPos))
-                                            _ -> Nothing
+type Motor a = Automaton (DirectionalSignal) (Maybe(Area a))
 
-                  mv' (fPos,tPos) = case (tPos.occupant) of
-                                        Nothing -> return ({fPos | occupant <- Nothing},{tPos | occupant <- fPos.occupant})
-                                        _       -> Nothing
-
-                  updateFrom (fPos', tPos') = case (add area from fPos') of
-                                                Just area' -> return ((area',tPos'))
-                                                _          -> Nothing
-
-                  updateTo (area', tPos') = add area' to tPos'
-               in
-                  getFromPos              -- : Maybe (Occupiable a b)
-                   >>= getTargetPos       -- : Occupiable a b -> Maybe(Occupiable a b, Occupiable a b)
-                   >>= mv'                -- : (Occupiable a b, Occupiable a b) -> Maybe (Occupiable a b, Occupiable a b)
-                   >>= updateFrom         -- : (Occupiable a b, Occupiable a b) -> Maybe (Area' a b, Occupiable a b)
-                   >>= updateTo           -- : (Area' a b, Occupiable a b) -> Maybe(Area' a b)
-
-type Motor a b = Automaton (DirectionalSignal) (Maybe(Area' a b))
-
-motor : (Area' a b) -> (Motor a b)
-motor area = pure(toLocSig) >>> impure(mv area)
+motor : (OccupationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
+motor occupy evict area = pure(toLocSig) >>> impure(mv occupy evict area)
 
 --type Moving a = { a | motor:(Motor a) } {--TODO--}
