@@ -4,23 +4,24 @@ import open Geography.Area
 import open Utils.MaybeMonad
 import open Automaton
 
-type PerceptionSignal a = { perceived:a
+type PerceptionSignal p = { perceived:p
                           , location:Coords
                           }
 
-perceptionSignal : Coords -> a -> PerceptionSignal a
+perceptionSignal : Coords -> p -> PerceptionSignal p
 perceptionSignal location perceived = { perceived=perceived, location=location }
 
-type PerceptionF a b = (a -> Maybe b)
+type PerceptionF a p = (a -> Maybe p)
 
-perceive : (Area a) -> (PerceptionF a b) -> LocationSignal -> (Maybe(PerceptionSignal b))
-perceive area pf sig = let perceptionSignal' location = return (perceptionSignal sig.target location)
+perceive :(PerceptionF a p) -> (Area a) -> LocationSignal -> (Maybe(PerceptionSignal p))
+perceive pf area sig = let targetPos = sig.target
+                           perceptionSignal' location = return (perceptionSignal targetPos location)
                         in
-                          (area `get` sig.target)       -- : Maybe (a)
-                            >>= (pf)                    -- : a -> Maybe(b)
-                            >>= (perceptionSignal')     -- : b -> Maybe(PerceptionSignal b)
+                          (area `get` targetPos)        -- : Maybe (a)
+                            >>= (pf)                    -- : a -> Maybe(p)
+                            >>= (perceptionSignal')     -- : p -> Maybe(PerceptionSignal p)
 
-type Perceiver a b = Automaton (LocationSignal) (Maybe(PerceptionSignal b))
+type Perceiver a p = Automaton (LocationSignal) (Maybe(PerceptionSignal p))
 
-perceiver : (Area a) -> (PerceptionF a b) -> (Perceiver a b)
-perceiver area pf = pure (perceive area pf)
+perceiver : (PerceptionF a p) -> (Area a) -> (Perceiver a p)
+perceiver pf area = pure (perceive pf area)
