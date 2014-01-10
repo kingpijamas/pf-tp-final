@@ -1,4 +1,4 @@
-module Capacities.Scent.Scenting where
+module Capacities.Scenting where
 
 import open Geography.Area
 import open Automaton
@@ -13,17 +13,17 @@ type ScentSignal = { target:Coords
                    , action:Action
                    }
 
-scentUnscent : ScentF a -> UnscentF a -> Area a -> ScentSignal -> Maybe(Area a)
-scentUnscent scent unscent area sig = let targetPos = sig.target
+scentProxy : ScentF a -> UnscentF a -> Area a -> ScentSignal -> Maybe(Area a)
+scentProxy scent unscent area sig = let targetPos = sig.target
 
-                                          scentUnscent' t = case sig.action of
+                                        scentUnscent' t = case sig.action of
                                                                 Scent ->  scent t
                                                                 Unscent -> unscent t
-                                       in
-                                          scentUnscent' area targetPos  -- Maybe(Area a)
+                                     in
+                                        scentUnscent' area targetPos  -- Maybe(Area a)
                              
 
 type Scenter a = Automaton (ScentSignal) (Maybe(Area a))
 
-scenter : ScentF a -> ScentF a -> Area a -> Scenter a
-scenter scent unscent area = pure(scentUnscent scent unscent area)
+scenter : ScentF a -> UnscentF a -> Area a -> Scenter a
+scenter scent unscent area = pure(scentProxy scent unscent area)

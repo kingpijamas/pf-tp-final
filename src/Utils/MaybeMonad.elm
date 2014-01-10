@@ -11,6 +11,11 @@ bind mbx f = case mbx of
 
 (>>=) = bind
 
+
+--join : Maybe (Maybe a) -> Maybe a
+--join mm = mm 						-- : Maybe(Maybe a) 
+--		   >>= (id)					-- : Maybe a -> Maybe a
+
 --(>>) : Maybe a -> Maybe b -> Maybe b
 --(>>) x y = x (>>=) (\\_ -> y)
 
