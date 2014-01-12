@@ -15,7 +15,7 @@ load ldr fd = let assertValid fd = if fd > 0
                                    then return fd
                                    else Nothing
 
-                  separateLoad = if (ldr.food + fd) < lmt
+                  separateLoad fd = if (ldr.food + fd) < lmt
                                     then (fd, 0)
                                     else (lmt - fd, fd - lmt)
 

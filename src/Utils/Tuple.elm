@@ -1,5 +1,5 @@
 module Utils.Tuple where
-import open MaybeMonad
+import open Utils.MaybeMonad
 
 mapFst : (a -> b) -> (a, c) -> (b, c)
 mapFst f (x, y) = (f x, y)

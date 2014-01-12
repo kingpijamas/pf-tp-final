@@ -4,7 +4,7 @@ import open Geography.Area
 import open Geography.DirectionUtils
 import open Automaton
 import open Utils.MaybeMonad
-import open Utils.AutomatonUtils
+import open Utils.Automaton
 
 type OccupiationF a = (Area a) -> Coords -> a -> Maybe (Area a)
 
