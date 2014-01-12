@@ -23,5 +23,3 @@ type Motor a = Automaton (DirectionalSignal) (Maybe(Area a))
 
 motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
 motor occupy evict area = pure(toLocSig) >>> impure(mv occupy evict area)
-
---type Moving a = { a | motor:(Motor a) } {--TODO--}

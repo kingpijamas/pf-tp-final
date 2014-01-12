@@ -1,5 +1,5 @@
 module Model.Ant.Moving where
-
+-- TODO this should go in Model, not in Model.Ant
 import Capacities.Moving as Mv
 import open Model.Terrain
 import open Utils.MaybeMonad

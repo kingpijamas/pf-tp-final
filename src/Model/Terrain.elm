@@ -8,7 +8,14 @@ get = get
 add = add
 remove = remove
 
-data Occupant = Rock | Food | Ant | AntNest
+type FoodT = Int                      --TODO: move this
+
+type AntNestT = { food:FoodT }        --TODO: move this
+
+data Occupant = Rock
+              | Food FoodT
+              | Ant AntT
+              | AntNest AntNestT
 
 type Pheromone = Int
 
