@@ -11,14 +11,10 @@ get = get
 add = add
 remove = remove
 
-type FoodT = Int                      --TODO: move this
-
-type AntNestT = { food:FoodT }        --TODO: move this
-
 data Occupant = Rock
-              | Food FoodT
-              | Ant AntT
-              | AntNest AntNestT
+              | FoodT Food
+              | AntT Ant
+              | AntNestT AntNest
 
 type Pheromone = Int
 
@@ -26,8 +22,17 @@ type Tile = { occupant : Maybe(Occupant)
             , scent : Pheromone
             }
 
-asAnt : AntT -> Occupant
-asAnt x = Ant x
+tile : Maybe(Occupant) -> Pheromone -> Tile
+tile occ scent = { occupant=occ, scent=scent }
 
-asNest : AntNestT -> Occupant
-asNest x = AntNest x
+fmap : (Maybe(Occupant) -> Maybe(Occupant)) -> Tile -> Tile
+fmap f tile = { tile | occupant <- (f (tile.occupant)) }
+
+setOccupant : Tile -> Maybe(Occupant) -> Tile
+setOccupant tile occ = (\_ -> occ) `fmap` tile
+
+asAnt : Ant -> Occupant
+asAnt x = AntT x
+
+asNest : AntNest -> Occupant
+asNest x = AntNestT x

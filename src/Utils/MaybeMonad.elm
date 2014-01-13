@@ -15,7 +15,8 @@ bind mbx f = case mbx of
 --join mm = mm 						-- : Maybe(Maybe a) 
 --		   >>= (id)					-- : Maybe a -> Maybe a
 
---(>>) : Maybe a -> Maybe b -> Maybe b
---(>>) x y = x (>>=) (\\_ -> y)
+--TODO: get real name for this one!
+dflt : Maybe a -> Maybe b -> Maybe b
+dflt x y = x >>= (\_ -> y)
 
-
+(>>) = dflt

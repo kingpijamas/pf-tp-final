@@ -1,5 +1,4 @@
 module Model.AntNest where
-
 import open Model.Food
 
 type AntNest = FoodCarrier {}

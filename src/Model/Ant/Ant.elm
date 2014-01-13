@@ -2,9 +2,9 @@ module Model.Ant.Ant where
 
 import open Model.Food
 
-type AntT = FoodCarrier {}
+type Ant = FoodCarrier {}
 
-ant : AntT
+ant : Ant
 ant = { food = Nothing
-      , limit = 1
+      , limit = Just 1
       }

@@ -1,4 +1,4 @@
-module Utils.AutomatonUtils where
+module Utils.Automaton where
 import open Automaton
 import open Utils.MaybeMonad
 

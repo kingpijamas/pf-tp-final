@@ -14,6 +14,7 @@ import Model.Ant.Moving
 import Model.Ant.Scenting
 import Model.Ant.Seeing
 import Model.Ant.Smelling
+import Model.Ant.Loading
 
 
 pepe = M.empty

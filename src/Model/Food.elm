@@ -1,4 +1,4 @@
-module Food where
+module Model.Food where
 import open Utils.MaybeMonad
 
 type Food = Int
@@ -10,23 +10,28 @@ food x = if x > 0
 
 type FoodCarrier a = { a | food:Maybe(Food), limit:Maybe(Int) }
 
-load : (FoodCarrier a) -> Food -> Maybe (FoodCarrier a, Maybe(Food))
-load ldr fd = let assertValid fd = if fd > 0
-                                   then return fd
-                                   else Nothing
+loadFood : (FoodCarrier a) -> Food -> Maybe (FoodCarrier a, Maybe(Food))
+loadFood ldr fd = let assertValid fd = food fd
 
-                  separateLoad fd = if (ldr.food + fd) < lmt
-                                    then (fd, 0)
-                                    else (lmt - fd, fd - lmt)
+                      nothingAsZero mbx = case mbx of
+                                            Nothing -> 0
+                                            Just x -> x
 
-                  load' (ld,rem) = ({ldr | food <- Just(ldr.food + fd)}, food rem)
-               in 
-                  (assertValid fd)                    -- : Maybe(Food)
-                    >>= (return . separateLoad)       -- : Food -> Maybe(Food,Food)
-                    >>= (return . load')              -- : (Food,Food) -> Maybe(Food,Maybe(Food))
+                      loadAndLimit = return (nothingAsZero (ldr.food), nothingAsZero (ldr.limit))
+      
+                      separateLoad (ldrFood, lmt) = if (ldrFood + fd) < lmt
+                                                    then return (food (ldrFood + fd), food 0)
+                                                    else return (food lmt, food (fd - lmt))
 
-unload : (FoodCarrier a) -> Maybe (FoodCarrier a, Food)
-unload unldr = let empty food = return ({ unldr | food <- Nothing }, food)
-                in 
-                  (unldr.food)  -- : Maybe(Food)
-                   >>= (empty)  -- : Food -> Maybe(FoodCarrier a, Food)
+                      load' (ld,rem) = return ({ldr | food <- ld}, rem)
+                   in 
+                      (assertValid fd)                    -- : Maybe(Food)
+                       >> (loadAndLimit)                  -- : Maybe(Food, Int)
+                       >>= (separateLoad)                 -- : (Food,Int) -> Maybe(Maybe(Food),Maybe(Food))
+                       >>= (load')                        -- : (Maybe(Food),Maybe(Food)) -> Maybe(FoodCarrier a,Maybe(Food))
+
+unloadFood : (FoodCarrier a) -> Maybe (FoodCarrier a, Food)
+unloadFood unldr = let empty food = return ({ unldr | food <- Nothing }, food)
+                    in 
+                      (unldr.food)  -- : Maybe(Food)
+                       >>= (empty)  -- : Food -> Maybe(FoodCarrier a, Food)
