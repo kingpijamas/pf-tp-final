@@ -1,5 +1,8 @@
 module Main where
-import Utils.Matrix as M
+
+import AntColony.Utils.Matrix as M
+{-
+
 import Geography.Area as A
 import Geography.DirectionUtils as D
 
@@ -14,8 +17,6 @@ import Model.Ant.Moving
 import Model.Ant.Scenting
 import Model.Ant.Seeing
 import Model.Ant.Smelling
-
-
-pepe = M.empty
+-}
 
 main = plainText "Hello, World!"

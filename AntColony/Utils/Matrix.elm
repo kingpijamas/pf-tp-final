@@ -1,4 +1,4 @@
-module Utils.Matrix where
+module AntColony.Utils.Matrix where
 import Dict
 import Maybe
 
