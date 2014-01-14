@@ -1,20 +1,20 @@
-module Main where
+module AntColony.Main where
 
-import Utils.Matrix as M
-import Geography.Area as A
-import Geography.Direction as D
+import AntColony.Utils.Matrix as M
+import AntColony.Geography.Area as A
+import AntColony.Geography.Direction as D
 
-import Capacities.Moving as Mv
-import Capacities.Loading as L
-import Capacities.Scenting as Sc
-import Capacities.Perceiving
+import AntColony.Capacities.Moving as Mv
+import AntColony.Capacities.Loading as L
+import AntColony.Capacities.Scenting as Sc
+import AntColony.Capacities.Perceiving
 
-import Model.Terrain as T
+import AntColony.Model.Terrain as T
 
-import Model.Moving
-import Model.Scenting
-import Model.Seeing
-import Model.Smelling
-import Model.Loading
+import AntColony.Model.Moving
+import AntColony.Model.Scenting
+import AntColony.Model.Seeing
+import AntColony.Model.Smelling
+import AntColony.Model.Loading
 
 main = plainText "Hello, World!"

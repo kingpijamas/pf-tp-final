@@ -1,0 +1,3 @@
+http://docs.elm-lang.org/library/Basics.elm#
+http://docs.elm-lang.org/library/Signal.elm
+http://docs.elm-lang.org/library/Dict.elm
