@@ -5,6 +5,4 @@ import open Model.Food
 type Ant = FoodCarrier {}
 
 ant : Ant
-ant = { food = Nothing
-      , limit = Just 1
-      }
+ant = {food = Nothing , limit = Just 1}

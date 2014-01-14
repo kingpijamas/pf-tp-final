@@ -1,6 +1,6 @@
-module Geography.Area where
+module AntColony.Geography.Area where
 
-import open Utils.Matrix
+import open AntColony.Utils.Matrix
 
 
 {-- Coords --}
@@ -22,9 +22,9 @@ addCoord a b = let x = (getX a)+(getX b)
 
 {-- Area --}
 type Area a = Matrix a
-get = get
-add = add
-remove = remove
+-- get = get
+-- add = add
+-- remove = remove
 
 
 {-- Locatable --}
