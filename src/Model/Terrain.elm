@@ -4,6 +4,7 @@ import open Geography.Area
 import open Model.Food
 import open Model.Ant.Ant
 import open Model.AntNest
+import open Model.FoodChunk
 
 {-- Exposing from area --}
 type Terrain = Area Tile
@@ -12,7 +13,7 @@ add = add
 remove = remove
 
 data Occupant = Rock
-              | FoodT Food
+              | FoodT FoodChunk
               | AntT Ant
               | AntNestT AntNest
 
@@ -36,3 +37,6 @@ asAnt x = AntT x
 
 asNest : AntNest -> Occupant
 asNest x = AntNestT x
+
+asFood : FoodChunk -> Occupant
+asFood x = FoodT x

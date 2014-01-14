@@ -5,13 +5,16 @@ import open Utils.MaybeMonad
 import open Model.Terrain
 import Capacities.Loading as Ld
 import open Model.Food
+import open Model.FoodChunk
 
 type LoadF = Ld.LoadF Tile Food
                              
 load : LoadF    -- : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))
 load terrain ldrPos fd = let loadOcc tile = case tile.occupant of
-                                                Just(AntT ant) -> joinFst (ant `loadFood` fd, cast tile asAnt)             -- : Maybe(AntT, Maybe(Food))
-                                                Just(AntNestT nest) -> joinFst (nest `loadFood` fd, cast tile asNest)      -- : Maybe(AntNestT, c)
+                                                Just(AntT ant) -> joinFst (ant `loadFood` fd, cast tile asAnt)
+                                                Just(AntNestT nest) -> joinFst (nest `loadFood` fd, cast tile asNest)
+                                                Just(FoodT chunk) -> joinFst (chunk `loadFood` fd, cast tile asFood)
+                                                Nothing -> return ((foodChunk fd, Nothing), cast tile asFood)
                                                 _ -> Nothing
 
                              cast tile castF (occ',rem) = return (tile `setOccupant` ((return . castF) occ'), rem)
@@ -31,11 +34,16 @@ type UnloadF = Ld.UnloadF Tile Food
 
 unload : UnloadF    -- : Terrain -> Coords -> Maybe(Terrain, Food)
 unload terrain unldrPos = let unloadOcc tile = case tile.occupant of
-                                                    Just(AntT ant) -> joinFst (unloadFood ant, cast tile asAnt) 
-                                                    Just(AntNestT nest) -> joinFst (unloadFood nest, cast tile asNest)
+                                                    Just(AntT ant) -> joinFst (unloadFood ant, cast tile asAnt') 
+                                                    Just(AntNestT nest) -> joinFst (unloadFood nest, cast tile asNest')
+                                                    Just(FoodT chunk) -> joinFst (unloadFood chunk, cast tile (\_ -> Nothing))
                                                     _ -> Nothing
 
-                              cast tile castF (occ',fd) = return (tile `setOccupant` ((return . castF) occ'), fd)
+                              asAnt' = return . asAnt
+                              
+                              asNest' = return . asNest
+
+                              cast tile castF (occ',fd) = return (tile `setOccupant` (castF occ'), fd)
 
                               updateTile ((occ',fd), cast') = cast' (occ',fd)
 
