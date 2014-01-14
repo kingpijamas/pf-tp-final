@@ -1,4 +1,5 @@
 module Main where
+
 import Utils.Matrix as M
 import Geography.Area as A
 import Geography.DirectionUtils as D
@@ -15,8 +16,5 @@ import Model.Ant.Scenting
 import Model.Ant.Seeing
 import Model.Ant.Smelling
 import Model.Ant.Loading
-
-
-pepe = M.empty
 
 main = plainText "Hello, World!"

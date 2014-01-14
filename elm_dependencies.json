@@ -1,0 +1,13 @@
+{
+   "version":"0.1",
+   "summary":"Simple ant colony with elm (http://elm-lang.org/) to demonstrate the usage of frp",
+   "description":"Simple ant colony with elm (http://elm-lang.org/) to demonstrate the usage of frp",
+   "license":"BSD3",
+   "repository":"https://github.com/kpjjpk/tp-final-prog-funcional",
+   "exposed-modules":[
+        "AntColony.Utils.Matrix"
+   ],
+   "elm-version":"0.10.1",
+   "dependencies":{
+   }
+}
