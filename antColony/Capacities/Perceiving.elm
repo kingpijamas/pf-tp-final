@@ -4,12 +4,16 @@ import open Geography.Area
 import open Utils.MaybeMonad
 import open Automaton
 
+import open Capacities.AreaSignals
+
 type PerceptionSignal p = { perceived:p
                           , location:Coords
                           }
 
 perceptionSignal : Coords -> p -> PerceptionSignal p
-perceptionSignal location perceived = { perceived=perceived, location=location }
+perceptionSignal location perceived = { perceived = perceived
+                                      , location = location
+                                      }
 
 type PerceptionF a p = (a -> Maybe p)
 

@@ -2,7 +2,6 @@ module Geography.Area where
 
 import open Utils.Matrix
 
-
 {-- Coords --}
 type Coords = Position
 coords = position
@@ -29,11 +28,3 @@ remove = remove
 
 {-- Locatable --}
 type Locatable a = { a | location:Coords }
-
-{-- Signals --}
-type LocationSignal = { from:Coords
-                      , target:Coords
-                      }
-
-locationSignal : Coords -> Coords -> LocationSignal
-locationSignal from target = {from=from, target=target}

@@ -2,7 +2,7 @@ module Main where
 
 import Utils.Matrix as M
 import Geography.Area as A
-import Geography.DirectionUtils as D
+import Geography.Direction as D
 
 import Capacities.Moving as Mv
 import Capacities.Loading as L

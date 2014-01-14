@@ -1,10 +1,11 @@
 module Capacities.Moving where
 
 import open Geography.Area
-import open Geography.DirectionUtils
+import open Geography.Direction
 import open Automaton
 import open Utils.MaybeMonad
 import open Utils.Automaton
+import open Capacities.AreaSignals
 
 type OccupiationF a = (Area a) -> Coords -> a -> Maybe (Area a)
 
@@ -19,7 +20,7 @@ mv occupy evict area sig = let from = sig.from
                                (area `evict` from)                  -- : Maybe (Area a, a)
                                 >>= (occupyWith)                    -- : (Area a, a) -> Maybe(Area a)
 
-type Motor a = Automaton (DirectionalSignal) (Maybe(Area a))
+type Motor a = Automaton (DirectionSignal) (Maybe(Area a))
 
 motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
 motor occupy evict area = pure(toLocSig) >>> impure(mv occupy evict area)
