@@ -38,7 +38,7 @@ evict terrain pos = let evictTile tile = case tile.occupant of
                         >>= (updateTerrain)        -- : Tile -> Maybe(Maybe(Terrain), Tile)
                         >>= (flatten)              -- : (Maybe(Terrain),Tile) -> Maybe(Terrain, Tile)
 
-type Motor = Mv.Motor Tile
+type Motor = Mv.Motor Tile -- : Automaton (DirectionSignal) (Maybe(Terrain))
 
 motor : Terrain -> Motor
 motor area = Mv.motor occupy evict area

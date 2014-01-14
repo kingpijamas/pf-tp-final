@@ -15,7 +15,7 @@ perceptionSignal location perceived = { perceived = perceived
                                       , location = location
                                       }
 
-type PerceptionF a p = (a -> Maybe p)
+type PerceptionF a p = a -> Maybe p
 
 perceive : (PerceptionF a p) -> (Area a) -> LocationSignal -> (Maybe(PerceptionSignal p))
 perceive pf area sig = let targetPos = sig.target

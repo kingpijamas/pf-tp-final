@@ -13,7 +13,7 @@ type SightF = PerceptionF Tile Obstacle
 see : SightF  -- : Tile -> Maybe(Obstacle) 
 see tile = tile.occupant
 
-type Watcher = Perceiver Tile Obstacle
+type Watcher = Perceiver Tile Obstacle -- : Automaton (LocationSignal) (Maybe(SightSignal))
 
 watcher : Terrain -> Watcher
 watcher terrain = perceiver see terrain

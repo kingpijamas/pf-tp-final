@@ -4,13 +4,22 @@ import Capacities.Scenting as Sc
 import open Model.Terrain
 import open Utils.MaybeMonad
 
-type ScentF = (Tile -> Tile)
+type ScentF = Tile -> Maybe(Tile)
 
 scent : ScentF
-scent tile = { tile | scent <- tile.scent + 1 }
+scent tile = let scent' = case tile.scent of
+                            Nothing -> return 1
+                            Just scnt -> return (scnt + 1)
+              in 
+                 return { tile | scent <- scent' }
 
 unscent : ScentF
-unscent tile = { tile | scent <- tile.scent - 1 }
+unscent tile = let unscent' scnt = if scnt > 0
+                                   then return { tile | scent <- return scnt }
+                                   else Nothing
+                in 
+                   (tile.scent)     -- : Maybe(Pheromone)
+                    >>= (unscent')  -- : Pheromone -> Maybe(Tile)
 
 scentUnscent : ScentF -> Sc.ScentF Tile
 scentUnscent sf area pos = let 
@@ -20,7 +29,7 @@ scentUnscent sf area pos = let
                                 >>= (return . sf)           -- : Tile -> Maybe(Tile)
                                 >>= updateArea              -- : Tile -> Maybe(Area a)
 
-type Scenter = Sc.Scenter Tile
+type Scenter = Sc.Scenter Tile -- : Automaton (ScentSignal) (Maybe(Terrain))
 
 scenter : Terrain -> Scenter
 scenter area = let scent' = scentUnscent scent

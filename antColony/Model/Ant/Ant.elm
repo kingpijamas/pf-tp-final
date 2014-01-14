@@ -1,12 +1,22 @@
 module Model.Ant.Ant where
 
 import open Model.Food
+import Geography.Direction as D
 
-type Ant = FoodCarrier {}
+type Cargo = FoodCarrier {}
+
+type Ant = { cargo : Cargo
+           , orientation : D.Direction
+           }
 
 ant : Ant
-ant = { food = Nothing
-      , limit = Just 1
+ant = { cargo = { food = Nothing
+                , limit = Just 1
+                }
+      , orientation = D.N
       }
+
+setCargo : Ant -> Cargo -> Ant
+setCargo ant cargo' = { ant | cargo <- cargo' }
 
 -- Automaton Terrain Terrain

@@ -12,18 +12,18 @@ get = get
 add = add
 remove = remove
 
-data Occupant = Rock
-              | FoodT FoodChunk
-              | AntT Ant
-              | AntNestT AntNest
+data Occupant = RockTile
+              | FoodTile FoodChunk
+              | AntTile Ant
+              | AntNestTile AntNest
 
 type Pheromone = Int
 
 type Tile = { occupant : Maybe(Occupant)
-            , scent : Pheromone
+            , scent : Maybe(Pheromone)
             }
 
-tile : Maybe(Occupant) -> Pheromone -> Tile
+tile : Maybe(Occupant) -> Maybe(Pheromone) -> Tile
 tile occ scent = { occupant=occ, scent=scent }
 
 fmap : (Maybe(Occupant) -> Maybe(Occupant)) -> Tile -> Tile
@@ -33,10 +33,10 @@ setOccupant : Tile -> Maybe(Occupant) -> Tile
 setOccupant tile occ = (\_ -> occ) `fmap` tile
 
 asAnt : Ant -> Occupant
-asAnt x = AntT x
+asAnt x = AntTile x
 
 asNest : AntNest -> Occupant
-asNest x = AntNestT x
+asNest x = AntNestTile x
 
 asFood : FoodChunk -> Occupant
-asFood x = FoodT x
+asFood x = FoodTile x
