@@ -8,8 +8,6 @@ import Ant.Moving as Mv
 import Ant.Loading as Ld
 import Ant.Scenting as Sc
 
+type Perceiver a p = Automaton (LocationSignal) (Maybe(PerceptionSignal p))
 
-brain  Sc.smeller 
-
-
-type Brain = Automaton Ant Ant
+think1 : Maybe() -> 

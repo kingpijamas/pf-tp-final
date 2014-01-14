@@ -11,10 +11,10 @@ import Capacities.Perceiving
 
 import Model.Terrain as T
 
-import Model.Ant.Moving
-import Model.Ant.Scenting
-import Model.Ant.Seeing
-import Model.Ant.Smelling
-import Model.Ant.Loading
+import Model.Moving
+import Model.Scenting
+import Model.Seeing
+import Model.Smelling
+import Model.Loading
 
 main = plainText "Hello, World!"

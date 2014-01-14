@@ -1,4 +1,4 @@
-module Model.Ant.Seeing where
+module Model.Seeing where
 
 import open Capacities.Perceiving
 import open Model.Terrain

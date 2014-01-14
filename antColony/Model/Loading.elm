@@ -1,4 +1,4 @@
-module Model.Ant.Loading where
+module Model.Loading where
 
 import open Utils.Tuple
 import open Utils.MaybeMonad

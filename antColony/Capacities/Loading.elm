@@ -3,6 +3,7 @@ module Capacities.Loading where
 import open Geography.Area
 import open Automaton
 import open Utils.MaybeMonad
+import open Capacities.AreaSignals
 
 data LoadAction = Load | Unload
 

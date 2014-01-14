@@ -1,4 +1,4 @@
-module Model.Ant.Scenting where
+module Model.Scenting where
 
 import Capacities.Scenting as Sc
 import open Model.Terrain

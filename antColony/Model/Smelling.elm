@@ -1,4 +1,4 @@
-module Model.Ant.Smelling where
+module Model.Smelling where
 
 import open Capacities.Perceiving
 import open Model.Terrain

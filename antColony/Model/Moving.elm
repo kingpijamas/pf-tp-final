@@ -1,4 +1,4 @@
-module Model.Ant.Moving where
+module Model.Moving where
 -- TODO this should go in Model, not in Model.Ant
 import Capacities.Moving as Mv
 import open Model.Terrain
