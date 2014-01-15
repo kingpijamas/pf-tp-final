@@ -1,16 +1,15 @@
 module AntColony.Model.Terrain where
 
-import open AntColony.Geography.Area
+import Dict
+-- import open AntColony.Geography.Area
+import open AntColony.Utils.Matrix
 import open AntColony.Model.Food
 import open AntColony.Model.Ant.Ant
 import open AntColony.Model.AntNest
 import open AntColony.Model.FoodChunk
 
 {-- Exposing from area --}
-type Terrain = Area Tile
-get = get
-add = add
-remove = remove
+type Terrain = {tiles : Matrix Tile, tileSize : Int}
 
 data Occupant = RockTile
               | FoodTile FoodChunk
@@ -18,10 +17,19 @@ data Occupant = RockTile
               | AntNestTile AntNest
 
 type Pheromone = Int
+type Tile = {occupant : Maybe Occupant, scent : Maybe Pheromone}
 
-type Tile = { occupant : Maybe(Occupant)
-            , scent : Maybe(Pheromone)
-            }
+newTerrain : Terrain
+newTerrain = {tiles = matrix Dict.empty 4 4, tileSize = 20}
+
+getAnts : Terrain -> [Ant]
+getAnts terrain = [ant]     -- FIXME: dummy logic
+
+getTiles : Terrain -> [Position]
+getTiles terrain = [position 1 1, position 1 2]    -- FIXME: dummy logic
+
+tileSize : Terrain -> Int
+tileSize terrain = terrain.tileSize
 
 tile : Maybe(Occupant) -> Maybe(Pheromone) -> Tile
 tile occ scent = { occupant=occ, scent=scent }
@@ -40,3 +48,4 @@ asNest x = AntNestTile x
 
 asFood : FoodChunk -> Occupant
 asFood x = FoodTile x
+

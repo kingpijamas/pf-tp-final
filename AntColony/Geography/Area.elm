@@ -1,5 +1,6 @@
 module AntColony.Geography.Area where
 
+import Dict
 import open AntColony.Utils.Matrix
 
 {-- Coords --}
@@ -17,14 +18,6 @@ addCoord a b = let x = (getX a)+(getX b)
                    y = (getY a)+(getY b)
                 in
                    coords x y 
-
-
-{-- Area --}
-type Area a = Matrix a
-get = get
-add = add
-remove = remove
-
 
 {-- Locatable --}
 type Locatable a = { a | location:Coords }

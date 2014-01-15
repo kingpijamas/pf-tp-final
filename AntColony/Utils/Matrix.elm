@@ -1,7 +1,9 @@
 module AntColony.Utils.Matrix where
+
 import Dict
 import Maybe
 
+{- Position -}
 type Position = (Int,Int)
 
 position:Int->Int->Position
@@ -13,13 +15,12 @@ row (row,_) = row
 col:Position->Int
 col (_,col) = col
 
-type Matrix v = { elems:Dict.Dict Position v
-                , rows:Int
-                , cols:Int
-                }
+{- Matrix -}
+type Matrix v = {elems:Dict.Dict Position v, rows:Int, cols:Int}
 
 matrix:(Dict.Dict Position v)->Int->Int->Matrix v
 matrix elems rows cols = {elems=elems, rows=rows, cols=cols}
+
 
 empty = matrix (Dict.empty) 0 0 -- <= TODO : check! this is weird
 
