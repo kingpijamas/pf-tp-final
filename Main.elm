@@ -41,12 +41,14 @@ simulation = T.newTerrain
 step : Float->T.Terrain->T.Terrain
 step t terrain = terrain
 
-display (w, h) theTerrain = 
-    let tileSize = toFloat (T.tileSize theTerrain)
-    in collage w h <| map (\n -> drawTile n tileSize) (T.getTiles theTerrain)
+display (w, h) terrain = 
+    let tileSize = toFloat (T.tileSize terrain)
+    in collage w h <| ((tilesCollage tileSize terrain) ++ (antsCollage tileSize terrain))
 
+tilesCollage tileSize terrain = map (\n -> drawTile n tileSize) (T.getTiles terrain)
+antsCollage tileSize terrain = map (\n -> drawAnt n tileSize) (T.getAnts terrain)
 
--- drawTile : M.Position -> Int -> Element      -- CUAL ES EL TIPO DE ESTO??
+-- drawTile : M.Position -> Int -> Form      -- CUAL ES EL TIPO DE ESTO??
 drawTile position len = 
     let
         xOffsset = toFloat (M.row position) * len
@@ -54,9 +56,15 @@ drawTile position len =
     in squarePath (len) |> traced (solid green) |> move (xOffsset, yOffsset) 
 
 squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]
+
+-- drawAnt : M.Position -> Int -> Form
+drawAnt position len = 
+    let
+        xOffsset = toFloat (M.row position) * len
+        yOffsset = toFloat (M.col position) * len
+    in toForm antImg |> move (xOffsset, yOffsset)
+
 antImg = image 20 20 "resources/ant.png"
-
-
 -- Dibuja hormigas: map (\n -> toForm antImg) (T.getAnts theTerrain)
 
 

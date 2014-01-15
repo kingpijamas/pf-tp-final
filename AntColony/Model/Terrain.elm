@@ -22,8 +22,8 @@ type Tile = {occupant : Maybe Occupant, scent : Maybe Pheromone}
 newTerrain : Terrain
 newTerrain = {tiles = matrix Dict.empty 4 4, tileSize = 20}
 
-getAnts : Terrain -> [Ant]
-getAnts terrain = [ant]     -- FIXME: dummy logic
+getAnts : Terrain -> [Position]
+getAnts terrain = [position 1 1, position 2 2]     -- FIXME: dummy logic
 
 getTiles : Terrain -> [Position]
 getTiles terrain = [position 1 1, position 1 2, position 2 1, position 2 2, position 3 1, position 3 2]    -- FIXME: dummy logic
