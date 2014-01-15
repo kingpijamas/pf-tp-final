@@ -26,7 +26,7 @@ getAnts : Terrain -> [Ant]
 getAnts terrain = [ant]     -- FIXME: dummy logic
 
 getTiles : Terrain -> [Position]
-getTiles terrain = [position 1 1, position 1 2]    -- FIXME: dummy logic
+getTiles terrain = [position 1 1, position 1 2, position 2 1, position 2 2, position 3 1, position 3 2]    -- FIXME: dummy logic
 
 tileSize : Terrain -> Int
 tileSize terrain = terrain.tileSize

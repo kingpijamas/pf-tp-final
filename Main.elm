@@ -43,8 +43,7 @@ step t terrain = terrain
 
 display (w, h) theTerrain = 
     let tileSize = toFloat (T.tileSize theTerrain)
-    in 
-        collage w h <| map (\n -> drawTile n tileSize) (T.getTiles theTerrain)
+    in collage w h <| map (\n -> drawTile n tileSize) (T.getTiles theTerrain)
 
 
 -- drawTile : M.Position -> Int -> Element      -- CUAL ES EL TIPO DE ESTO??
@@ -52,7 +51,7 @@ drawTile position len =
     let
         xOffsset = toFloat (M.row position) * len
         yOffsset = toFloat (M.col position) * len
-    in squarePath (xOffsset) |> traced (solid green) |> move (xOffsset, yOffsset) 
+    in squarePath (len) |> traced (solid green) |> move (xOffsset, yOffsset) 
 
 squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]
 antImg = image 20 20 "resources/ant.png"
