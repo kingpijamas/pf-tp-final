@@ -10,17 +10,19 @@ import open AntColony.Model.FoodChunk
 
 {-- Exposing from area --}
 type Terrain = {tiles : Matrix Tile, tileSize : Int}
+type Tile = {occupant : Maybe Occupant, scent : Maybe Pheromone}
 
+type Pheromone = Int
 data Occupant = RockTile
               | FoodTile FoodChunk
               | AntTile Ant
               | AntNestTile AntNest
 
-type Pheromone = Int
-type Tile = {occupant : Maybe Occupant, scent : Maybe Pheromone}
-
 newTerrain : Terrain
 newTerrain = {tiles = matrix Dict.empty 4 4, tileSize = 20}
+
+asTileList : Terrain -> [(Position, Tile)]
+asTileList terrain = Dict.toList terrain.tiles.elems
 
 getAnts : Terrain -> [Position]
 getAnts terrain = [position 1 1, position 2 2]     -- FIXME: dummy logic

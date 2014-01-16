@@ -20,18 +20,6 @@ import AntColony.Model.Seeing
 import AntColony.Model.Smelling
 import AntColony.Model.Loading
 -}
-{-
-type Anthill = {ants:[Ant.Ant]}
-
-ants : [Ant.Ant]
-ants = [{food = Nothing , limit = Just 1}]
-
-antMap : Dict.Dict Int Int
-antMap = Dict.empty
-
-area : A.Area a
-area = {elems = Dict.empty, rows = 1, cols = 5}
--}
 
 main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 
@@ -41,23 +29,53 @@ simulation = T.newTerrain
 step : Float->T.Terrain->T.Terrain
 step t terrain = terrain
 
-display (w, h) terrain = 
-    let tileSize = toFloat (T.tileSize terrain)
-    in collage w h <| ((tilesCollage tileSize terrain) ++ (antsCollage tileSize terrain))
+display : (Int,Int) -> T.Terrain -> Element
+display (w, h) terrain = collage w h <| terrainAsForm terrain
 
-tilesCollage tileSize terrain = map (\n -> drawTile n tileSize) (T.getTiles terrain)
-antsCollage tileSize terrain = map (\n -> drawAnt n tileSize) (T.getAnts terrain)
+terrainAsForm : T.Terrain -> [Form]
+terrainAsForm terrain = 
+    let 
+        ground = terrainMatrixForms terrain.tiles.rows terrain.tiles.cols terrain.tileSize
+    in ground
 
--- drawTile : M.Position -> Int -> Form      -- CUAL ES EL TIPO DE ESTO??
-drawTile position len = 
+-- Obtiene la lista de Elements de los tiles en la matriz a dibujar
+terrainMatrixForms : Int -> Int -> Int -> [Form]
+terrainMatrixForms rows columns tileSize = map (\row -> terrainRowForms row columns tileSize) [1..rows] |> concat
+
+-- Obtiene la lista de Elements para los tiles en una fila a dibujar
+terrainRowForms : Int -> Int -> Int -> [Form]
+terrainRowForms row columns tileSize = map (\column -> terrainSqareForm row column tileSize) [1..columns]
+
+-- Obtiene el Element que representa el tile a dibujar
+terrainSqareForm : Int -> Int -> Int -> Form
+terrainSqareForm row column tileSize = 
     let
-        xOffsset = toFloat (M.row position) * len
-        yOffsset = toFloat (M.col position) * len
-    in squarePath (len) |> traced (solid green) |> move (xOffsset, yOffsset) 
+        xOffsset = toFloat (row * tileSize)
+        yOffsset = toFloat (column * tileSize)
+    in squarePath (toFloat tileSize) |> traced (solid green) |> translateTile row column tileSize
 
-squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]
+translateTile : Int -> Int -> Int -> Form -> Form
+translateTile row column tileSize form =
+    let
+        xOffsset = toFloat (row * tileSize)
+        yOffsset = toFloat (column * tileSize)
+    in move (xOffsset, yOffsset) form
 
--- drawAnt : M.Position -> Int -> Form
+squarePath : Float -> Path
+squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]                          
+
+
+terrainTilesAsForm : T.Terrain -> [Form]
+terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile) <| T.asTileList terrain
+
+terrainTileForm : M.Position -> T.Tile -> Form
+terrainTileForm position tile = 
+    case tile.occupant of
+        Just (T.RockTile) -> squarePath (10) |> traced (solid green)
+        Just (T.AntTile ant) -> squarePath (10) |> traced (solid green)
+
+
+drawAnt : M.Position -> Float -> Form
 drawAnt position len = 
     let
         xOffsset = toFloat (M.row position) * len
@@ -65,11 +83,4 @@ drawAnt position len =
     in toForm antImg |> move (xOffsset, yOffsset)
 
 antImg = image 20 20 "resources/ant.png"
--- Dibuja hormigas: map (\n -> toForm antImg) (T.getAnts theTerrain)
-
-
-
-
-
--- main = plainText "Hello, World!"
 
