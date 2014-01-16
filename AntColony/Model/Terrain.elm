@@ -1,15 +1,14 @@
 module AntColony.Model.Terrain where
 
 import Dict
--- import open AntColony.Geography.Area
-import open AntColony.Utils.Matrix
+import open AntColony.Geography.Area
 import open AntColony.Model.Food
 import open AntColony.Model.Ant.Ant
 import open AntColony.Model.AntNest
 import open AntColony.Model.FoodChunk
 
 {-- Exposing from area --}
-type Terrain = {tiles : Matrix Tile, tileSize : Int}
+type Terrain = {tiles : Area Tile, tileSize : Int}
 type Tile = {occupant : Maybe Occupant, scent : Maybe Pheromone}
 
 type Pheromone = Int
@@ -19,16 +18,16 @@ data Occupant = RockTile
               | AntNestTile AntNest
 
 newTerrain : Terrain
-newTerrain = {tiles = matrix Dict.empty 4 4, tileSize = 20}
+newTerrain = {tiles = area Dict.empty 4 4, tileSize = 20}
 
-asTileList : Terrain -> [(Position, Tile)]
+asTileList : Terrain -> [(Coords, Tile)]
 asTileList terrain = Dict.toList terrain.tiles.elems
 
-getAnts : Terrain -> [Position]
-getAnts terrain = [position 1 1, position 2 2]     -- FIXME: dummy logic
+getAnts : Terrain -> [Coords]
+getAnts terrain = [coords 1 1, coords 2 2]     -- FIXME: dummy logic
 
-getTiles : Terrain -> [Position]
-getTiles terrain = [position 1 1, position 1 2, position 2 1, position 2 2, position 3 1, position 3 2]    -- FIXME: dummy logic
+getTiles : Terrain -> [Coords]
+getTiles terrain = [coords 1 1, coords 1 2, coords 2 1, coords 2 2, coords 3 1, coords 3 2]    -- FIXME: dummy logic
 
 tileSize : Terrain -> Int
 tileSize terrain = terrain.tileSize
