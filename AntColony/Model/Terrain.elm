@@ -18,7 +18,13 @@ data Occupant = RockTile
               | AntNestTile AntNest
 
 newTerrain : Terrain
-newTerrain = {tiles = area Dict.empty 4 4, tileSize = 20}
+newTerrain = let 
+                ant1 = ant
+                elems = Dict.empty 
+                    |> Dict.insert (coords 1 1) (tile (Just RockTile) Nothing)
+                    |> Dict.insert (coords 1 2) (tile (Just (AntTile ant)) Nothing)
+                    |> Dict.insert (coords 2 2) (tile (Just (AntTile ant)) Nothing)
+             in {tiles = area elems 4 4, tileSize = 20}
 
 asTileList : Terrain -> [(Coords, Tile)]
 asTileList terrain = Dict.toList terrain.tiles.elems
