@@ -20,11 +20,13 @@ data Occupant = RockTile
 
 newTerrain : Terrain
 newTerrain = let 
-                ant1 = ant
+                someFood = foodChunk (newFood 5)
                 elems = Dict.empty 
                     |> Dict.insert (position 1 1) (tile (Just RockTile) Nothing)
                     |> Dict.insert (position 1 2) (tile (Just (AntTile ant)) Nothing)
                     |> Dict.insert (position 2 2) (tile (Just (AntTile ant)) Nothing)
+                    |> Dict.insert (position 4 4) (tile (Just (AntNestTile antNest)) Nothing)
+                    |> Dict.insert (position 4 1) (tile (Just (FoodTile someFood)) Nothing)
              in {tiles = matrix elems 4 4, tileSize = 20}
 
 asTileList : Terrain -> [(Position, Tile)]

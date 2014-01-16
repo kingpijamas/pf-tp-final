@@ -73,10 +73,18 @@ terrainTileForm position tile tileSize =
     case tile.occupant of
         Just (T.RockTile) -> toForm stoneImg |> translateTile (M.row position) (M.col position) tileSize
         Just (T.AntTile ant) -> toForm antImg |> translateTile (M.row position) (M.col position) tileSize
+        Just (T.AntNestTile nest) -> toForm antNestImg |> translateTile (M.row position) (M.col position) tileSize
+        Just (T.FoodTile foodChunk) -> toForm foodChunkImg |> translateTile (M.row position) (M.col position) tileSize
 
 antImg : Element
 antImg = image 20 20 "resources/ant.png"
 
 stoneImg : Element
 stoneImg = image 20 20 "resources/stone.png"
+
+antNestImg : Element
+antNestImg = image 20 20 "resources/anthill.jpg"
+
+foodChunkImg : Element
+foodChunkImg = image 20 20 "resources/apple.jpg"
 
