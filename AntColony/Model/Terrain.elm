@@ -19,16 +19,16 @@ data Occupant = RockTile
               | AntNestTile AntNest
 
 newTerrain : Terrain
-newTerrain = {tiles = matrix Dict.empty 4 4, tileSize = 20}
+newTerrain = let 
+                ant1 = ant
+                elems = Dict.empty 
+                    |> Dict.insert (position 1 1) (tile (Just RockTile) Nothing)
+                    |> Dict.insert (position 1 2) (tile (Just (AntTile ant)) Nothing)
+                    |> Dict.insert (position 2 2) (tile (Just (AntTile ant)) Nothing)
+             in {tiles = matrix elems 4 4, tileSize = 20}
 
 asTileList : Terrain -> [(Position, Tile)]
 asTileList terrain = Dict.toList terrain.tiles.elems
-
-getAnts : Terrain -> [Position]
-getAnts terrain = [position 1 1, position 2 2]     -- FIXME: dummy logic
-
-getTiles : Terrain -> [Position]
-getTiles terrain = [position 1 1, position 1 2, position 2 1, position 2 2, position 3 1, position 3 2]    -- FIXME: dummy logic
 
 tileSize : Terrain -> Int
 tileSize terrain = terrain.tileSize

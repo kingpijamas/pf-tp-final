@@ -36,7 +36,8 @@ terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = 
     let 
         ground = terrainMatrixForms terrain.tiles.rows terrain.tiles.cols terrain.tileSize
-    in ground
+        occupants = terrainTilesAsForm terrain
+    in (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : Int -> Int -> Int -> [Form]
@@ -64,23 +65,18 @@ translateTile row column tileSize form =
 squarePath : Float -> Path
 squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]                          
 
-
 terrainTilesAsForm : T.Terrain -> [Form]
-terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile) <| T.asTileList terrain
+terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile terrain.tileSize) <| T.asTileList terrain
 
-terrainTileForm : M.Position -> T.Tile -> Form
-terrainTileForm position tile = 
+terrainTileForm : M.Position -> T.Tile -> Int-> Form
+terrainTileForm position tile tileSize = 
     case tile.occupant of
-        Just (T.RockTile) -> squarePath (10) |> traced (solid green)
-        Just (T.AntTile ant) -> squarePath (10) |> traced (solid green)
+        Just (T.RockTile) -> toForm stoneImg |> translateTile (M.row position) (M.col position) tileSize
+        Just (T.AntTile ant) -> toForm antImg |> translateTile (M.row position) (M.col position) tileSize
 
-
-drawAnt : M.Position -> Float -> Form
-drawAnt position len = 
-    let
-        xOffsset = toFloat (M.row position) * len
-        yOffsset = toFloat (M.col position) * len
-    in toForm antImg |> move (xOffsset, yOffsset)
-
+antImg : Element
 antImg = image 20 20 "resources/ant.png"
+
+stoneImg : Element
+stoneImg = image 20 20 "resources/stone.png"
 
