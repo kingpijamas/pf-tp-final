@@ -2,24 +2,23 @@ module AntColony.Main where
 
 import Window
 import AntColony.Model.Terrain as T
-import AntColony.Utils.Matrix as M
-{-
+
 import AntColony.Geography.Area as A
-import AntColony.Geography.Direction as D
+--import AntColony.Geography.Direction as D
 
-import AntColony.Capacities.Moving as Mv
-import AntColony.Capacities.Loading as L
-import AntColony.Capacities.Scenting as Sc
-import AntColony.Capacities.Perceiving
+--import AntColony.Capacities.Moving as Mv
+--import AntColony.Capacities.Loading as L
+--import AntColony.Capacities.Scenting as Sc
+--import AntColony.Capacities.Perceiving
 
 
 
-import AntColony.Model.Moving
-import AntColony.Model.Scenting
-import AntColony.Model.Seeing
-import AntColony.Model.Smelling
-import AntColony.Model.Loading
--}
+--import AntColony.Model.Moving
+--import AntColony.Model.Scenting
+--import AntColony.Model.Seeing
+--import AntColony.Model.Smelling
+--import AntColony.Model.Loading
+
 
 main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 
@@ -68,13 +67,13 @@ squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hle
 terrainTilesAsForm : T.Terrain -> [Form]
 terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile terrain.tileSize) <| T.asTileList terrain
 
-terrainTileForm : M.Position -> T.Tile -> Int-> Form
+terrainTileForm : A.Coords -> T.Tile -> Int-> Form
 terrainTileForm position tile tileSize = 
     case tile.occupant of
-        Just (T.RockTile) -> toForm stoneImg |> translateTile (M.row position) (M.col position) tileSize
-        Just (T.AntTile ant) -> toForm antImg |> translateTile (M.row position) (M.col position) tileSize
-        Just (T.AntNestTile nest) -> toForm antNestImg |> translateTile (M.row position) (M.col position) tileSize
-        Just (T.FoodTile foodChunk) -> toForm foodChunkImg |> translateTile (M.row position) (M.col position) tileSize
+        Just (T.RockTile) -> toForm stoneImg |> translateTile (A.getX position) (A.getY position) tileSize
+        Just (T.AntTile ant) -> toForm antImg |> translateTile (A.getX position) (A.getY position) tileSize
+        Just (T.AntNestTile nest) -> toForm antNestImg |> translateTile (A.getX position) (A.getY position) tileSize
+        Just (T.FoodTile foodChunk) -> toForm foodChunkImg |> translateTile (A.getX position) (A.getY position) tileSize
 
 antImg : Element
 antImg = image 20 20 "resources/ant.png"
