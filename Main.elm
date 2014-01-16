@@ -34,31 +34,31 @@ display (w, h) terrain = collage w h <| terrainAsForm terrain
 terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = 
     let 
-        ground = terrainMatrixForms terrain.tiles.rows terrain.tiles.cols terrain.tileSize
+        ground = terrainMatrixForms terrain.tiles.width terrain.tiles.height terrain.tileSize
         occupants = terrainTilesAsForm terrain
     in (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : Int -> Int -> Int -> [Form]
-terrainMatrixForms rows columns tileSize = map (\row -> terrainRowForms row columns tileSize) [1..rows] |> concat
+terrainMatrixForms width height tileSize = map (\y -> terrainRowForms width y tileSize) [1..height] |> concat
 
 -- Obtiene la lista de Elements para los tiles en una fila a dibujar
 terrainRowForms : Int -> Int -> Int -> [Form]
-terrainRowForms row columns tileSize = map (\column -> terrainSqareForm row column tileSize) [1..columns]
+terrainRowForms width y tileSize = map (\x -> terrainSqareForm x y tileSize) [1..width]
 
 -- Obtiene el Element que representa el tile a dibujar
 terrainSqareForm : Int -> Int -> Int -> Form
-terrainSqareForm row column tileSize = 
+terrainSqareForm x y tileSize = 
     let
-        xOffsset = toFloat (row * tileSize)
-        yOffsset = toFloat (column * tileSize)
-    in squarePath (toFloat tileSize) |> traced (solid green) |> translateTile row column tileSize
+        xOffsset = toFloat (x * tileSize)
+        yOffsset = toFloat (y * tileSize)
+    in squarePath (toFloat tileSize) |> traced (solid green) |> translateTile x y tileSize
 
 translateTile : Int -> Int -> Int -> Form -> Form
-translateTile row column tileSize form =
+translateTile x y tileSize form =
     let
-        xOffsset = toFloat (row * tileSize)
-        yOffsset = toFloat (column * tileSize)
+        xOffsset = toFloat (x * tileSize)
+        yOffsset = toFloat (y * tileSize)
     in move (xOffsset, yOffsset) form
 
 squarePath : Float -> Path
@@ -78,4 +78,3 @@ antImg = image 20 20 "resources/ant.png"
 
 stoneImg : Element
 stoneImg = image 20 20 "resources/stone.png"
-
