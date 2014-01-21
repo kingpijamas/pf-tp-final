@@ -54,6 +54,8 @@ type Watcher -- : Automaton (LocationSignal) (Maybe(SightSignal))
 
 type Smeller -- : Automaton (LocationSignal) (Maybe(SmellSignal))
 
+type LoadSensor = Perceiver Tile Cargo -- : Automaton (LocationSignal) (Maybe(WeightSignal))
+
 --OUT
 type Motor -- : Automaton (DirectionSignal) (Maybe(Terrain))
 
@@ -61,12 +63,39 @@ type Loader -- : Automaton (LoadSignal) (Maybe(Terrain))
 
 type Scenter -- : Automaton (ScentSignal) (Maybe(Terrain))
 
-type Rotor -- : Automaton (DirectionSignal) (Terrain)
+type Rotor -- : Automaton (RotationSignal) (Maybe(Terrain))
 
 --TODO: what about perceiving multiple tiles? It would be important, especially for the smell part. 
 --probably the best idea would be to have 3 sight and smell sensors at (NW, N, NE) --being N the head, that is
 
 --type BehaviourF
+
+--state : b -> (a -> b -> b) -> Automaton a b
+--hiddenState : s -> (a -> s -> (s,b)) -> Automaton a b
+
+--(Terrain, Coords) -> (a -> (Terrain, Coords) -> (Terrain, Coords)) -> Automaton a (Terrain, Coords)
+
+--[Automaton a b] -> Automaton a [b]
+
+--??? : Automaton (Terrain,Coords) Maybe(Terrain)
+
+
+--switch : Automaton a (b, Maybe c) -> (c->Automaton a b) -> Automaton a b
+
+switch3' : b -> (a -> b -> b) -> c -> (a -> c -> c) -> d -> (a -> d -> d) -> Automaton a (b,c,d)
+           Maybe(SightSignal) -> ((Terrain,Coords)->Maybe(SightSignal)->Maybe(SightSignal))
+
+sensingBrain : Terrain -> Automaton Terrain (Maybe(SightSignal),Maybe(SmellSignal),Maybe(WeightSignal))
+sensingBrain terrain = let eye = perceive see terrain
+                           antenna = perceive smell terrain
+                           mandible = perceive feelLoad terrain
+                        in
+                           switch3 eyes antennae mandibles
+
+
+
+
+
 
 -- : Maybe(SightSignal) -> Maybe(SmellSignal) -> ?
 behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
@@ -76,8 +105,8 @@ behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
                                          fullyLoaded = nothingAsZero(ant.food) == nothingAsZero(ant.limit)
                                      in
                                         case (sight.perceived, smell.perceived, fullyLoaded) of
-                                           Nothing, Nothing, False -> --walk randomly
-                                           Nothing, Nothing, True -> --should never happen. In any case, walk randomly
+                                           Nothing, Nothing, False -> -- walk randomly
+                                           Nothing, Nothing, True -> -- should never happen. In any case, walk randomly
                                            Nothing, Just ph, False -> -- follow the pheromone
                                            Nothing, Just ph, True -> -- ? turn back? follow the pheromone? 
                                            Just (AntNestTile _), _ , False -> -- turn 
@@ -87,9 +116,16 @@ behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
                                            _ , _, _ -> -- avoid
 
 
-turn180Right : Coords
-turn180Right from = 
+
+turnRight : Terrain -> Coords -> Terrain
+turnRight 
+
+
+turn180Right : Terrain -> Coords -> 
+turn180Right from  = rotor >>>
 
 
 turn180Left
+
+
 
