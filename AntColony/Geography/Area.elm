@@ -1,7 +1,6 @@
 module AntColony.Geography.Area where
 
 import Dict
-import Maybe
 
 {- Coords -}
 type Coords = (Int,Int)
@@ -30,37 +29,36 @@ type Area v = { elems:Dict.Dict Coords v
 minX = 0
 minY = 0
 
-area:(Dict.Dict Coords v)->Int->Int->Area v
-area elems width height = { elems=elems
-                          , width=width
-                          , height=height
-                          }
+area':Int->Int->(Dict.Dict Coords v)->(Area v)
+area' width height elems = { elems=elems
+                              , width=width
+                              , height=height
+                              }
 
-area':Int->Int->Area v
-area' width height = area (Dict.empty) width height
+area:Int->Int->[(Coords,v)]->(Area v)
+area width height elems = area' width height (Dict.fromList elems)
+
+empty:Int->Int->(Area v)
+empty width height = area width height []
 
 isWithinBounds:Coords->(Area v)->Bool
-isWithinBounds (x,y) {elems,width,height} = let isBtwn x (lb,ub) = x>=lb && x<=ub
-                                             in
-                                                (x `isBtwn` (minX,width)) && (y `isBtwn` (minY,height))
+isWithinBounds (x,y) area = let isBtwn x (lb,ub) = x>=lb && x<=ub
+                             in
+                                (x `isBtwn` (minX,area.width)) 
+                                 && (y `isBtwn` (minY,area.height))
 
 add:(Area v)->Coords->v->Maybe (Area v)
-add {elems,width,height} pos elem = let mat = area elems width height
-                                 in
-                                   if pos `isWithinBounds` mat
-                                    then Just (area (Dict.insert pos elem elems) width height)
-                                    else Nothing
+add area pos elem = if pos `isWithinBounds` area
+                    then Just (area' area.width area.height (Dict.insert pos elem area.elems))
+                    else Nothing
 
 get:(Area v)->Coords->Maybe v
-get {elems,width,height} pos = Dict.lookup pos elems
+get area pos = Dict.lookup pos area.elems
 
 remove:(Area v)->Coords->Maybe (Area v)
-remove {elems,width,height} pos = let mat = area elems width height
-                               in
-                                 if pos `isWithinBounds` mat
-                                  then Just (area (Dict.remove pos elems) width height)
-                                  else Nothing
-
+remove area pos = if pos `isWithinBounds` area
+                  then Just (area' area.width area.height (Dict.remove pos area.elems))
+                  else Nothing
 
 {-- Locatable --} --TODO: check if this can be removed 
 type Locatable a = { a | location:Coords }

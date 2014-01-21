@@ -1,9 +1,14 @@
 module AntColony.Main where
 
 import Window
+import Dict
 import AntColony.Model.Terrain as T
 
-import AntColony.Geography.Area as A
+import open AntColony.Geography.Area
+import open AntColony.Model.Ant.Ant
+import open AntColony.Model.AntNest
+import open AntColony.Model.FoodChunk
+
 --import AntColony.Geography.Direction as D
 
 --import AntColony.Capacities.Moving as Mv
@@ -19,11 +24,22 @@ import AntColony.Geography.Area as A
 --import AntColony.Model.Smelling
 --import AntColony.Model.Loading
 
+tileSize = 20
 
 main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 
 simulation : T.Terrain
-simulation = T.newTerrain
+simulation = let
+                 tile' occ ph = T.tile (Just occ) ph
+
+                 tiles = [ ( (coords 1 1), tile' T.RockTile Nothing )
+                         , ( (coords 1 2), tile' (T.AntTile ant) Nothing )
+                         , ( (coords 2 2), tile' (T.AntTile ant) Nothing )
+                         , ( (coords 4 4), tile' (T.AntNestTile antNest) Nothing )
+                         , ( (coords 4 1), tile' (T.FoodTile (foodChunk 5)) Nothing )
+                         ]
+              in 
+                 T.terrain 4 4 tiles
 
 step : Float->T.Terrain->T.Terrain
 step t terrain = terrain
@@ -31,10 +47,13 @@ step t terrain = terrain
 display : (Int,Int) -> T.Terrain -> Element
 display (w, h) terrain = collage w h <| terrainAsForm terrain
 
+asTileList : T.Terrain -> [(Coords, T.Tile)]
+asTileList terrain = Dict.toList terrain.elems
+
 terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = 
     let 
-        ground = terrainMatrixForms terrain.tiles.width terrain.tiles.height terrain.tileSize
+        ground = terrainMatrixForms terrain.width terrain.height tileSize
         occupants = terrainTilesAsForm terrain
     in (ground ++ occupants)
 
@@ -65,15 +84,15 @@ squarePath : Float -> Path
 squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]                          
 
 terrainTilesAsForm : T.Terrain -> [Form]
-terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile terrain.tileSize) <| T.asTileList terrain
+terrainTilesAsForm terrain = map (\(position, tile) -> terrainTileForm position tile tileSize) <| asTileList terrain
 
-terrainTileForm : A.Coords -> T.Tile -> Int-> Form
+terrainTileForm : Coords -> T.Tile -> Int-> Form
 terrainTileForm position tile tileSize = 
     case tile.occupant of
-        Just (T.RockTile) -> toForm stoneImg |> translateTile (A.getX position) (A.getY position) tileSize
-        Just (T.AntTile ant) -> toForm antImg |> translateTile (A.getX position) (A.getY position) tileSize
-        Just (T.AntNestTile nest) -> toForm antNestImg |> translateTile (A.getX position) (A.getY position) tileSize
-        Just (T.FoodTile foodChunk) -> toForm foodChunkImg |> translateTile (A.getX position) (A.getY position) tileSize
+        Just (T.RockTile) -> toForm stoneImg |> translateTile (getX position) (getY position) tileSize
+        Just (T.AntTile ant) -> toForm antImg |> translateTile (getX position) (getY position) tileSize
+        Just (T.AntNestTile nest) -> toForm antNestImg |> translateTile (getX position) (getY position) tileSize
+        Just (T.FoodTile foodChunk) -> toForm foodChunkImg |> translateTile (getX position) (getY position) tileSize
 
 antImg : Element
 antImg = image 20 20 "resources/ant.png"
@@ -86,4 +105,3 @@ antNestImg = image 20 20 "resources/anthill.jpg"
 
 foodChunkImg : Element
 foodChunkImg = image 20 20 "resources/apple.jpg"
-
