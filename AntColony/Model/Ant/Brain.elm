@@ -45,6 +45,10 @@ type ScentSignal = { target:Coords
                    , action:Action
                    }
 
+type RotationSignal = { from:Coords
+                      , sense:RotationSense
+                      }
+
 --IN
 type Watcher -- : Automaton (LocationSignal) (Maybe(SightSignal))
 
@@ -57,9 +61,12 @@ type Loader -- : Automaton (LoadSignal) (Maybe(Terrain))
 
 type Scenter -- : Automaton (ScentSignal) (Maybe(Terrain))
 
+type Rotor -- : Automaton (DirectionSignal) (Terrain)
 
 --TODO: what about perceiving multiple tiles? It would be important, especially for the smell part. 
 --probably the best idea would be to have 3 sight and smell sensors at (NW, N, NE) --being N the head, that is
+
+--type BehaviourF
 
 -- : Maybe(SightSignal) -> Maybe(SmellSignal) -> ?
 behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
@@ -75,7 +82,14 @@ behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
                                            Nothing, Just ph, True -> -- ? turn back? follow the pheromone? 
                                            Just (AntNestTile _), _ , False -> -- turn 
                                            Just (AntNestTile _), _ , True -> -- unload
-                                           Just (FoodChunkT _), _ , False -> -- load
-                                           Just (FoodChunkT _), _ , Turn -> -- turn 180º
+                                           Just (FoodChunkTile _), _ , False -> -- load
+                                           Just (FoodChunkTile _), _ , Turn -> -- turn 180º
                                            _ , _, _ -> -- avoid
+
+
+turn180Right : Coords
+turn180Right from = 
+
+
+turn180Left
 

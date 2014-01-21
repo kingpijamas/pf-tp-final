@@ -16,6 +16,12 @@ rotationSignal from sense = { from=from
                             , sense=sense
                             }
 
+rotateClockwise : Coords -> RotationSignal
+rotateClockwise from sense = rotationSignal from Clockwise
+
+rotateCounterclockwise : Coords -> RotationSignal
+rotateCounterclockwise from sense = rotationSignal from Counterclockwise
+
 type RotationF a = (Area a) -> Coords -> Maybe(Area a)
 
 rotationProxy : (RotationF a) -> (RotationF a) -> (Area a) -> RotationSignal -> Maybe(Area a)
@@ -26,7 +32,7 @@ rotationProxy clck cntrclck area sig = let rf = case sig.sense of
                                            rf area (sig.from)
 
 
-type Rotor a =  Automaton (DirectionSignal) (Maybe(Area a))
+type Rotor a =  Automaton (RotationSignal) (Maybe(Area a))
 
 rotor : (RotationF a) -> (RotationF a) -> (Area a) -> (Rotor a)
 rotor clck cntrclck area = pure (rotationProxy clck cntrclck area)
