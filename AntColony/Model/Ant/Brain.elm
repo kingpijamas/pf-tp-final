@@ -1,6 +1,9 @@
 module AntColony.Model.Ant.Brain where
 
 import open Automaton
+import open List
+
+
 
 import AntColony.Ant.Seeing as See
 import AntColony.Ant.Smelling as Sm
@@ -82,19 +85,25 @@ type Rotor -- : Automaton (RotationSignal) (Maybe(Terrain))
 
 --switch : Automaton a (b, Maybe c) -> (c->Automaton a b) -> Automaton a b
 
-switch3' : b -> (a -> b -> b) -> c -> (a -> c -> c) -> d -> (a -> d -> d) -> Automaton a (b,c,d)
-           Maybe(SightSignal) -> ((Terrain,Coords)->Maybe(SightSignal)->Maybe(SightSignal))
 
-sensingBrain : Terrain -> Automaton Terrain (Maybe(SightSignal),Maybe(SmellSignal),Maybe(WeightSignal))
-sensingBrain terrain = let eye = perceive see terrain
-                           antenna = perceive smell terrain
-                           mandible = perceive feelLoad terrain
-                        in
-                           switch3 eyes antennae mandibles
+sensingBrain : (Terrain,Ant) -> Automaton (Terrain,Ant) ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
+sensingBrain (terrain,ant) = let perceptor' pf dir = pure (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
+                                  
+                                 eye = (perceptor' see)                    -- : Direction -> Perceiver Tile Obstacle
+                                 antenna = (perceptor' smell)              -- : Direction -> Perceiver Tile Pheromone
+                                 loadSensor = (perceptor' feelLoad)        -- : Direction -> Perceiver Tile Cargo
 
+                                 --type Perceiver a p = Automaton (LocationSignal) (Maybe(PerceptionSignal p))
 
+                                 orientation = ant.orientation
 
+                                 eyes = combine (map eye [lft orientation, orientation, rght orientation])       -- : [Automaton LocationSignal Maybe(SightSignal)] -> Automaton LocationSignal [Maybe(SightSignal)]
+                                 antennae = combine (map eye [lft orientation, orientation, rght orientation])   -- : [Automaton LocationSignal Maybe(SmellSignal)] -> Automaton LocationSignal [Maybe(SmellSignal)]
 
+                                 --switch3' : b -> (a -> b -> b) -> c -> (a -> c -> c) -> d -> (a -> d -> d) -> Automaton a (b,c,d)
+                                 --switch3' : [Maybe(SightSignal)] -> (LocationSignal -> [Maybe(SightSignal)] -> [Maybe(SightSignal)]) -> ...
+                              in
+                                 switch3' [] eyes [] antennae Nothing loadSensor -- : Automaton LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
 
 
 -- : Maybe(SightSignal) -> Maybe(SmellSignal) -> ?

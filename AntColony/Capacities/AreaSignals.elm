@@ -16,6 +16,11 @@ type DirectionSignal = { from:Coords
                        , targetDir:Direction
                        }
 
+directionSignal : Coords -> Direction -> DirectionSignal
+directionSignal from dir = { from = from
+                           , dir = dir
+                           }
+
 toLocSig : DirectionSignal -> Maybe (LocationSignal)
 toLocSig dSig = let from = dSig.from
 

@@ -1,4 +1,4 @@
-module AntColony.Model.LoadSensor where
+module AntColony.Model.LoadSensing where
 
 import open AntColony.Capacities.Perceiving
 import open AntColony.Model.Terrain
