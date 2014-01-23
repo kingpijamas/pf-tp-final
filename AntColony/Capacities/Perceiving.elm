@@ -3,7 +3,7 @@ module AntColony.Capacities.Perceiving where
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 import open AntColony.Utils.MaybeMonad
-import open Automaton
+import open AntColony.Utils.SignalFunction
 import open AntColony.Capacities.AreaSignals
 
 type PerceptionSignal p = { perceived:p
@@ -26,7 +26,7 @@ perceive pf area sig = let targetPos = sig.target
                             >>= (perceptionSignal')     -- : p -> Maybe(PerceptionSignal p)
 
 {-- Does the a make any sense here? --}
-type Perceiver a p = Automaton (LocationSignal) (Maybe(PerceptionSignal p))
+type Perceiver a p = SF (LocationSignal) (Maybe(PerceptionSignal p))
 
 perceiver : (PerceptionF a p) -> (Area a) -> (Perceiver a p)
 perceiver pf area = pure (perceive pf area)

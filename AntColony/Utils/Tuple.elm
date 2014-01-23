@@ -1,4 +1,5 @@
 module AntColony.Utils.Tuple where
+
 import open AntColony.Utils.MaybeMonad
 
 mapFst : (a -> b) -> (a, c) -> (b, c)

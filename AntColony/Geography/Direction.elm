@@ -1,4 +1,5 @@
 module AntColony.Geography.Direction where
+
 import open AntColony.Geography.Area
 
 data Direction = N | NE | E | SE | S | SW | W | NW

@@ -1,11 +1,11 @@
-module AntColony.Model.Terrain where
+module AntColony.Model.Data.Terrain where
 
 import Dict
 import open AntColony.Geography.Area
-import open AntColony.Model.Food
-import open AntColony.Model.Ant.Ant
-import open AntColony.Model.AntNest
-import open AntColony.Model.FoodChunk
+import open AntColony.Model.Data.Food
+import open AntColony.Model.Data.Ant
+import open AntColony.Model.Data.AntNest
+import open AntColony.Model.Data.FoodChunk
 
 type Terrain = Area Tile
 

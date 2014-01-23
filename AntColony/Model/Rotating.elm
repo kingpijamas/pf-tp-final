@@ -4,7 +4,7 @@ import AntColony.Capacities.Rotating as Rt
 import open AntColony.Model.Orientation
 import open AntColony.Utils.MaybeMonad
 import open AntColony.Geography.Direction
-import open AntColony.Model.Terrain
+import open AntColony.Model.Data.Terrain
 
 type RotationF = Rt.RotationF Tile -- : Terrain -> Coords -> Maybe(Terrain)
 
@@ -28,7 +28,7 @@ cntrclck : RotationF
 cntrclck = rotate left
 
 
-type Rotor = Rt.Rotor Tile -- : Automaton (DirectionSignal) (Maybe(Terrain))
+type Rotor = Rt.Rotor Tile -- : SF (DirectionSignal) (Maybe(Terrain))
 
 rotor : Terrain -> Rotor
 rotor area = Rt.rotor clck cntrclck area

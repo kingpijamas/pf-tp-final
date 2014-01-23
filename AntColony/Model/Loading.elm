@@ -2,11 +2,11 @@ module AntColony.Model.Loading where
 
 import open AntColony.Utils.Tuple
 import open AntColony.Utils.MaybeMonad
-import open AntColony.Model.Terrain
+import open AntColony.Model.Data.Terrain
 import AntColony.Capacities.Loading as Ld
-import open AntColony.Model.Food
-import open AntColony.Model.FoodChunk
-import open AntColony.Model.Ant.Ant
+import open AntColony.Model.Data.Food
+import open AntColony.Model.Data.FoodChunk
+import open AntColony.Model.Data.Ant
 
 type LoadF = Ld.LoadF Tile Food
                              
@@ -58,7 +58,7 @@ unload terrain unldrPos = let unload' tile = case tile.occupant of
                                >>= (updateTerrain)          -- : (Tile, Food) -> Maybe(Terrain, Food)
 
 
-type Loader = Ld.Loader Tile -- : Automaton (LoadSignal) (Maybe(Terrain))
+type Loader = Ld.Loader Tile -- : SF (LoadSignal) (Maybe(Terrain))
 
 loader : Terrain -> Loader
 loader terrain = Ld.loader load unload terrain

@@ -1,4 +1,5 @@
-module AntColony.Model.Food where
+module AntColony.Model.Data.Food where
+  
 import open AntColony.Utils.MaybeMonad
 
 type Food = Int

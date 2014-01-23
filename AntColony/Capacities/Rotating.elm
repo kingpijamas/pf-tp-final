@@ -3,7 +3,7 @@ module AntColony.Capacities.Rotating where
 import open AntColony.Geography.Direction
 import open AntColony.Capacities.AreaSignals
 import open AntColony.Utils.MaybeMonad
-import open Automaton
+import open AntColony.Utils.SignalFunction
 
 data RotationSense = Clockwise | Counterclockwise
 
@@ -32,7 +32,7 @@ rotationProxy clck cntrclck area sig = let rf = case sig.sense of
                                            rf area (sig.from)
 
 
-type Rotor a =  Automaton (RotationSignal) (Maybe(Area a))
+type Rotor a =  SF (RotationSignal) (Maybe(Area a))
 
 rotor : (RotationF a) -> (RotationF a) -> (Area a) -> (Rotor a)
 rotor clck cntrclck area = pure (rotationProxy clck cntrclck area)

@@ -1,7 +1,7 @@
 module AntColony.Model.LoadSensing where
 
 import open AntColony.Capacities.Perceiving
-import open AntColony.Model.Terrain
+import open AntColony.Model.Data.Terrain
 import open AntColony.Utils.MaybeMonad
 
 type Cargo = FoodCarrier {}
@@ -18,7 +18,7 @@ feelLoad tile = let getCargo occ = case occ of
 			     	(tile.occupant) 	-- : Maybe(Occupant)
 			  	     >>= getCargo		-- : Occupant -> Maybe(Cargo)
 
-type LoadSensor = Perceiver Tile Cargo -- : Automaton (LocationSignal) (Maybe(WeightSignal))
+type LoadSensor = Perceiver Tile Cargo -- : SF (LocationSignal) (Maybe(WeightSignal))
 
 loadSensor : Terrain -> LoadSensor
 loadSensor terrain = perceiver feelLoad terrain

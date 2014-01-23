@@ -1,7 +1,7 @@
 module AntColony.Model.Scenting where
 
 import AntColony.Capacities.Scenting as Sc
-import open AntColony.Model.Terrain
+import open AntColony.Model.Data.Terrain
 import open AntColony.Utils.MaybeMonad
 
 type ScentF = Tile -> Maybe(Tile)
@@ -29,7 +29,7 @@ scentUnscent sf area pos = let
                                 >>= (return . sf)           -- : Tile -> Maybe(Tile)
                                 >>= updateArea              -- : Tile -> Maybe(Area a)
 
-type Scenter = Sc.Scenter Tile -- : Automaton (ScentSignal) (Maybe(Terrain))
+type Scenter = Sc.Scenter Tile -- : SF (ScentSignal) (Maybe(Terrain))
 
 scenter : Terrain -> Scenter
 scenter area = let scent' = scentUnscent scent

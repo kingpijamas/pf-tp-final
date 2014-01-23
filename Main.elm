@@ -2,12 +2,12 @@ module AntColony.Main where
 
 import Window
 import Dict
-import AntColony.Model.Terrain as T
+import AntColony.Model.Data.Terrain as T
 
 import open AntColony.Geography.Area
-import open AntColony.Model.Ant.Ant
-import open AntColony.Model.AntNest
-import open AntColony.Model.FoodChunk
+import open AntColony.Model.Data.Ant
+import open AntColony.Model.Data.AntNest
+import open AntColony.Model.Data.FoodChunk
 
 --import AntColony.Geography.Direction as D
 

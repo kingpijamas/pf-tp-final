@@ -1,7 +1,7 @@
 module AntColony.Model.Moving where
 -- TODO this should go in Model, not in Model.Ant
 import AntColony.Capacities.Moving as Mv
-import open AntColony.Model.Terrain
+import open AntColony.Model.Data.Terrain
 import open AntColony.Utils.MaybeMonad
 
 type Obstacle = Occupant
@@ -38,7 +38,7 @@ evict terrain pos = let evictTile tile = case tile.occupant of
                         >>= (updateTerrain)        -- : Tile -> Maybe(Maybe(Terrain), Tile)
                         >>= (flatten)              -- : (Maybe(Terrain),Tile) -> Maybe(Terrain, Tile)
 
-type Motor = Mv.Motor Tile -- : Automaton (DirectionSignal) (Maybe(Terrain))
+type Motor = Mv.Motor Tile -- : SF (DirectionSignal) (Maybe(Terrain))
 
 motor : Terrain -> Motor
 motor area = Mv.motor occupy evict area

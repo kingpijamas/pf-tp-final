@@ -1,5 +1,6 @@
-module AntColony.Model.FoodChunk where
-import open AntColony.Model.Food
+module AntColony.Model.Data.FoodChunk where
+
+import open AntColony.Model.Data.Food
 
 type FoodChunk = FoodCarrier {}
 

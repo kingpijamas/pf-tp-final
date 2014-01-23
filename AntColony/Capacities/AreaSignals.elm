@@ -1,4 +1,5 @@
 module AntColony.Capacities.AreaSignals where
+  
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 import open AntColony.Utils.MaybeMonad

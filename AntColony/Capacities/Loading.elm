@@ -1,7 +1,7 @@
 module AntColony.Capacities.Loading where
 
 import open AntColony.Geography.Area
-import open Automaton
+import open AntColony.Utils.SignalFunction
 import open AntColony.Utils.MaybeMonad
 import open AntColony.Capacities.AreaSignals
 
@@ -63,7 +63,7 @@ loadProxy ld unld area sig = let sig' = asLocationSignal sig
                                     Unload  ->  unload ld unld area sig'
 
 
-type Loader a = Automaton (LoadSignal) (Maybe(Area a))
+type Loader a = SF (LoadSignal) (Maybe(Area a))
 
 loader : (LoadF a c) -> (UnloadF a c) -> (Area a) -> (Loader a)
 loader ld unld area = pure (loadProxy ld unld area)
