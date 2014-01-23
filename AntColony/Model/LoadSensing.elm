@@ -19,7 +19,7 @@ feelLoad tile = let getCargo occ = case occ of
                     (tile.occupant)     -- : Maybe(Occupant)
                      >>= getCargo       -- : Occupant -> Maybe(Cargo)
 
-type LoadSensor = Perceiver Tile Cargo -- : SF (LocationSignal) (Maybe(WeightSignal))
+type LoadSensor = Perceiver Cargo -- : SF (LocationSignal) (Maybe(WeightSignal))
 
 loadSensor : Terrain -> LoadSensor
 loadSensor terrain = perceiver feelLoad terrain

@@ -1,6 +1,7 @@
 module AntColony.Utils.SignalFunction where
 
 import open Signal
+import open List
 import open AntColony.Utils.Tuple
 import open AntColony.Utils.MaybeMonad
 
@@ -34,5 +35,12 @@ second : SF b c -> SF (d,b) (d,c)
 second sf1 = identity *** sf1
 
 {-- Automaton --}
-impure:(a->Maybe b) -> SF (Maybe a) (Maybe b)
+impure : (a->Maybe b) -> SF (Maybe a) (Maybe b)
 impure f = arr (\mbx -> mbx >>= f)
+
+combine : [SF a b] -> SF a [b]
+combine sfs = let concat' sf1 sf2 = (sf1 &&& sf2) >>> (arr (\(x,xs)->x::xs))
+               in
+                  case sfs of
+                    sf::sfs' -> sf `concat'` (combine sfs')
+                    [sf] -> sf >>> (arr (\x -> [x]))

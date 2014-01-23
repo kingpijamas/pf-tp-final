@@ -9,6 +9,7 @@ type Obstacle = Occupant
 type OccupiationF = Mv.OccupiationF Tile
 type EvictionF = Mv.EvictionF Tile
 
+{-- TODO: it isn't changing the ant's position! --}
 occupy : OccupiationF                            -- : Terrain -> Coords -> a -> Maybe (Terrain)
 occupy terrain pos occ = let occupyTile tile = case tile.occupant of
                                                     Nothing -> return { tile | occupant <- occ }

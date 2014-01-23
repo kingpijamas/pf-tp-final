@@ -11,7 +11,7 @@ type SmellF = PerceptionF Tile Pheromone
 smell : SmellF  -- : Tile -> Maybe(Pheromone) 
 smell tile = tile.scent
 
-type Smeller = Perceiver Tile Pheromone -- : SF (LocationSignal) (Maybe(Pheromone))
+type Smeller = Perceiver Pheromone -- : SF (LocationSignal) (Maybe(Pheromone))
 
 smeller : Terrain -> Smeller
 smeller terrain = perceiver smell terrain

@@ -26,16 +26,16 @@ perceive pf area sig = let targetPos = sig.target
                             >>= (perceptionSignal')     -- : p -> Maybe(PerceptionSignal p)
 
 {-- Does the a make any sense here? --}
-type Perceiver a p = SF (LocationSignal) (Maybe(PerceptionSignal p))
+type Perceiver p = SF (LocationSignal) (Maybe(PerceptionSignal p))
 
-perceiver : (PerceptionF a p) -> (Area a) -> (Perceiver a p)
+perceiver : (PerceptionF a p) -> (Area a) -> (Perceiver p)
 perceiver pf area = arr (perceive pf area)
 
 perceiveInDir : Direction -> (PerceptionF a p) -> (Area a) -> LocationSignal -> (Maybe(PerceptionSignal p))
 perceiveInDir dir pf area lSig = let asLSig targetP = return (locationSignal (lSig.from) targetP)
                                      
                                      perceive' = perceive pf area
-                  in
-                     (lSig.target `addDir` dir)   -- : Maybe(Coords)
-                      >>= (asLSig)          -- : Coords -> Maybe(LocationSignal)
-                      >>= (perceive')       -- : LocationSignal -> Maybe(PerceptionSignal p)
+                                  in
+                                     (lSig.target `addDir` dir)   -- : Maybe(Coords)
+                                      >>= (asLSig)          -- : Coords -> Maybe(LocationSignal)
+                                      >>= (perceive')       -- : LocationSignal -> Maybe(PerceptionSignal p)

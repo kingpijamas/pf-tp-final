@@ -12,3 +12,6 @@ joinSnd = flip (curry joinFst)
 
 (&) : (a -> b) -> (a -> c) -> a -> (b,c)
 f1 & f2 = \x -> (f1 x, f2 x)
+
+flatten : ((a,b), c) -> (a,b,c)
+flatten ((x,y),z) = (x,y,z)

@@ -85,29 +85,24 @@ type Rotor -- : SF (RotationSignal) (Maybe(Terrain))
 
 --switch : SF a (b, Maybe c) -> (c->SF a b) -> SF a b
 
-
 sensingBrain : (Terrain,Ant) -> SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
 sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
                                   
-                                 eye = (perceptor' see)                    -- : Direction -> Perceiver Tile Obstacle
-                                 antenna = (perceptor' smell)              -- : Direction -> Perceiver Tile Pheromone
-                                 loadSensor = (perceptor' feelLoad)        -- : Direction -> Perceiver Tile Cargo
-
-                                 --type Perceiver a p = SF (LocationSignal) (Maybe(PerceptionSignal p))
+                                 eye = perceptor' see                      -- : Direction -> Perceiver Tile Obstacle
+                                 antenna = perceptor' smell                -- : Direction -> Perceiver Tile Pheromone
+                                 loadSensor = perceptor' feelLoad          -- : Direction -> Perceiver Tile Cargo
 
                                  orientation = ant.orientation
+                                 sensingDirs = [lft orientation, orientation, rght orientation]
 
-                                 eyes = combine (map eye [lft orientation, orientation, rght orientation])       -- : [SF LocationSignal Maybe(SightSignal)] -> SF LocationSignal [Maybe(SightSignal)]
-                                 antennae = combine (map eye [lft orientation, orientation, rght orientation])   -- : [SF LocationSignal Maybe(SmellSignal)] -> SF LocationSignal [Maybe(SmellSignal)]
-
-                                 --switch3' : b -> (a -> b -> b) -> c -> (a -> c -> c) -> d -> (a -> d -> d) -> SF a (b,c,d)
-                                 --switch3' : [Maybe(SightSignal)] -> (LocationSignal -> [Maybe(SightSignal)] -> [Maybe(SightSignal)]) -> ...
+                                 eyes = combine (map eye sensingDirs)            -- : SF LocationSignal [Maybe(SightSignal)]
+                                 antennae = combine (map antennae sensingDirs)   -- : SF LocationSignal [Maybe(SmellSignal)]
                               in
-                                 switch3' [] eyes [] antennae Nothing loadSensor -- : SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
+                                (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
 
 
 
-behaviour : SF ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal)) 
+behaviour : ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal)) -> ???
 behaviour (eyes,antennae,load) = case (sight.perceived, smell.perceived, fullyLoaded) of
                                     Nothing, Nothing, False -> -- walk randomly
                                     Nothing, Nothing, True -> -- should never happen. In any case, walk randomly
@@ -129,8 +124,8 @@ behaviour (eyes,antennae,load) = case (sight.perceived, smell.perceived, fullyLo
 
 
 
-turnRight : (Terrain,Ant) -> Coords -> Terrain
-turnRight = 
+turnRight : (Terrain,Ant) -> Terrain
+turnRight (terrain,ant) = 
 
 
 turn180Right : Terrain -> Coords -> 
