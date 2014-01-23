@@ -1,4 +1,4 @@
-module AntColony.Capacities.AreaSignals where
+module AntColony.Capacities.Positioning where
   
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction

@@ -5,7 +5,6 @@ import open AntColony.Geography.Area
 import open AntColony.Model.Data.Food
 import open AntColony.Model.Data.Ant
 import open AntColony.Model.Data.AntNest
-import open AntColony.Model.Data.FoodChunk
 
 type Terrain = Area Tile
 

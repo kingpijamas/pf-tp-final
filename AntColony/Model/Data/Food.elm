@@ -39,3 +39,10 @@ unloadFood unldr = let empty food = return ({ unldr | food <- Nothing }, food)
                     in 
                       (unldr.food)  -- : Maybe(Food)
                        >>= (empty)  -- : Food -> Maybe(FoodCarrier a, Food)
+
+type FoodChunk = FoodCarrier {}
+
+foodChunk : Food -> FoodChunk
+foodChunk food = { food = Just food
+                 , limit = Nothing
+                 }

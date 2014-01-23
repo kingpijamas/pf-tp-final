@@ -1,5 +1,5 @@
 module AntColony.Model.Moving where
--- TODO this should go in Model, not in Model.Ant
+
 import AntColony.Capacities.Moving as Mv
 import open AntColony.Model.Data.Terrain
 import open AntColony.Utils.MaybeMonad
@@ -27,8 +27,6 @@ evict terrain pos = let evictTile tile = case tile.occupant of
 
                         updateTerrain tile' = return (remove terrain pos tile', tile')
                         
-                        --TODO smells like the 'State' monad could probably help here
-                        --it's either that or some weird stuff with 'join' or 'maybe'
                         flatten (mbarea',tile') = case (mbarea') of
                                                     Just area' -> return (area', tile')
                                                     _   -> Nothing

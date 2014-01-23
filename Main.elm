@@ -15,7 +15,7 @@ import AntColony.Geography.Direction
 
 import open AntColony.Model.Data.Ant
 import open AntColony.Model.Data.AntNest
-import open AntColony.Model.Data.FoodChunk
+import open AntColony.Model.Data.Food
 
 import AntColony.Model.LoadSensing
 import AntColony.Model.Loading
@@ -24,12 +24,6 @@ import AntColony.Model.Rotating
 import AntColony.Model.Scenting
 import AntColony.Model.Seeing
 import AntColony.Model.Smelling
-
---import AntColony.Model.Moving
---import AntColony.Model.Scenting
---import AntColony.Model.Seeing
---import AntColony.Model.Smelling
---import AntColony.Model.Loading
 
 tileSize = 20
 

@@ -4,7 +4,7 @@ import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 import open AntColony.Utils.MaybeMonad
 import open AntColony.Utils.SignalFunction
-import open AntColony.Capacities.AreaSignals
+import open AntColony.Capacities.Positioning
 
 type PerceptionSignal p = { perceived:p
                           , location:Coords

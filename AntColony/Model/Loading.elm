@@ -5,7 +5,7 @@ import open AntColony.Utils.MaybeMonad
 import open AntColony.Model.Data.Terrain
 import AntColony.Capacities.Loading as Ld
 import open AntColony.Model.Data.Food
-import open AntColony.Model.Data.FoodChunk
+
 import open AntColony.Model.Data.Ant
 
 type LoadF = Ld.LoadF Tile Food

@@ -2,7 +2,7 @@ module AntColony.Capacities.Rotating where
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
-import open AntColony.Capacities.AreaSignals
+import open AntColony.Capacities.Positioning
 import open AntColony.Utils.MaybeMonad
 import open AntColony.Utils.SignalFunction
 
