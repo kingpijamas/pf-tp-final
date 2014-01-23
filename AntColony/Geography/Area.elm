@@ -59,6 +59,3 @@ remove:(Area v)->Coords->Maybe (Area v)
 remove area pos = if pos `isWithinBounds` area
                   then Just (area' area.width area.height (Dict.remove pos area.elems))
                   else Nothing
-
-{-- Locatable --} --TODO: check if this can be removed 
-type Locatable a = { a | location:Coords }

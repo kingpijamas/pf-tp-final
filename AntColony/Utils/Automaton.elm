@@ -13,6 +13,17 @@ first' def f = pure (\input -> (input, f' input def))
 first' : b -> (a->b->b) -> Automaton a (a,b)
 first' def f = pure (\input -> (input, f' input def))
 
+
+--(&&&) :  Automaton a b -> Automaton a b' -> Automaton a (b, b')
+--(&&&) a1 a2 = (run a1 Nothing, run a2 Nothing) 
+---- run : Automaton a b -> b -> Signal a -> Signal b
+---- a1  : Automaton a b
+-----------------------------------------------------
+---- (run a1) : b -> Signal a -> Signal b
+
+---- (run a2) : b' -> Signal a -> Signal b'
+
+
 {-- check if this is ok! --}
 switch2' : b -> (a -> b -> b) -> c -> (a -> c -> c) -> Automaton a (b,c)
 switch2' def1 f1 def2 f2 = pure (\input -> (f1 input def1, f2 input def2))

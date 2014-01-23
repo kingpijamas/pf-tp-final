@@ -8,3 +8,6 @@ joinFst : (Maybe a, b) -> Maybe (a, b)
 joinFst (mbx, y) = mbx >>= (\x -> return (x,y))
 
 joinSnd = flip (curry joinFst)
+
+(&) : (a -> b) -> (a -> c) -> a -> (b,c)
+f1 & f2 = \x -> (f1 x, f2 x)

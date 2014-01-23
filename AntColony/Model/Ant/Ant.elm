@@ -5,7 +5,8 @@ import AntColony.Geography.Direction as D
 
 type Cargo = FoodCarrier {}
 
-type Ant = { cargo : Cargo
+type Ant = { position : Coords
+           , cargo : Cargo
            , orientation : D.Direction
            }
 

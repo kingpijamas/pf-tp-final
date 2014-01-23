@@ -86,7 +86,7 @@ type Rotor -- : Automaton (RotationSignal) (Maybe(Terrain))
 --switch : Automaton a (b, Maybe c) -> (c->Automaton a b) -> Automaton a b
 
 
-sensingBrain : (Terrain,Ant) -> Automaton (Terrain,Ant) ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
+sensingBrain : (Terrain,Ant) -> Automaton LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
 sensingBrain (terrain,ant) = let perceptor' pf dir = pure (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
                                   
                                  eye = (perceptor' see)                    -- : Direction -> Perceiver Tile Obstacle
@@ -106,27 +106,30 @@ sensingBrain (terrain,ant) = let perceptor' pf dir = pure (perceiveInDir dir pf 
                                  switch3' [] eyes [] antennae Nothing loadSensor -- : Automaton LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
 
 
--- : Maybe(SightSignal) -> Maybe(SmellSignal) -> ?
-behaviour terrain ant sight smell = let nothingAsZero mbx = case mbx of
-                                                                Nothing -> 0
-                                                                Just x -> x
 
-                                         fullyLoaded = nothingAsZero(ant.food) == nothingAsZero(ant.limit)
-                                     in
-                                        case (sight.perceived, smell.perceived, fullyLoaded) of
-                                           Nothing, Nothing, False -> -- walk randomly
-                                           Nothing, Nothing, True -> -- should never happen. In any case, walk randomly
-                                           Nothing, Just ph, False -> -- follow the pheromone
-                                           Nothing, Just ph, True -> -- ? turn back? follow the pheromone? 
-                                           Just (AntNestTile _), _ , False -> -- turn 
-                                           Just (AntNestTile _), _ , True -> -- unload
-                                           Just (FoodChunkTile _), _ , False -> -- load
-                                           Just (FoodChunkTile _), _ , Turn -> -- turn 180º
-                                           _ , _, _ -> -- avoid
+behaviour : Automaton ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal)) 
+behaviour (eyes,antennae,load) = case (sight.perceived, smell.perceived, fullyLoaded) of
+                                    Nothing, Nothing, False -> -- walk randomly
+                                    Nothing, Nothing, True -> -- should never happen. In any case, walk randomly
+                                    Nothing, Just ph, False -> -- follow the pheromone
+                                    Nothing, Just ph, True -> -- ? turn back? follow the pheromone? 
+                                    Just (AntNestTile _), _ , False -> -- turn 
+                                    Just (AntNestTile _), _ , True -> -- unload
+                                    Just (FoodChunkTile _), _ , False -> -- load
+                                    Just (FoodChunkTile _), _ , Turn -> -- turn 180º
+                                    _ , _, _ -> -- avoid
 
 
 
-turnRight : Terrain -> Coords -> Terrain
+
+
+
+
+
+
+
+
+turnRight : (Terrain,Ant) -> Coords -> Terrain
 turnRight 
 
 
