@@ -19,7 +19,7 @@ type DirectionSignal = { from:Coords
 
 directionSignal : Coords -> Direction -> DirectionSignal
 directionSignal from dir = { from = from
-                           , dir = dir
+                           , targetDir = dir
                            }
 
 toLocSig : DirectionSignal -> Maybe (LocationSignal)

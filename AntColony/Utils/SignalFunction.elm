@@ -2,6 +2,7 @@ module AntColony.Utils.SignalFunction where
 
 import open Signal
 import open AntColony.Utils.Tuple
+import open AntColony.Utils.MaybeMonad
 
 data SF a b = SF (a -> b) (Signal a -> Signal b)
 
@@ -31,3 +32,7 @@ first sf1 = sf1 *** identity
 
 second : SF b c -> SF (d,b) (d,c)
 second sf1 = identity *** sf1
+
+{-- Automaton --}
+impure:(a->Maybe b) -> SF (Maybe a) (Maybe b)
+impure f = arr (\mbx -> mbx >>= f)

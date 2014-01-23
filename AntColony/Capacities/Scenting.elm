@@ -26,4 +26,4 @@ scentProxy scent unscent area sig = let targetPos = sig.target
 type Scenter a = SF (ScentSignal) (Maybe(Area a))
 
 scenter : ScentF a -> UnscentF a -> Area a -> Scenter a
-scenter scent unscent area = pure (scentProxy scent unscent area)
+scenter scent unscent area = arr (scentProxy scent unscent area)

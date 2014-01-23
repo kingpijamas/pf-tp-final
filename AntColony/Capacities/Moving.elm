@@ -22,4 +22,4 @@ mv occupy evict area sig = let from = sig.from
 type Motor a = SF (DirectionSignal) (Maybe(Area a))
 
 motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
-motor occupy evict area = pure(toLocSig) >>> impure(mv occupy evict area)
+motor occupy evict area = arr(toLocSig) >>> impure(mv occupy evict area)

@@ -87,7 +87,7 @@ type Rotor -- : SF (RotationSignal) (Maybe(Terrain))
 
 
 sensingBrain : (Terrain,Ant) -> SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
-sensingBrain (terrain,ant) = let perceptor' pf dir = pure (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
+sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
                                   
                                  eye = (perceptor' see)                    -- : Direction -> Perceiver Tile Obstacle
                                  antenna = (perceptor' smell)              -- : Direction -> Perceiver Tile Pheromone

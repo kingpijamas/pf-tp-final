@@ -1,5 +1,6 @@
 module AntColony.Capacities.Rotating where
 
+import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 import open AntColony.Capacities.AreaSignals
 import open AntColony.Utils.MaybeMonad
@@ -17,10 +18,10 @@ rotationSignal from sense = { from=from
                             }
 
 rotateClockwise : Coords -> RotationSignal
-rotateClockwise from sense = rotationSignal from Clockwise
+rotateClockwise from = rotationSignal from Clockwise
 
 rotateCounterclockwise : Coords -> RotationSignal
-rotateCounterclockwise from sense = rotationSignal from Counterclockwise
+rotateCounterclockwise from = rotationSignal from Counterclockwise
 
 type RotationF a = (Area a) -> Coords -> Maybe(Area a)
 
@@ -35,4 +36,4 @@ rotationProxy clck cntrclck area sig = let rf = case sig.sense of
 type Rotor a =  SF (RotationSignal) (Maybe(Area a))
 
 rotor : (RotationF a) -> (RotationF a) -> (Area a) -> (Rotor a)
-rotor clck cntrclck area = pure (rotationProxy clck cntrclck area)
+rotor clck cntrclck area = arr (rotationProxy clck cntrclck area)

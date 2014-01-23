@@ -66,4 +66,4 @@ loadProxy ld unld area sig = let sig' = asLocationSignal sig
 type Loader a = SF (LoadSignal) (Maybe(Area a))
 
 loader : (LoadF a c) -> (UnloadF a c) -> (Area a) -> (Loader a)
-loader ld unld area = pure (loadProxy ld unld area)
+loader ld unld area = arr (loadProxy ld unld area)

@@ -20,6 +20,13 @@ data Occupant = RockTile
               | AntTile Ant
               | AntNestTile AntNest
 
+{-- Exposing methods from area --}
+add = add
+remove = remove
+get = get
+
+
+
 terrain : Int -> Int -> [(Coords,Tile)]-> Terrain
 terrain width height tiles = area width height tiles
 
