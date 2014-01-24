@@ -5,14 +5,11 @@ import open AntColony.Geography.Area
 import open AntColony.Model.Data.Food
 import open AntColony.Model.Data.Ant
 import open AntColony.Model.Data.AntNest
+import open AntColony.Model.Data.Scentable
 
 type Terrain = Area Tile
 
-type Tile = { occupant : Maybe Occupant
-            , scent : Maybe Pheromone
-            }
-
-type Pheromone = Int
+type Tile = Scentable { occupant : Maybe(Occupant) }
 
 data Occupant = RockTile
               | FoodTile FoodChunk

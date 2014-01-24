@@ -4,11 +4,11 @@ import Window
 import Dict
 import AntColony.Model.Data.Terrain as T
 
-import AntColony.Capacities.Loading
-import AntColony.Capacities.Moving
+--import AntColony.Capacities.Loading
+--import AntColony.Capacities.Moving
 import AntColony.Capacities.Perceiving
-import AntColony.Capacities.Rotating
-import AntColony.Capacities.Scenting
+--import AntColony.Capacities.Rotating
+--import AntColony.Capacities.Scenting
 
 import open AntColony.Geography.Area
 import AntColony.Geography.Direction

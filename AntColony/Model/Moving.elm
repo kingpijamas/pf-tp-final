@@ -1,16 +1,26 @@
 module AntColony.Model.Moving where
 
-import AntColony.Capacities.Moving as Mv
-import open AntColony.Model.Data.Terrain
+import open AntColony.Geography.Area
+import open AntColony.Geography.Direction
+
+import open AntColony.Capacities.Positioning
+
 import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.SignalFunction
 
-type Obstacle = Occupant
+import open AntColony.Model.Data.Terrain
 
-type OccupiationF = Mv.OccupiationF Tile
-type EvictionF = Mv.EvictionF Tile
+mv : Terrain -> LocationSignal -> Maybe (Terrain)
+mv area sig = let from = sig.from
+                  to = sig.target
+       
+                  occupyWith (area', mver) = occupy area' to mver
+               in
+                  (area `evict` from)               -- : Maybe (Terrain, Tile)
+                    >>= (occupyWith)                -- : (Terrain, Tile) -> Maybe(Terrain)
 
 {-- TODO: it isn't changing the ant's position! --}
-occupy : OccupiationF                            -- : Terrain -> Coords -> a -> Maybe (Terrain)
+occupy :  Terrain -> Coords -> Tile -> Maybe (Terrain)
 occupy terrain pos occ = let occupyTile tile = case tile.occupant of
                                                     Nothing -> return { tile | occupant <- occ }
                                                     _ -> Nothing
@@ -21,7 +31,7 @@ occupy terrain pos occ = let occupyTile tile = case tile.occupant of
                              >>= (occupyTile)       -- : Tile -> Maybe(Tile)
                              >>= (updateTerrain)    -- : Tile -> Maybe(Terrain)
 
-evict : EvictionF
+evict : Terrain -> Coords -> Maybe (Terrain, Tile)
 evict terrain pos = let evictTile tile = case tile.occupant of
                                             Just occ -> return { tile | occupant <- occ }
                                             _   ->  Nothing
@@ -37,7 +47,13 @@ evict terrain pos = let evictTile tile = case tile.occupant of
                         >>= (updateTerrain)        -- : Tile -> Maybe(Maybe(Terrain), Tile)
                         >>= (flatten)              -- : (Maybe(Terrain),Tile) -> Maybe(Terrain, Tile)
 
-type Motor = Mv.Motor Tile -- : SF (DirectionSignal) (Maybe(Terrain))
+--type Motor = Mv.Motor Tile -- : SF (DirectionSignal) (Maybe(Terrain))
 
-motor : Terrain -> Motor
-motor area = Mv.motor occupy evict area
+--motor : Terrain -> Motor
+--motor area = Mv.motor occupy evict area
+
+
+--type Motor a = SF (DirectionSignal) (Maybe(Area a))
+
+--motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
+--motor occupy evict area = arr(toLocSig) >>> impure(mv occupy evict area)

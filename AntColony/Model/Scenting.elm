@@ -1,38 +1,47 @@
 module AntColony.Model.Scenting where
 
-import AntColony.Capacities.Scenting as Sc
 import open AntColony.Model.Data.Terrain
+import open AntColony.Geography.Area
+
+import open AntColony.Model.Data.Scentable
 import open AntColony.Utils.MaybeMonad
 
-type ScentF = Tile -> Maybe(Tile)
+--import open AntColony.Utils.SignalFunction
 
-scent : ScentF
-scent tile = let scent' = case tile.scent of
-                            Nothing -> return 1
-                            Just scnt -> return (scnt + 1)
-              in 
-                 return { tile | scent <- scent' }
+data Action = Scent | Unscent
 
-unscent : ScentF
-unscent tile = let unscent' scnt = if scnt > 0
-                                   then return { tile | scent <- return scnt }
-                                   else Nothing
-                in 
-                   (tile.scent)     -- : Maybe(Pheromone)
-                    >>= (unscent')  -- : Pheromone -> Maybe(Tile)
+type ScentSignal = { target:Coords
+                   , action:Action
+                   }
 
-scentUnscent : ScentF -> Sc.ScentF Tile
-scentUnscent sf area pos = let 
-                               updateArea tile' = add area pos tile'
-                            in
-                               (area `get` pos)             -- : Maybe(Tile)
-                                >>= (return . sf)           -- : Tile -> Maybe(Tile)
-                                >>= updateArea              -- : Tile -> Maybe(Area a)
+scentFacade : Terrain -> ScentSignal -> Maybe(Terrain)
+scentFacade terrain sig = let targetPos = sig.target
 
-type Scenter = Sc.Scenter Tile -- : SF (ScentSignal) (Maybe(Terrain))
+                              scf = case sig.action of
+                                         Scent ->  (return . scent)
+                                         Unscent -> unscent
+                           in
+                              scentUnscent scf terrain targetPos  -- Maybe(Terrain)
 
-scenter : Terrain -> Scenter
-scenter area = let scent' = scentUnscent scent
-                   unscent' = scentUnscent unscent
-                in
-                   Sc.scenter scent' unscent' area
+
+--type Scenter a = SF (ScentSignal) (Maybe(Terrain))
+
+--scenter : (Terrain -> Coords -> Maybe(Terrain)) -> UnscentF a -> Terrain -> Scenter a
+--scenter scent unscent terrain = arr (scentProxy scent unscent terrain)
+
+--module AntColony.Capacities.Scenting where
+
+scentUnscent : (Tile -> Maybe(Tile)) -> Terrain -> Coords -> Maybe(Terrain)
+scentUnscent scf terrain pos = let updateArea tile' = add terrain pos tile'
+                                in
+                                   (terrain `get` pos)   -- : Maybe(Tile)
+                                    >>= scf              -- : Tile -> Maybe(Tile)
+                                    >>= updateArea       -- : Tile -> Maybe(Terrain)
+
+--type Scenter = Sc.Scenter Tile -- : SF (ScentSignal) (Maybe(Terrain))
+
+--scenter : Terrain -> Scenter
+--scenter terrain = let scent' = scentUnscent scent
+--                      unscent' = scentUnscent unscent
+--                   in
+--                      Sc.scenter scent' unscent' terrain

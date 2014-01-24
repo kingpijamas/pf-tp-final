@@ -103,11 +103,11 @@ sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf t
 
 
 behaviour : ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal)) -> ???
-behaviour (eyes,antennae,load) = case (sight.perceived, smell.perceived, fullyLoaded) of
-                                    Nothing, Nothing, False -> -- walk randomly
-                                    Nothing, Nothing, True -> -- should never happen. In any case, walk randomly
-                                    Nothing, Just ph, False -> -- follow the pheromone
-                                    Nothing, Just ph, True -> -- ? turn back? follow the pheromone? 
+behaviour (sight,smell,load) = case (sight, smell, load) of
+                                    [], [], False -> -- walk randomly
+                                    [], [], True -> -- should never happen. In any case, walk randomly
+                                    [], Just ph, False -> -- follow the pheromone
+                                    [], Just ph, True -> -- ? turn back? follow the pheromone? 
                                     Just (AntNestTile _), _ , False -> -- turn 
                                     Just (AntNestTile _), _ , True -> -- unload
                                     Just (FoodChunkTile _), _ , False -> -- load
@@ -124,8 +124,8 @@ behaviour (eyes,antennae,load) = case (sight.perceived, smell.perceived, fullyLo
 
 
 
-turnRight : (Terrain,Ant) -> Terrain
-turnRight (terrain,ant) = 
+turnRight : (Terrain,Ant) -> Maybe(Terrain,Ant)
+turnRight (terrain,ant) = rotor 
 
 
 turn180Right : Terrain -> Coords -> 
