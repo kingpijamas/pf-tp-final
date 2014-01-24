@@ -8,7 +8,7 @@ import open AntColony.Model.Data.Terrain
 type SightIntent = Perception Occupant
 
 see : PerceptionF Occupant
-see tile = tile.occupant
+see pos = pos.occupant
 
 --type Watcher = Perceiver Obstacle -- : SF (LocationIntent) (Maybe(SightIntent))
 

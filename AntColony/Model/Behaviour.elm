@@ -1,15 +1,15 @@
-module AntColony.Model.Data.Ant.Brain where
+module AntColony.Model.Data.AntT.Brain where
 
 import open AntColony.Utils.SignalFunction
 import open List
 
 
 
-import AntColony.Ant.Seeing as See
-import AntColony.Ant.Smelling as Sm
-import AntColony.Ant.Moving as Mv
-import AntColony.Ant.Loading as Ld
-import AntColony.Ant.Scenting as Sc
+import AntColony.AntT.Seeing as See
+import AntColony.AntT.Smelling as Sm
+import AntColony.AntT.Moving as Mv
+import AntColony.AntT.Loading as Ld
+import AntColony.AntT.Scenting as Sc
 
 type Perceiver a p = SF (LocationIntent) (Maybe(Perception p))
 
@@ -17,16 +17,16 @@ type Perception p = { perceived:p
                     , location:Coords
                     }
 
-type Smeller = Perceiver Tile Pheromone
+type Smeller = Perceiver Position Pheromone
 type SmellIntent = Perception Pheromone
 
-type Watcher = Perceiver Tile Obstacle
+type Watcher = Perceiver Position Obstacle
 type SightIntent = Perception Obstacle
 
-data Occupant = RockTile
-              | FoodTile FoodChunk
-              | AntTile Ant
-              | AntNestTile AntNest
+data Occupant = Rock
+              | Food FoodChunkT
+              | Ant AntT
+              | AntNest AntNestT
 
 scent : Pheromone
 
@@ -57,7 +57,7 @@ type Watcher -- : SF (LocationIntent) (Maybe(SightIntent))
 
 type Smeller -- : SF (LocationIntent) (Maybe(SmellIntent))
 
-type LoadSensor = Perceiver Tile Cargo -- : SF (LocationIntent) (Maybe(WeightIntent))
+type LoadSensor = Perceiver Position Cargo -- : SF (LocationIntent) (Maybe(WeightIntent))
 
 --OUT
 type Motor -- : SF (DirectionIntent) (Maybe(Terrain))
@@ -85,12 +85,12 @@ type Rotor -- : SF (RotationIntent) (Maybe(Terrain))
 
 --switch : SF a (b, Maybe c) -> (c->SF a b) -> SF a b
 
-sensingBrain : (Terrain,Ant) -> SF LocationIntent ([Maybe(SightIntent)],[Maybe(SmellIntent)],Maybe(WeightIntent))
+sensingBrain : (Terrain,AntT) -> SF LocationIntent ([Maybe(SightIntent)],[Maybe(SmellIntent)],Maybe(WeightIntent))
 sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
                                   
-                                 eye = perceptor' see                      -- : Direction -> Perceiver Tile Obstacle
-                                 antenna = perceptor' smell                -- : Direction -> Perceiver Tile Pheromone
-                                 loadSensor = perceptor' feelLoad          -- : Direction -> Perceiver Tile Cargo
+                                 eye = perceptor' see                      -- : Direction -> Perceiver Position Obstacle
+                                 antenna = perceptor' smell                -- : Direction -> Perceiver Position Pheromone
+                                 loadSensor = perceptor' feelLoad          -- : Direction -> Perceiver Position Cargo
 
                                  orientation = ant.orientation
                                  sensingDirs = [lft orientation, orientation, rght orientation]
@@ -108,10 +108,10 @@ behaviour (sight,smell,load) = case (sight, smell, load) of
                                     [], [], True -> -- should never happen. In any case, walk randomly
                                     [], Just ph, False -> -- follow the pheromone
                                     [], Just ph, True -> -- ? turn back? follow the pheromone? 
-                                    Just (AntNestTile _), _ , False -> -- turn 
-                                    Just (AntNestTile _), _ , True -> -- unload
-                                    Just (FoodChunkTile _), _ , False -> -- load
-                                    Just (FoodChunkTile _), _ , Turn -> -- turn 180º
+                                    Just (AntNest _), _ , False -> -- turn 
+                                    Just (AntNest _), _ , True -> -- unload
+                                    Just (FoodChunk _), _ , False -> -- load
+                                    Just (FoodChunk _), _ , Turn -> -- turn 180º
                                     _ , _, _ -> -- avoid
 
 
@@ -124,7 +124,7 @@ behaviour (sight,smell,load) = case (sight, smell, load) of
 
 
 
-turnRight : (Terrain,Ant) -> Maybe(Terrain,Ant)
+turnRight : (Terrain,AntT) -> Maybe(Terrain,AntT)
 turnRight (terrain,ant) = rotor 
 
 

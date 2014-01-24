@@ -9,13 +9,13 @@ type Cargo = FoodCarrier {}
 
 type WeightIntent = Perception Cargo
 
-senseLoad : PerceptionF Cargo   -- : Tile -> Maybe(Cargo)
-senseLoad tile = let getCargo occ = case occ of
-                                         AntTile ant -> return ant.cargo
-                                         _ -> Nothing
-                  in
-                     (tile.occupant)     -- : Maybe(Occupant)
-                      >>= getCargo       -- : Occupant -> Maybe(Cargo)
+senseLoad : PerceptionF Cargo   -- : Position -> Maybe(Cargo)
+senseLoad pos = let getCargo occ = case occ of
+                                        Ant ant -> return ant.cargo
+                                        _ -> Nothing
+                 in
+                    (pos.occupant)      -- : Maybe(Occupant)
+                     >>= getCargo       -- : Occupant -> Maybe(Cargo)
 
 --type LoadSensor = Perceiver Cargo -- : SF (LocationIntent) (Maybe(WeightIntent))
 

@@ -19,7 +19,7 @@ perceptionIntent location perceived = { perceived = perceived
                                       , location = location
                                       }
 
-type PerceptionF p = Tile -> Maybe p
+type PerceptionF p = Position -> Maybe p
 
 perceive : PerceptionF p -> Terrain -> LocationIntent -> Maybe(Perception p)
 perceive pf terrain sig = let targetPos = sig.target

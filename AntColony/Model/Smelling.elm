@@ -6,8 +6,8 @@ import open AntColony.Model.Data.Scentable
 
 type SmellIntent = Perception Pheromone
 
-smell : PerceptionF Pheromone -- : Tile -> Maybe(Pheromone) 
-smell tile = tile.scent
+smell : PerceptionF Pheromone -- : Position -> Maybe(Pheromone) 
+smell pos = pos.scent
 
 --type Smeller = Perceiver Pheromone -- : SF (LocationIntent) (Maybe(Pheromone))
 

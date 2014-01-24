@@ -1,4 +1,4 @@
-module AntColony.Model.Data.Ant where
+module AntColony.Model.Data.AntT where
 
 import open AntColony.Model.Data.Food
 import open AntColony.Geography.Area
@@ -6,12 +6,12 @@ import open AntColony.Geography.Direction
 
 type Cargo = FoodCarrier {}
 
-type Ant = { position : Coords
+type AntT = { position : Coords
            , orientation : Direction
            , cargo : Cargo
            }
 
-ant : Ant
+ant : AntT
 ant = { position = coords 0 0
       , orientation = N
       , cargo = { food = Nothing
@@ -19,7 +19,7 @@ ant = { position = coords 0 0
                 }
       }
 
-setCargo : Ant -> Cargo -> Ant
+setCargo : AntT -> Cargo -> AntT
 setCargo ant cargo' = { ant | cargo <- cargo' }
 
 -- SF Terrain Terrain

@@ -31,14 +31,14 @@ scentFacade terrain sig = let targetPos = sig.target
 
 --module AntColony.Capacities.Scenting where
 
-scentUnscent : (Tile -> Maybe(Tile)) -> Terrain -> Coords -> Maybe(Terrain)
-scentUnscent scf terrain pos = let updateArea tile' = add terrain pos tile'
+scentUnscent : (Position -> Maybe(Position)) -> Terrain -> Coords -> Maybe(Terrain)
+scentUnscent scf terrain pos = let updateArea pos' = add terrain pos pos'
                                 in
-                                   (terrain `get` pos)   -- : Maybe(Tile)
-                                    >>= scf              -- : Tile -> Maybe(Tile)
-                                    >>= updateArea       -- : Tile -> Maybe(Terrain)
+                                   (terrain `get` pos)   -- : Maybe(Position)
+                                    >>= scf              -- : Position -> Maybe(Position)
+                                    >>= updateArea       -- : Position -> Maybe(Terrain)
 
---type Scenter = Sc.Scenter Tile -- : SF (ScentIntent) (Maybe(Terrain))
+--type Scenter = Sc.Scenter Position -- : SF (ScentIntent) (Maybe(Terrain))
 
 --scenter : Terrain -> Scenter
 --scenter terrain = let scent' = scentUnscent scent

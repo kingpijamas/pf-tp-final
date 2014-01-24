@@ -1,10 +1,10 @@
-module AntColony.Model.Data.AntNest where
+module AntColony.Model.Data.AntNestT where
 
 import open AntColony.Model.Data.Food
 
-type AntNest = FoodCarrier {}
+type AntNestT = FoodCarrier {}
 
-antNest : AntNest
+antNest : AntNestT
 antNest = { food = Nothing
           , limit = Nothing
           }

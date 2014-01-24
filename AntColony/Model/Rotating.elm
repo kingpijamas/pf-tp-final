@@ -39,19 +39,19 @@ rotationFacade terrain sig = let rf = case sig.sense of
 
 
 rotate : (Direction -> Direction) -> Terrain -> Coords -> Maybe(Terrain)
-rotate rf terrain pos = let rotateOcc tile = case tile.occupant of
-                                                  Just(AntTile ant) -> setOccupant' tile (asAnt (rotate' ant))
-                                                  _ -> Nothing
+rotate rf terrain pos = let rotateOcc pos = case pos.occupant of
+                                                 Just(Ant ant) -> setOccupant' pos (asAnt (rotate' ant))
+                                                 _ -> Nothing
 
-                            setOccupant' tile occ = return (setOccupant tile (Just occ))
+                            setOccupant' pos occ = return (setOccupant pos (Just occ))
 
                             rotate' rot = { rot | orientation <- (rf rot.orientation) }
 
-                            updateTerrain tile' = add terrain pos tile'
+                            updateTerrain pos' = add terrain pos pos'
                          in 
-                            (terrain `get` pos)   -- : Maybe(Tile)
-                             >>= (rotateOcc)      -- : Tile -> Maybe(Tile)
-                             >>= (updateTerrain)  -- : Tile -> Maybe(Terrain)
+                            (terrain `get` pos)   -- : Maybe(Position)
+                             >>= (rotateOcc)      -- : Position -> Maybe(Position)
+                             >>= (updateTerrain)  -- : Position -> Maybe(Terrain)
 
 clck : Terrain -> Coords -> Maybe(Terrain)
 clck = rotate rght
@@ -65,7 +65,7 @@ cntrclck = rotate lft
 --rotor : (RotationF a) -> (RotationF a) -> (Area a) -> (Rotor a)
 --rotor clck cntrclck terrain = arr (rotationProxy clck cntrclck terrain)
 
---type Rotor = Rt.Rotor Tile -- : SF (DirectionIntent) (Maybe(Terrain))
+--type Rotor = Rt.Rotor Position -- : SF (DirectionIntent) (Maybe(Terrain))
 
 --rotor : Terrain -> Rotor
 --rotor terrain = Rt.rotor clck cntrclck terrain

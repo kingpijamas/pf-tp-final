@@ -11,49 +11,49 @@ import open AntColony.Utils.SignalFunction
 import open AntColony.Model.Data.Terrain
 
 mv : Terrain -> LocationIntent -> Maybe (Terrain)
-mv area sig = let from = sig.from
-                  to = sig.target
+mv terrain sig = let from = sig.from
+                     to = sig.target
        
-                  occupyWith (area', mver) = occupy area' to mver
-               in
-                  (area `evict` from)               -- : Maybe (Terrain, Tile)
-                    >>= (occupyWith)                -- : (Terrain, Tile) -> Maybe(Terrain)
+                     occupyWith (terrain', mver) = occupy terrain' to mver
+                  in
+                     (terrain `evict` from)          -- : Maybe (Terrain, Position)
+                       >>= (occupyWith)              -- : (Terrain, Position) -> Maybe(Terrain)
 
 {-- TODO: it isn't changing the ant's position! --}
-occupy : Terrain -> Coords -> Tile -> Maybe (Terrain)
-occupy terrain pos occ = let occupyTile tile = case tile.occupant of
-                                                    Nothing -> return { tile | occupant <- occ }
-                                                    _ -> Nothing
+occupy : Terrain -> Coords -> Position -> Maybe (Terrain)
+occupy terrain pos occ = let occupyPos pos = case pos.occupant of
+                                                  Nothing -> return { pos | occupant <- occ }
+                                                  _ -> Nothing
 
-                             updateTerrain tile' = add terrain pos tile'
+                             updateTerrain pos' = add terrain pos pos'
                           in
-                            (terrain `get` pos)     -- : Maybe (Tile)
-                             >>= (occupyTile)       -- : Tile -> Maybe(Tile)
-                             >>= (updateTerrain)    -- : Tile -> Maybe(Terrain)
+                             (terrain `get` pos)     -- : Maybe (Position)
+                              >>= (occupyPos)        -- : Position -> Maybe(Position)
+                              >>= (updateTerrain)    -- : Position -> Maybe(Terrain)
 
-evict : Terrain -> Coords -> Maybe (Terrain, Tile)
-evict terrain pos = let evictTile tile = case tile.occupant of
-                                            Just occ -> return { tile | occupant <- occ }
+evict : Terrain -> Coords -> Maybe (Terrain, Position)
+evict terrain pos = let evictPos pos = case pos.occupant of
+                                            Just occ -> return { pos | occupant <- occ }
                                             _   ->  Nothing
 
-                        updateTerrain tile' = return (remove terrain pos tile', tile')
+                        updateTerrain pos' = return (remove terrain pos pos', pos')
                         
-                        flatten (mbarea',tile') = case (mbarea') of
-                                                    Just area' -> return (area', tile')
-                                                    _   -> Nothing
+                        flatten (mbterrain',pos') = case (mbterrain') of
+                                                         Just terrain' -> return (terrain', pos')
+                                                         _   -> Nothing
                      in
-                       (terrain `get` pos)         -- : Maybe(Tile)
-                        >>= (evictTile)            -- : Tile -> Maybe(Tile)
-                        >>= (updateTerrain)        -- : Tile -> Maybe(Maybe(Terrain), Tile)
-                        >>= (flatten)              -- : (Maybe(Terrain),Tile) -> Maybe(Terrain, Tile)
+                       (terrain `get` pos)         -- : Maybe(Position)
+                        >>= (evictPos)             -- : Position -> Maybe(Position)
+                        >>= (updateTerrain)        -- : Position -> Maybe(Maybe(Terrain), Position)
+                        >>= (flatten)              -- : (Maybe(Terrain),Position) -> Maybe(Terrain, Position)
 
---type Motor = Mv.Motor Tile -- : SF (DirectionIntent) (Maybe(Terrain))
+--type Motor = Mv.Motor Position -- : SF (DirectionIntent) (Maybe(Terrain))
 
 --motor : Terrain -> Motor
---motor area = Mv.motor occupy evict area
+--motor terrain = Mv.motor occupy evict terrain
 
 
 --type Motor a = SF (DirectionIntent) (Maybe(Area a))
 
 --motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
---motor occupy evict area = arr(toLocSig) >>> impure(mv occupy evict area)
+--motor occupy evict terrain = arr(toLocSig) >>> impure(mv occupy evict terrain)

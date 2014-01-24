@@ -18,8 +18,8 @@ loadFood : (FoodCarrier a) -> Food -> Maybe (FoodCarrier a, Maybe(Food))
 loadFood ldr fd = let assertValid fd = food fd
 
                       nothingAsZero mbx = case mbx of
-                                            Nothing -> 0
-                                            Just x -> x
+                                               Nothing -> 0
+                                               Just x -> x
 
                       loadAndLimit = return (nothingAsZero (ldr.food), nothingAsZero (ldr.limit))
       
@@ -40,9 +40,9 @@ unloadFood unldr = let empty food = return ({ unldr | food <- Nothing }, food)
                       (unldr.food)  -- : Maybe(Food)
                        >>= (empty)  -- : Food -> Maybe(FoodCarrier a, Food)
 
-type FoodChunk = FoodCarrier {}
+type FoodChunkT = FoodCarrier {}
 
-foodChunk : Food -> FoodChunk
+foodChunk : Food -> FoodChunkT
 foodChunk food = { food = Just food
                  , limit = Nothing
                  }
