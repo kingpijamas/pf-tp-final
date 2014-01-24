@@ -14,27 +14,29 @@ import open AntColony.Model.Data.Ant
 
 data LoadAction = Load | Unload
 
-type LoadSignal  = { from:Coords
+type LoadIntent  = { from:Coords
                    , target:Coords
                    , action:LoadAction
                    }
 
-asLoadSignal : LoadAction -> Coords -> Coords -> LoadSignal
-asLoadSignal action from target = {from=from, target=target, action=action}
+asLoadIntent : LoadAction -> Coords -> Coords -> LoadIntent
+asLoadIntent action from target = { from = from
+                                  , target = target
+                                  , action = action }
 
-loadSignal : Coords -> Coords -> LoadSignal
-loadSignal = asLoadSignal Load
+loadIntent : Coords -> Coords -> LoadIntent
+loadIntent = asLoadIntent Load
 
-unloadSignal : Coords -> Coords -> LoadSignal
-unloadSignal = asLoadSignal Unload
+unloadIntent : Coords -> Coords -> LoadIntent
+unloadIntent = asLoadIntent Unload
 
-asLocationSignal : LoadSignal -> LocationSignal
-asLocationSignal sig = locationSignal (sig.from) (sig.target)
+asLocationIntent : LoadIntent -> LocationIntent
+asLocationIntent sig = locationIntent (sig.from) (sig.target)
 
 
 
-loadFacade : Terrain -> LoadSignal -> Maybe(Terrain)
-loadFacade terrain sig = let sig' = asLocationSignal sig
+loadFacade : Terrain -> LoadIntent -> Maybe(Terrain)
+loadFacade terrain sig = let sig' = asLocationIntent sig
                        in
                           case sig.action of
                                Load   -> load terrain sig'
@@ -42,7 +44,7 @@ loadFacade terrain sig = let sig' = asLocationSignal sig
 
 
 
-load : Terrain -> LocationSignal -> Maybe(Terrain)
+load : Terrain -> LocationIntent -> Maybe(Terrain)
 load terrain sig = let ldrPos = sig.from
                        unldrPos = sig.target
 
@@ -58,8 +60,8 @@ load terrain sig = let ldrPos = sig.from
                         >>= (return . fst)                   -- : (Terrain, Maybe(Food)) -> Maybe (Terrain)
 
 
-unload : Terrain -> LocationSignal -> Maybe(Terrain)
-unload terrain sig = load terrain (locationSignal sig.target sig.from)
+unload : Terrain -> LocationIntent -> Maybe(Terrain)
+unload terrain sig = load terrain (locationIntent sig.target sig.from)
 
 
 
@@ -110,13 +112,13 @@ unld terrain unldrPos = let unload' tile = case tile.occupant of
 
 
 
---type Loader a = SF (LoadSignal) (Maybe(Terrain))
+--type Loader a = SF (LoadIntent) (Maybe(Terrain))
 
 --loader : (LoadF a Food) -> (UnloadF a Food) -> (Terrain) -> (Loader a)
 --loader ld unld terrain = arr (loadProxy ld unld terrain)
 
 
---type Loader = Ld.Loader Tile -- : SF (LoadSignal) (Maybe(Terrain))
+--type Loader = Ld.Loader Tile -- : SF (LoadIntent) (Maybe(Terrain))
 
 --loader : Terrain -> Loader
 --loader terrain = Ld.loader load unload terrain

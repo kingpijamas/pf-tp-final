@@ -1,16 +1,16 @@
 module AntColony.Model.Seeing where
 
-import open AntColony.Capacities.Perceiving
+import open AntColony.Model.Perceiving
 import open AntColony.Model.Data.Terrain
 
 --type Obstacle = Occupant
 
-type SightSignal = PerceptionSignal Occupant
+type SightIntent = Perception Occupant
 
-see : PerceptionF Tile Occupant
+see : PerceptionF Occupant
 see tile = tile.occupant
 
---type Watcher = Perceiver Obstacle -- : SF (LocationSignal) (Maybe(SightSignal))
+--type Watcher = Perceiver Obstacle -- : SF (LocationIntent) (Maybe(SightIntent))
 
 --watcher : Terrain -> Watcher
 --watcher terrain = perceiver see terrain

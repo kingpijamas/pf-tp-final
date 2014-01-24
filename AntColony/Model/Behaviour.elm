@@ -11,17 +11,17 @@ import AntColony.Ant.Moving as Mv
 import AntColony.Ant.Loading as Ld
 import AntColony.Ant.Scenting as Sc
 
-type Perceiver a p = SF (LocationSignal) (Maybe(PerceptionSignal p))
+type Perceiver a p = SF (LocationIntent) (Maybe(Perception p))
 
-type PerceptionSignal p = { perceived:p
-                          , location:Coords
-                          }
+type Perception p = { perceived:p
+                    , location:Coords
+                    }
 
 type Smeller = Perceiver Tile Pheromone
-type SmellSignal = PerceptionSignal Pheromone
+type SmellIntent = Perception Pheromone
 
 type Watcher = Perceiver Tile Obstacle
-type SightSignal = PerceptionSignal Obstacle
+type SightIntent = Perception Obstacle
 
 data Occupant = RockTile
               | FoodTile FoodChunk
@@ -30,43 +30,43 @@ data Occupant = RockTile
 
 scent : Pheromone
 
-type DirectionSignal = { from:Coords
+type DirectionIntent = { from:Coords
                        , targetDir:Direction
                        }
 
 data LoadAction = Load | Unload
-type LocationSignal = { from:Coords
+type LocationIntent = { from:Coords
                       , target:Coords
                       }
 
-type LoadSignal  = { from:Coords
+type LoadIntent  = { from:Coords
                    , target:Coords
                    , action:LoadAction
                    }
 
-type ScentSignal = { target:Coords
+type ScentIntent = { target:Coords
                    , action:Action
                    }
 
-type RotationSignal = { from:Coords
+type RotationIntent = { from:Coords
                       , sense:RotationSense
                       }
 
 --IN
-type Watcher -- : SF (LocationSignal) (Maybe(SightSignal))
+type Watcher -- : SF (LocationIntent) (Maybe(SightIntent))
 
-type Smeller -- : SF (LocationSignal) (Maybe(SmellSignal))
+type Smeller -- : SF (LocationIntent) (Maybe(SmellIntent))
 
-type LoadSensor = Perceiver Tile Cargo -- : SF (LocationSignal) (Maybe(WeightSignal))
+type LoadSensor = Perceiver Tile Cargo -- : SF (LocationIntent) (Maybe(WeightIntent))
 
 --OUT
-type Motor -- : SF (DirectionSignal) (Maybe(Terrain))
+type Motor -- : SF (DirectionIntent) (Maybe(Terrain))
 
-type Loader -- : SF (LoadSignal) (Maybe(Terrain))
+type Loader -- : SF (LoadIntent) (Maybe(Terrain))
 
-type Scenter -- : SF (ScentSignal) (Maybe(Terrain))
+type Scenter -- : SF (ScentIntent) (Maybe(Terrain))
 
-type Rotor -- : SF (RotationSignal) (Maybe(Terrain))
+type Rotor -- : SF (RotationIntent) (Maybe(Terrain))
 
 --TODO: what about perceiving multiple tiles? It would be important, especially for the smell part. 
 --probably the best idea would be to have 3 sight and smell sensors at (NW, N, NE) --being N the head, that is
@@ -85,7 +85,7 @@ type Rotor -- : SF (RotationSignal) (Maybe(Terrain))
 
 --switch : SF a (b, Maybe c) -> (c->SF a b) -> SF a b
 
-sensingBrain : (Terrain,Ant) -> SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
+sensingBrain : (Terrain,Ant) -> SF LocationIntent ([Maybe(SightIntent)],[Maybe(SmellIntent)],Maybe(WeightIntent))
 sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf terrain)    -- : PerceptionF a p -> Direction -> Perceiver a p
                                   
                                  eye = perceptor' see                      -- : Direction -> Perceiver Tile Obstacle
@@ -95,14 +95,14 @@ sensingBrain (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf t
                                  orientation = ant.orientation
                                  sensingDirs = [lft orientation, orientation, rght orientation]
 
-                                 eyes = combine (map eye sensingDirs)            -- : SF LocationSignal [Maybe(SightSignal)]
-                                 antennae = combine (map antennae sensingDirs)   -- : SF LocationSignal [Maybe(SmellSignal)]
+                                 eyes = combine (map eye sensingDirs)            -- : SF LocationIntent [Maybe(SightIntent)]
+                                 antennae = combine (map antennae sensingDirs)   -- : SF LocationIntent [Maybe(SmellIntent)]
                               in
-                                (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF LocationSignal ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal))
+                                (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF LocationIntent ([Maybe(SightIntent)],[Maybe(SmellIntent)],Maybe(WeightIntent))
 
 
 
-behaviour : ([Maybe(SightSignal)],[Maybe(SmellSignal)],Maybe(WeightSignal)) -> ???
+behaviour : ([Maybe(SightIntent)],[Maybe(SmellIntent)],Maybe(WeightIntent)) -> ???
 behaviour (sight,smell,load) = case (sight, smell, load) of
                                     [], [], False -> -- walk randomly
                                     [], [], True -> -- should never happen. In any case, walk randomly

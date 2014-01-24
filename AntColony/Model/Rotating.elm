@@ -13,24 +13,24 @@ import open AntColony.Geography.Direction
 
 data RotationSense = Clockwise | Counterclockwise
 
-type RotationSignal = { from:Coords
+type RotationIntent = { from:Coords
                       , sense:RotationSense
                       }
 
-rotationSignal : Coords -> RotationSense -> RotationSignal
-rotationSignal from sense = { from=from
+rotationIntent : Coords -> RotationSense -> RotationIntent
+rotationIntent from sense = { from=from
                             , sense=sense
                             }
 
-rotateClockwise : Coords -> RotationSignal
-rotateClockwise from = rotationSignal from Clockwise
+rotateClockwise : Coords -> RotationIntent
+rotateClockwise from = rotationIntent from Clockwise
 
-rotateCounterclockwise : Coords -> RotationSignal
-rotateCounterclockwise from = rotationSignal from Counterclockwise
+rotateCounterclockwise : Coords -> RotationIntent
+rotateCounterclockwise from = rotationIntent from Counterclockwise
 
 
 
-rotationFacade : Terrain -> RotationSignal -> Maybe(Terrain)
+rotationFacade : Terrain -> RotationIntent -> Maybe(Terrain)
 rotationFacade terrain sig = let rf = case sig.sense of
                                            Clockwise -> clck
                                            Counterclockwise -> cntrclck
@@ -60,12 +60,12 @@ cntrclck : Terrain -> Coords -> Maybe(Terrain)
 cntrclck = rotate lft
 
 
---type Rotor a =  SF (RotationSignal) (Maybe(Area a))
+--type Rotor a =  SF (RotationIntent) (Maybe(Area a))
 
 --rotor : (RotationF a) -> (RotationF a) -> (Area a) -> (Rotor a)
 --rotor clck cntrclck terrain = arr (rotationProxy clck cntrclck terrain)
 
---type Rotor = Rt.Rotor Tile -- : SF (DirectionSignal) (Maybe(Terrain))
+--type Rotor = Rt.Rotor Tile -- : SF (DirectionIntent) (Maybe(Terrain))
 
 --rotor : Terrain -> Rotor
 --rotor terrain = Rt.rotor clck cntrclck terrain
