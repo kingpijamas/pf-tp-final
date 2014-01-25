@@ -6,7 +6,6 @@ import open AntColony.Geography.Direction
 import open AntColony.Capacities.Positioning
 
 import open AntColony.Utils.MaybeMonad
-import open AntColony.Utils.SignalFunction
 
 import open AntColony.Model.Data.Terrain
 

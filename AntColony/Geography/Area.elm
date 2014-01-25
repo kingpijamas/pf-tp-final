@@ -29,33 +29,33 @@ type Area v = { elems:Dict.Dict Coords v
 minX = 0
 minY = 0
 
-terrain':Int->Int->(Dict.Dict Coords v)->(Area v)
-terrain' width height elems = { elems=elems
+area':Int->Int->(Dict.Dict Coords v)->(Area v)
+area' width height elems = { elems=elems
                               , width=width
                               , height=height
                               }
 
-terrain:Int->Int->[(Coords,v)]->(Area v)
-terrain width height elems = terrain' width height (Dict.fromList elems)
+area:Int->Int->[(Coords,v)]->(Area v)
+area width height elems = area' width height (Dict.fromList elems)
 
 empty:Int->Int->(Area v)
-empty width height = terrain width height []
+empty width height = area width height []
 
 isWithinBounds:Coords->(Area v)->Bool
-isWithinBounds (x,y) terrain = let isBtwn x (lb,ub) = x>=lb && x<=ub
+isWithinBounds (x,y) area = let isBtwn x (lb,ub) = x>=lb && x<=ub
                              in
-                                (x `isBtwn` (minX,terrain.width)) 
-                                 && (y `isBtwn` (minY,terrain.height))
+                                (x `isBtwn` (minX,area.width)) 
+                                 && (y `isBtwn` (minY,area.height))
 
 add:(Area v)->Coords->v->Maybe (Area v)
-add terrain pos elem = if pos `isWithinBounds` terrain
-                    then Just (terrain' terrain.width terrain.height (Dict.insert pos elem terrain.elems))
+add area pos elem = if pos `isWithinBounds` area
+                    then Just (area' area.width area.height (Dict.insert pos elem area.elems))
                     else Nothing
 
 get:(Area v)->Coords->Maybe v
-get terrain pos = Dict.lookup pos terrain.elems
+get area pos = Dict.lookup pos area.elems
 
 remove:(Area v)->Coords->Maybe (Area v)
-remove terrain pos = if pos `isWithinBounds` terrain
-                  then Just (terrain' terrain.width terrain.height (Dict.remove pos terrain.elems))
+remove area pos = if pos `isWithinBounds` area
+                  then Just (area' area.width area.height (Dict.remove pos area.elems))
                   else Nothing

@@ -19,7 +19,7 @@ perceptionIntent location perceived = { perceived = perceived
                                       , location = location
                                       }
 
-type PerceptionF p = Position -> Maybe p
+type PerceptionF p = (Position -> Maybe p)
 
 perceive : PerceptionF p -> Terrain -> LocationIntent -> Maybe(Perception p)
 perceive pf terrain sig = let targetPos = sig.target
@@ -30,7 +30,7 @@ perceive pf terrain sig = let targetPos = sig.target
                                 >>= (perceptionIntent')     -- : p -> Maybe(Perception p)
 
 {-- Does the a make any sense here? --}
-type Perceiver p = SF (LocationIntent) (Maybe(Perception p))
+{--type Perceiver p = SF (LocationIntent) (Maybe(Perception p))
 
 perceiver : PerceptionF p -> Terrain -> Perceiver p
 perceiver pf terrain = arr (perceive pf terrain)
@@ -43,3 +43,4 @@ perceiveInDir dir pf terrain lSig = let asLSig targetP = return (locationIntent 
                                         (lSig.target `addDir` dir)  -- : Maybe(Coords)
                                          >>= (asLSig)               -- : Coords -> Maybe(LocationIntent)
                                          >>= (perceive')            -- : LocationIntent -> Maybe(Perception p)
+--}

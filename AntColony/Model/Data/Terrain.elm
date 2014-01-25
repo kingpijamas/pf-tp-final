@@ -15,11 +15,11 @@ remove = remove
 get = get
 
 terrain : Int -> Int -> [(Coords,Position)]-> Terrain
-terrain width height tiles = terrain width height tiles
+terrain width height tiles = area width height tiles
 
-empty : Int -> Int -> Terrain
+{--empty : Int -> Int -> Terrain
 empty width height = empty width height
-
+--}
 
 type Position = Scentable { occupant : Maybe(Occupant) }
 

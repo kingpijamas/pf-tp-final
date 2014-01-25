@@ -4,11 +4,7 @@ import Window
 import Dict
 import AntColony.Model.Data.Terrain as T
 
---import AntColony.Capacities.Loading
---import AntColony.Capacities.Moving
-import AntColony.Model.Perceiving
---import AntColony.Capacities.Rotating
---import AntColony.Capacities.Scenting
+import open AntColony.Capacities.Positioning
 
 import open AntColony.Geography.Area
 import AntColony.Geography.Direction
@@ -17,6 +13,11 @@ import open AntColony.Model.Data.AntT
 import open AntColony.Model.Data.AntNestT
 import open AntColony.Model.Data.Food
 
+import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Tuple
+import open AntColony.Utils.SignalFunction
+
+import AntColony.Model.Perceiving
 import AntColony.Model.LoadSensing
 import AntColony.Model.Loading
 import AntColony.Model.Moving
@@ -32,15 +33,15 @@ main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 simulation : T.Terrain
 simulation = let
                  pos' occ ph = T.position (Just occ) ph
-
+ 
                  tiles = [ ( (coords 1 1), pos' T.Rock Nothing )
                          , ( (coords 1 2), pos' (T.Ant ant) Nothing )
                          , ( (coords 2 2), pos' (T.Ant ant) Nothing )
                          , ( (coords 4 4), pos' (T.AntNest antNest) Nothing )
                          , ( (coords 4 1), pos' (T.FoodChunk (foodChunk 5)) Nothing )
                          ]
-              in 
-                 T.terrain 4 4 tiles
+             in 
+                T.terrain 4 4 tiles
 
 step : Float->T.Terrain->T.Terrain
 step t terrain = terrain
