@@ -24,38 +24,13 @@ sensors (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir dir pf terrai
 
 
 behaviour : ((Terrain,AntT), SensorData) -> (Terrain,AntT)
-behaviour ((terrain,ant),sight,smell,load) = let noSig = []
-                                              in
-                                                 case (sight, smell, load) of
-                                                    [], [], False -> -- walk randomly
-                                                    [], [], True -> -- should never happen. In any case, walk randomly
-                                                    [], Just ph, False -> -- follow the pheromone
-                                                    [], Just ph, True -> -- ? turn back? follow the pheromone? 
-                                                    Just (AntNest _), _ , False -> -- turn 
-                                                    Just (AntNest _), _ , True -> -- unload
-                                                    Just (FoodChunk _), _ , False -> -- load
-                                                    Just (FoodChunk _), _ , Turn -> -- turn 180º
-                                                    _ , _, _ -> -- avoid
-
-
-
-
-
-
-
-
-
-
-
-turnRight : (Terrain,AntT) -> Maybe(Terrain,AntT)
-turnRight (terrain,ant) = rotor 
-
-
-turn180Right : Terrain -> Coords -> 
-turn180Right from  = rotor >>>
-
-
-turn180Left
-
-
-
+behaviour ((terrain,ant),sensorData) = case (sight, smell, load) of
+                                            [], [], False -> -- walk randomly
+                                            [], [], True -> -- should never happen. In any case, walk randomly
+                                            [], Just ph, False -> -- follow the pheromone
+                                            [], Just ph, True -> -- ? turn back? follow the pheromone? 
+                                            Just (AntNest _), _ , False -> -- turn 
+                                            Just (AntNest _), _ , True -> -- unload
+                                            Just (FoodChunk _), _ , False -> -- load
+                                            Just (FoodChunk _), _ , Turn -> -- turn 180º
+                                            _ , _, _ -> -- avoid

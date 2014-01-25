@@ -38,7 +38,17 @@ asCoords dir = case dir of
                     NW  ->  Just (coords (-1) (-1))
                     _     ->  Nothing
 
-addDir : Coords->Direction->Maybe(Coords)
+addDir : Coords -> Direction -> Maybe(Coords)
 addDir a dir = case (asCoords dir) of
                   Just b -> Just (addCoord a b)
                   Nothing -> Nothing
+
+lftN : Direction -> Int -> Direction
+lftN dir times = case times of
+                    0 -> dir
+                    n -> lftN (lft dir) (n-1)
+
+rghtN : Direction -> Int -> Direction
+rghtN dir times = case times of
+                    0 -> dir
+                    n -> rghtN (rght dir) (n-1)

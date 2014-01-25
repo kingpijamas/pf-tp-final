@@ -56,9 +56,14 @@ rotate rf terrain pos = let rotateOcc pos = case pos.occupant of
 clck : Terrain -> Coords -> Maybe(Terrain)
 clck = rotate rght
 
+clckN : Int -> Terrain -> Coords -> Maybe(Terrain)
+clckN times = rotate ((flip rghtN) times)
+
 cntrclck : Terrain -> Coords -> Maybe(Terrain)
 cntrclck = rotate lft
 
+cntrclckN : Int -> Terrain -> Coords -> Maybe(Terrain)
+cntrclckN times = rotate ((flip lftN) times)
 
 --type Rotor a =  SF (RotationIntent) (Maybe(Area a))
 
