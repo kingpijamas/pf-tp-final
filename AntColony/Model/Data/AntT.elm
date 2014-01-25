@@ -7,9 +7,9 @@ import open AntColony.Geography.Direction
 type Cargo = FoodCarrier {}
 
 type AntT = { position : Coords
-           , orientation : Direction
-           , cargo : Cargo
-           }
+            , orientation : Direction
+            , cargo : Cargo
+            }
 
 ant : AntT
 ant = { position = coords 0 0
