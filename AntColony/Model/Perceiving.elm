@@ -8,26 +8,25 @@ import open AntColony.Geography.Direction
 import open AntColony.Utils.MaybeMonad
 import open AntColony.Utils.SignalFunction
 
-import open AntColony.Capacities.Positioning
 
-type Perception p = { perceived:p
-                    , location:Coords
+
+type Perception p = { perceived : p
+                    , location : Coords
                     }
 
-perceptionIntent : Coords -> p -> Perception p
-perceptionIntent location perceived = { perceived = perceived
-                                      , location = location
-                                      }
+perception : Coords -> p -> Perception p
+perception location perceived = { perceived = perceived
+                                , location = location
+                                }
 
 type PerceptionF p = (Position -> Maybe p)
 
-perceive : PerceptionF p -> Terrain -> LocationIntent -> Maybe(Perception p)
-perceive pf terrain sig = let targetPos = sig.target
-                              perceptionIntent' location = return (perceptionIntent targetPos location)
-                           in
-                              (terrain `get` targetPos)     -- : Maybe (a)
-                                >>= (pf)                    -- : a -> Maybe(p)
-                                >>= (perceptionIntent')     -- : p -> Maybe(Perception p)
+perceive : PerceptionF p -> Terrain -> Coords -> Maybe(Perception p)
+perceive pf terrain targetPos = let perception' location = return (perception targetPos location)
+                                 in
+                                    (terrain `get` targetPos)    -- : Maybe (a)
+                                     >>= (pf)                    -- : a -> Maybe(p)
+                                     >>= (perception')           -- : p -> Maybe(Perception p)
 
 {-- Does the a make any sense here? --}
 {--type Perceiver p = SF (LocationIntent) (Maybe(Perception p))

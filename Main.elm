@@ -4,10 +4,9 @@ import Window
 import Dict
 import AntColony.Model.Data.Terrain as T
 
-import open AntColony.Capacities.Positioning
 
 import open AntColony.Geography.Area
-import AntColony.Geography.Direction
+import open AntColony.Geography.Direction
 
 import open AntColony.Model.Data.AntT
 import open AntColony.Model.Data.AntNestT
@@ -34,12 +33,14 @@ simulation : T.Terrain
 simulation = let
                  pos' occ ph = T.position (Just occ) ph
  
-                 tiles = [ ( (coords 1 1), pos' T.Rock Nothing )
+                 tiles = []
+                       {--  [ ( (coords 1 1), pos' T.Rock Nothing )
                          , ( (coords 1 2), pos' (T.Ant ant) Nothing )
                          , ( (coords 2 2), pos' (T.Ant ant) Nothing )
                          , ( (coords 4 4), pos' (T.AntNest antNest) Nothing )
                          , ( (coords 4 1), pos' (T.FoodChunk (foodChunk 5)) Nothing )
                          ]
+                         --}
              in 
                 T.terrain 4 4 tiles
 

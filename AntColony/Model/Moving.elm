@@ -3,56 +3,42 @@ module AntColony.Model.Moving where
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
-import open AntColony.Capacities.Positioning
+
 
 import open AntColony.Utils.MaybeMonad
 
 import open AntColony.Model.Data.Terrain
 
-mv : Terrain -> LocationIntent -> Maybe (Terrain)
-mv terrain sig = let from = sig.from
-                     to = sig.target
-       
-                     occupyWith (terrain', mver) = occupy terrain' to mver
-                  in
-                     (terrain `evict` from)          -- : Maybe (Terrain, Position)
-                       >>= (occupyWith)              -- : (Terrain, Position) -> Maybe(Terrain)
+move : Terrain -> Coords -> Coords -> Maybe (Terrain)
+move terrain from to = let occupy' (terrain', mvr) = occupy terrain' to mvr
+                        in
+                          (terrain `evict` from)     -- : Maybe (Terrain, Position)
+                           >>= (occupy')             -- : (Terrain, Position) -> Maybe(Terrain)
 
 {-- TODO: it isn't changing the ant's position! --}
 occupy : Terrain -> Coords -> Position -> Maybe (Terrain)
-occupy terrain pos occ = let occupyPos pos = case pos.occupant of
+occupy terrain whr occ = let occupyPos pos = case pos.occupant of
                                                   Nothing -> return { pos | occupant <- occ }
                                                   _ -> Nothing
 
-                             updateTerrain pos' = add terrain pos pos'
+                             updateTerrain pos' = add terrain whr pos'
                           in
-                             (terrain `get` pos)     -- : Maybe (Position)
+                             (terrain `get` whr)     -- : Maybe (Position)
                               >>= (occupyPos)        -- : Position -> Maybe(Position)
                               >>= (updateTerrain)    -- : Position -> Maybe(Terrain)
 
 evict : Terrain -> Coords -> Maybe (Terrain, Position)
-evict terrain pos = let evictPos pos = case pos.occupant of
-                                            Just occ -> return { pos | occupant <- occ }
-                                            _   ->  Nothing
+evict terrain from = let evict pos = case pos.occupant of
+                                         Just occ -> return { pos | occupant <- occ }
+                                         _   ->  Nothing
 
-                        updateTerrain pos' = return (remove terrain pos pos', pos')
+                         updateTerrain pos' = return (remove terrain from pos', pos')
                         
-                        flatten (mbterrain',pos') = case (mbterrain') of
-                                                         Just terrain' -> return (terrain', pos')
-                                                         _   -> Nothing
-                     in
-                       (terrain `get` pos)         -- : Maybe(Position)
-                        >>= (evictPos)             -- : Position -> Maybe(Position)
-                        >>= (updateTerrain)        -- : Position -> Maybe(Maybe(Terrain), Position)
-                        >>= (flatten)              -- : (Maybe(Terrain),Position) -> Maybe(Terrain, Position)
-
---type Motor = Mv.Motor Position -- : SF (DirectionIntent) (Maybe(Terrain))
-
---motor : Terrain -> Motor
---motor terrain = Mv.motor occupy evict terrain
-
-
---type Motor a = SF (DirectionIntent) (Maybe(Area a))
-
---motor : (OccupiationF a) -> (EvictionF a) -> (Area a) -> (Motor a)
---motor occupy evict terrain = arr(toLocSig) >>> impure(mv occupy evict terrain)
+                         flatten (mbterr',pos') = case (mbterr') of
+                                                       Just terrain' -> return (terrain', pos')
+                                                       _   -> Nothing
+                      in
+                         (terrain `get` from)        -- : Maybe(Position)
+                          >>= (evict)                -- : Position -> Maybe(Position)
+                          >>= (updateTerrain)        -- : Position -> Maybe(Maybe(Terrain), Position)
+                          >>= (flatten)              -- : (Maybe(Terrain),Position) -> Maybe(Terrain, Position)

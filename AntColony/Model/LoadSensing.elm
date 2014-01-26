@@ -7,7 +7,7 @@ import open AntColony.Utils.MaybeMonad
 
 type Cargo = FoodCarrier {}
 
-type WeightIntent = Perception Cargo
+type Load = Perception Cargo
 
 senseLoad : PerceptionF Cargo   -- : Position -> Maybe(Cargo)
 senseLoad pos = let getCargo occ = case occ of
@@ -16,8 +16,3 @@ senseLoad pos = let getCargo occ = case occ of
                  in
                     (pos.occupant)      -- : Maybe(Occupant)
                      >>= getCargo       -- : Occupant -> Maybe(Cargo)
-
---type LoadSensor = Perceiver Cargo -- : SF (LocationIntent) (Maybe(WeightIntent))
-
---loadSensor : Terrain -> LoadSensor
---loadSensor terrain = perceiver feelLoad terrain

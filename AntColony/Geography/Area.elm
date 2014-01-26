@@ -20,6 +20,9 @@ addCoord a b = let x = (getX a) + (getX b)
                 in 
                    coords x y
 
+subtCoord : Coords -> Coords -> Coords
+subtCoord a (x,y) = a `addCoord` (coords (-x) (-y))
+
 {- Area -}
 type Area v = { elems:Dict.Dict Coords v
               , width:Int
