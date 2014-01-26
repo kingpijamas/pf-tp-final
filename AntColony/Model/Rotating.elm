@@ -11,7 +11,7 @@ import open AntColony.Geography.Direction
 
 rotate : (Direction -> Direction) -> Terrain -> Coords -> Maybe(Terrain)
 rotate rf terrain pos = let rotateOcc pos = case pos.occupant of
-                                                 Just(Ant ant) -> setOccupant' pos (asAnt (rotate' ant))
+                                                 Just(Ant ant) -> pos `setOccupant'` (asAnt (rotate' ant))
                                                  _ -> Nothing
 
                             setOccupant' pos occ = return (setOccupant pos (Just occ))

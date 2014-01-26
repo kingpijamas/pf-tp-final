@@ -39,7 +39,7 @@ asCoords dir = case dir of
                     _     ->  Nothing
 
 
-dirTo : Coords -> Coords -> Direction
+dirTo : Coords -> Coords -> Direction  -- TODO: should probably be a maybe dir (case (0,0))
 dirTo from to = let vers x = if x == 0
                              then x
                              else abs(x)
@@ -61,8 +61,8 @@ dirTo from to = let vers x = if x == 0
 
 addDir : Coords -> Direction -> Maybe(Coords)
 addDir a dir = case (asCoords dir) of
-                  Just b -> Just (addCoord a b)
-                  Nothing -> Nothing
+                    Just b -> Just (addCoord a b)
+                    Nothing -> Nothing
 
 lftN : Direction -> Int -> Direction
 lftN dir times = case times of

@@ -24,6 +24,7 @@ import AntColony.Model.Rotating
 import AntColony.Model.Scenting
 import AntColony.Model.Seeing
 import AntColony.Model.Smelling
+import AntColony.Model.Remembering
 
 tileSize = 20
 
