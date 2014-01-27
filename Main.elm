@@ -27,20 +27,31 @@ import AntColony.Model.Smelling
 import AntColony.Model.Remembering
 -}
 tileSize = 20
+width = 10
+heigth = 12
 
 main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 
 simulation : T.Terrain
 simulation = let
                  pos' occ ph = T.position (Just occ) ph
-                 tiles = [ ( (coords 1 1), pos' T.Rock Nothing )
-                         , ( (coords 1 2), pos' (T.Ant ant) Nothing )
-                         , ( (coords 2 2), pos' (T.Ant ant) Nothing )
-                         , ( (coords 4 4), pos' (T.AntNest antNest) Nothing )
-                         , ( (coords 4 1), pos' (T.FoodChunk (foodChunk 5)) Nothing )
-                     ]
+                 tiles = [ (coords 3 3, T.positionFor (T.Ant ant))
+                         , (coords 2 2, T.positionFor (T.Ant ant))
+                         , (coords 4 4, T.positionFor (T.AntNest antNest))
+                         , (coords 9 10, T.positionFor (T.FoodChunk (foodChunk 5)))
+                     ] ++ (buildSurroundingStones width heigth)
              in 
-                T.terrain 4 4 tiles
+                T.terrain width heigth tiles
+
+buildSurroundingStones : Int -> Int -> [(Coords, T.Position)]
+buildSurroundingStones w h = foldl (\coord list -> (buildRock coord) :: list) []
+    <| 
+        (map (\y -> (1, y)) [1..h]) ++ (map (\y -> (w, y)) [1..h])
+        ++ (map (\x -> (x, 1)) [2..w - 1]) ++ (map (\x -> (x, h)) [2..w - 1])
+
+
+buildRock : (Int, Int) -> (Coords, T.Position)
+buildRock (x,y) = (coords x y, T.positionFor T.Rock)
 
 step : Float->T.Terrain->T.Terrain
 step t terrain = signalAnts <| terrain 

@@ -28,6 +28,9 @@ data Occupant = Rock
               | Ant AntT
               | AntNest AntNestT
 
+positionFor : Occupant -> Position
+positionFor occ = position (Just occ) Nothing
+
 position : Maybe(Occupant) -> Maybe(Pheromone) -> Position
 position occ scent = { occupant = occ
                      , scent = scent
