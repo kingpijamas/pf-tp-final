@@ -1,4 +1,4 @@
-module AntColony.Utils.MaybeMonad where
+module AntColony.Utils.Maybe where
 
 return : a -> Maybe a
 return x = Just x

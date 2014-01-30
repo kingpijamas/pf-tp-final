@@ -1,6 +1,6 @@
 module AntColony.Model.Rotating where
 
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 
 import open AntColony.Model.Data.Terrain
 

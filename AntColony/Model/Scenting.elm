@@ -4,7 +4,7 @@ import open AntColony.Model.Data.Terrain
 import open AntColony.Geography.Area
 
 import AntColony.Model.Data.Scentable as Sc
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 
 
 scent : Terrain -> Coords -> Maybe(Terrain)

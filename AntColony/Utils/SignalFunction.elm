@@ -3,7 +3,7 @@ module AntColony.Utils.SignalFunction where
 import open Signal
 import open List
 import open AntColony.Utils.Tuple
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 
 data SF a b = SF (a -> b) (Signal a -> Signal b)
 

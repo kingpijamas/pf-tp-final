@@ -1,6 +1,6 @@
 module AntColony.Model.Data.Food where
   
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 
 type Food = Int
 

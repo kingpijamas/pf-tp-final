@@ -1,6 +1,6 @@
 module AntColony.Utils.Tuple where
 
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 
 mapFst : (a -> b) -> (a, c) -> (b, c)
 mapFst f (x, y) = (f x, y)

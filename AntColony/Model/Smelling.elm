@@ -4,7 +4,7 @@ import open AntColony.Model.Perceiving
 import open AntColony.Model.Data.Terrain
 import open AntColony.Model.Data.Scentable
 
-type Smell = Perception Pheromone
+type Smell = Pheromone
 
-smell : PerceptionF Pheromone
+smell : PerceptionF Smell
 smell pos = pos.scent

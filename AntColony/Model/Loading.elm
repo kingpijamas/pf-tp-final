@@ -1,7 +1,7 @@
 module AntColony.Model.Loading where
 
 import open AntColony.Utils.SignalFunction
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 import open AntColony.Utils.Tuple
 
 

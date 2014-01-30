@@ -12,7 +12,7 @@ import open AntColony.Model.Data.AntT
 import open AntColony.Model.Data.AntNestT
 import open AntColony.Model.Data.Food
 
-import open AntColony.Utils.MaybeMonad
+import open AntColony.Utils.Maybe
 import open AntColony.Utils.Tuple
 import open AntColony.Utils.SignalFunction
 
@@ -24,7 +24,8 @@ import AntColony.Model.Rotating
 import AntColony.Model.Scenting
 import AntColony.Model.Seeing
 import AntColony.Model.Smelling
-import AntColony.Model.Remembering
+
+import AntColony.Model.Behaviour
 
 tileSize = 20
 

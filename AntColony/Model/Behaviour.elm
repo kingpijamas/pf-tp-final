@@ -1,78 +1,123 @@
-module AntColony.Model.Data.AntT.Brain where
+module AntColony.Model.Behaviour where
 
-import open AntColony.Utils.SignalFunction
+import open Maybe
 import open List
+import open AntColony.Utils.List
+import open AntColony.Utils.Tuple
+import open AntColony.Utils.Maybe
+import open AntColony.Utils.SignalFunction
 
-import AntColony.AntT.Seeing as See
-import AntColony.AntT.Smelling as Sm
-import AntColony.AntT.Moving as Mv
-import AntColony.AntT.Loading as Ld
-import AntColony.AntT.Scenting as Sc
+import open AntColony.Geography.Area
+import open AntColony.Geography.Direction
 
-type SensorData = (Maybe(Sight),Maybe(Smell),Maybe(Load))
+import open AntColony.Model.Data.Terrain
+import open AntColony.Model.Data.Scentable
+import open AntColony.Model.Data.AntT
 
+import open AntColony.Model.Perceiving
+import open AntColony.Model.LoadSensing
+import open AntColony.Model.Loading
+import open AntColony.Model.Moving
+import open AntColony.Model.Rotating
+import open AntColony.Model.Scenting
+import open AntColony.Model.Seeing
+import open AntColony.Model.Smelling
+
+type SensorData = ([Maybe(Sight)],[Maybe(Smell)],Maybe(Load))
+
+getSensingDirs : Direction -> [Direction]
+getSensingDirs orientation = [orientation, lft orientation, rght orientation]
 
 sensors : (Terrain,AntT) -> SF Coords SensorData
-sensors (terrain,ant) = let perceptor' pf dir = arr (perceiveInDir pf dir terrain)    -- : PerceptionF p -> Direction -> Perceiver p
-                                  
-                            eye = perceptor' see ant.orientation        -- : Direction -> Perceiver Obstacle
-                            antenna = perceptor' smell ant.orientation  -- : Direction -> Perceiver Pheromone
-                            loadSensor = arr (perceptor feelLoad)       -- : Direction -> Perceiver Cargo
+sensors (terrain,ant) = let orientation = ant.orientation
+                            sensingDirs = getSensingDirs orientation
 
+                            eyes = perceptors see sensingDirs terrain             -- : SF Coords [Maybe(Occupant)]
+                            antennae = perceptors smell sensingDirs terrain       -- : SF Coords [Maybe(Pheromone)]
+                            loadSensor = perceptor senseLoad terrain              -- : SF Coords Cargo
                          in
-                            (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF Coords SF
+                            (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF Coords SensorData
+
+behaviour : ((Terrain,AntT), SensorData) -> Terrain
+behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos : Coords
+                                                        currPos = ant.position
+                                                        
+                                                        frontPos : Maybe(Coords)
+                                                        frontPos = currPos `addDir` forward 
+
+                                                        frontSight : Maybe(Sight)
+                                                        frontSight = head seen
+
+                                                        frontSmell : Maybe(Smell)
+                                                        frontSmell = head smelled
+
+                                                        forward : Direction
+                                                        forward = ant.orientation
+
+                                                        toNest : Direction
+                                                        toNest = currPos `dirTo` ant.nestPos
+                                                         
+                                                        loadFrom : Coords -> Maybe(Terrain)
+                                                        loadFrom = load terrain currPos
+                                                         
+                                                        unloadTo : Coords -> Maybe(Terrain)
+                                                        unloadTo = unload terrain currPos
+
+                                                        turn : Int -> Maybe(Terrain)
+                                                        turn times = clckN times terrain currPos -- TODO: turn randomly!
+
+                                                        turnAround : Maybe(Terrain)
+                                                        turnAround = turn 4
+
+                                                        scent' : Coords -> Maybe(Terrain)
+                                                        scent' = scent terrain
+
+                                                        towardsDo : Direction -> (Direction-> Maybe(Terrain)) -> Maybe(Terrain)
+                                                        towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
+                                                                                    Just dir -> dirF dir
+                                                                                    Nothing -> turn 2
+
+                                                     in
+                                                        case (frontSight, frontSmell, currLoad) of
+                                                             (Just (FoodChunk _), _, Nothing)    -> frontPos >>= loadFrom 
+                                                             (Just (FoodChunk _), _, Just cargo) -> turnAround -- could probably be removed
+                                                             (Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
+                                                             (Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
+                                                             (Just _, _, _)                      -> turn 1
+                                                              
+                                                             (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) >>= (moveInDir dir))
+
+                                                             (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos) >>= (moveInDir dir))
+                                                               
+                                                             (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir dir)
+
+                                                             (_, _, _) -> moveInDir forward -- should walk randomly!
 
 
+--filterPath : Direction -> Direction -> [Maybe(Sight)] -> [Maybe(Smell)] -> String-- Maybe(Direction)
+--filterPath curr wish sight smell = let paths = 
 
-behaviour : ((Terrain,AntT), SensorData) -> (Terrain,AntT)
-behaviour ((terrain,ant),(sight,smell,load)) = let getSeen = 
-                                                   antP = ant.position
-                                                   memory = ant.memory
+type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
-                                                   move antP (antP `addDir` (antP `dirTo` ant.nestPos))
+asPaths : Direction -> [Maybe(Sight)] -> [Maybe(Smell)] -> [Path]
+asPaths forward sight smell = flatZip (getSensingDirs forward) (zip sight smell)
 
-                                                   loadFrom = load terrain antP
+findPath : Direction -> [Path] -> Maybe(Direction)
+findPath goal paths = let isPathToGoal (dir,_,_) = goal == dir
 
-                                                   unloadTo = unload terrain antP
+                          occAndSmell (_,mbocc,mbsmell) = (isJust mbocc, mbsmell)
 
-                                                   turn times = clckN times terrain antP -- TODO: turn randomly!
+                          better p p' = case (occAndSmell p, occAndSmell p') of
+                                             ((True, _), (False, _)) -> p'
+                                             ((False, Just sm), (False, Just sm')) -> if sm >= sm'
+                                                                                      then p
+                                                                                      else p'
+                                             (_,_) -> p
 
-                                                   turnL times = counterclck times terrain antP
-
-                                                   turnR times = clckN times terrain antP
-
-                                                   moveTowards target terrain = moveInDir terrain antP (antP `dirTo` target)
-
-                                                   moveInDir' dir = moveInDir terrain antP dir
-
-                                                   scent' = scent terrain
-
-
-                                                case (seen, smelled, loaded) of
-                                                     (Just (FoodChunk _), _, Nothing) -> loadFrom sight.target
-                                                     (Just (FoodChunk _), _, Just cargo) -> turn 1
-                                                     (Just (AntNest _), _, Just cargo) -> unloadTo sight.target
-                                                     (Just (AntNest _), _, Nothing) -> turn 4
-                                                     (Just _, _, _) -> turn 1
-                                                     (_, Nothing, Just cargo) -> (scent' antP) >>= (moveTowards ant.nestPos) -- fixme: what if the spot is occupied?
-
-                                                     -- should query the surroundings for pheromone
-                                                   
-                                                     (occ, Nothing, Just cargo, mem) -> case length mem of
-                                                                                        1 -> turnL 1
-                                                                                        2 -> turnR 2
-                                                                                        3 -> case snd(mem !! 3) of
-                                                                                                  lft (ant.orientation) -> case occ of
-                                                                                                                                Nothing -> ...
-                                                                                                                                _ -> turnR 1
-                                                                                                  ant.orientation -> 
-                                                                                                  rght (ant.orientation) -> case occ of
-                                                                                                                                 Nothing -> ...
-                                                                                                                                 _ -> turnL 1
-
-                                                                                                  -- if the direction's different, turn there. If it isn't, get the maximum pheromone and turn that way
-
-
-                                                     
-                                                     (_, Just ph, Nothing) -> -- should query the surroundings for pheromone
-                                                     (_, _, _) -> moveInDir (ant.orientation) -- should walk randomly!
+                          findPathIn goalP paths = foldl better goalP paths
+                       in
+                          case (filter isPathToGoal paths) of
+                                [] -> Nothing
+                                [goalP] -> case (findPathIn goalP paths) of
+                                                 (dir, Nothing, _) -> Just dir
+                                                 _ -> Nothing
