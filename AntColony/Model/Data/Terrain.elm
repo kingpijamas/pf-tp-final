@@ -28,6 +28,9 @@ data Occupant = Rock
               | Ant AntT
               | AntNest AntNestT
 
+positionFor : Occupant -> Position
+positionFor occ = position (Just occ) Nothing
+
 position : Maybe(Occupant) -> Maybe(Pheromone) -> Position
 position occ scent = { occupant = occ
                      , scent = scent
@@ -47,3 +50,16 @@ asNest x = AntNest x
 
 asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
+
+getAnts : Terrain -> [Occupant]
+getAnts terrain = Dict.values terrain.elems |> asOccupants
+    |> filter (\occupant -> case occupant of 
+                                Just (Ant ant) -> True
+                                _ -> False)
+    |> map (\maybeOcc -> case maybeOcc of Just x -> x)
+
+asOccupants : [Position] -> [Maybe Occupant]
+asOccupants = map (\scentable -> scentable.occupant) 
+
+
+
