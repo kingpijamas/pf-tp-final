@@ -38,41 +38,22 @@ sensors (terrain,ant) = let orientation = ant.orientation
                          in
                             (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF Coords SensorData
 
-behaviour : ((Terrain,AntT), SensorData) -> Terrain
-behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos : Coords
-                                                        currPos = ant.position
-                                                        
-                                                        frontPos : Maybe(Coords)
-                                                        frontPos = currPos `addDir` forward 
-
-                                                        frontSight : Maybe(Sight)
-                                                        frontSight = head seen
-
-                                                        frontSmell : Maybe(Smell)
-                                                        frontSmell = head smelled
-
-                                                        forward : Direction
+behaviour : ((Terrain,AntT), SensorData) -> Maybe(Terrain)
+behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos = ant.position
                                                         forward = ant.orientation
-
-                                                        toNest : Direction
+                                                        frontPos = currPos `addDir` forward
                                                         toNest = currPos `dirTo` ant.nestPos
-                                                         
-                                                        loadFrom : Coords -> Maybe(Terrain)
+
+                                                        frontSight = head seen
+                                                        frontSmell = head smelled
+            
                                                         loadFrom = load terrain currPos
-                                                         
-                                                        unloadTo : Coords -> Maybe(Terrain)
                                                         unloadTo = unload terrain currPos
-
-                                                        turn : Int -> Maybe(Terrain)
                                                         turn times = clckN times terrain currPos -- TODO: turn randomly!
-
-                                                        turnAround : Maybe(Terrain)
                                                         turnAround = turn 4
-
-                                                        scent' : Coords -> Maybe(Terrain)
                                                         scent' = scent terrain
+                                                        moveInDir' = moveInDir terrain currPos
 
-                                                        towardsDo : Direction -> (Direction-> Maybe(Terrain)) -> Maybe(Terrain)
                                                         towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
                                                                                     Just dir -> dirF dir
                                                                                     Nothing -> turn 2
@@ -85,13 +66,13 @@ behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos : Coords
                                                              (Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
                                                              (Just _, _, _)                      -> turn 1
                                                               
-                                                             (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) >>= (moveInDir dir))
+                                                             (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) >> (moveInDir' dir))
 
-                                                             (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos) >>= (moveInDir dir))
+                                                             (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos) >> (moveInDir' dir))
                                                                
-                                                             (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir dir)
+                                                             (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir' dir)
 
-                                                             (_, _, _) -> moveInDir forward -- should walk randomly!
+                                                             (_, _, _) -> moveInDir' forward -- should walk randomly!
 
 
 --filterPath : Direction -> Direction -> [Maybe(Sight)] -> [Maybe(Smell)] -> String-- Maybe(Direction)

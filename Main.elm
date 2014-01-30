@@ -25,7 +25,7 @@ import AntColony.Model.Scenting
 import AntColony.Model.Seeing
 import AntColony.Model.Smelling
 
---import AntColony.Model.Behaviour
+import AntColony.Model.Behaviour
 
 tileSize = 20
 width = 10
