@@ -1,6 +1,5 @@
 module AntColony.Model.Terrain where
 
-import Dict
 import open AntColony.Geography.Area
 import open AntColony.Model.Food
 import open AntColony.Model.AntT
@@ -54,14 +53,11 @@ asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
 
 getAnts : Terrain -> [Occupant]
-getAnts terrain = Dict.values terrain.elems |> map (\position -> position.occupant)
-                                            |> filter (\occupant -> case occupant of 
-                                                                         Just (Ant ant) -> True
-                                                                         _ -> False
-                                                      )
-                                            |> map (\mbOcc -> case mbOcc of
-                                                                   Just x -> x
-                                                   ) -- FIXME: what about the Nothing case?
-
-
-
+getAnts terrain = values terrain |> map (\position -> position.occupant)
+                                 |> filter (\occupant -> case occupant of 
+                                                              Just (Ant ant) -> True
+                                                              _ -> False
+                                           )
+                                 |> map (\mbOcc -> case mbOcc of
+                                                        Just x -> x
+                                        ) -- FIXME: what about the Nothing case?

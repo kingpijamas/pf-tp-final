@@ -23,12 +23,12 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
-type SensorData = ([Maybe(Sight)],[Maybe(Smell)],Maybe(Load))
+type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
 
 getSensingDirs : Direction -> [Direction]
 getSensingDirs orientation = [orientation, lft orientation, rght orientation]
 
-sensors : (Terrain,AntT) -> SF Coords SensorData
+sensors : (Terrain, AntT) -> SF Coords SensorData
 sensors (terrain,ant) = let orientation = ant.orientation
                             sensingDirs = getSensingDirs orientation
 
@@ -38,7 +38,7 @@ sensors (terrain,ant) = let orientation = ant.orientation
                          in
                             (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF Coords SensorData
 
-behaviour : ((Terrain,AntT), SensorData) -> Maybe(Terrain)
+behaviour : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos = ant.position
                                                         forward = ant.orientation
                                                         frontPos = currPos `addDir` forward
@@ -65,18 +65,12 @@ behaviour ((terrain,ant),(seen,smelled,currLoad)) = let currPos = ant.position
                                                              (Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
                                                              (Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
                                                              (Just _, _, _)                      -> turn 1
-                                                              
-                                                             (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) >> (moveInDir' dir))
-
-                                                             (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos) >> (moveInDir' dir))
-                                                               
+                                                             (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) 
+                                                                                                                    >> (moveInDir' dir))
+                                                             (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos)
+                                                                                                                             >> (moveInDir' dir))
                                                              (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir' dir)
-
                                                              (_, _, _) -> moveInDir' forward -- should walk randomly!
-
-
---filterPath : Direction -> Direction -> [Maybe(Sight)] -> [Maybe(Smell)] -> String-- Maybe(Direction)
---filterPath curr wish sight smell = let paths = 
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
