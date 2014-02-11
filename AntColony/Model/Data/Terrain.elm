@@ -36,11 +36,14 @@ position occ scent = { occupant = occ
                      , scent = scent
                      }
 
-fmap : (Maybe(Occupant) -> Maybe(Occupant)) -> Position -> Position
-fmap f pos = { pos | occupant <- (f (pos.occupant)) }
-
 setOccupant : Position -> Maybe(Occupant) -> Position
-setOccupant pos occ = (\_ -> occ) `fmap` pos
+setOccupant pos occ = { pos | occupant <- occ }
+
+setOccupant' : Position -> Occupant -> Position
+setOccupant' pos occ = { pos | occupant <- Just occ }
+
+empty : Position -> Position
+empty pos = { pos | occupant <- Nothing }
 
 asAnt : AntT -> Occupant
 asAnt x = Ant x

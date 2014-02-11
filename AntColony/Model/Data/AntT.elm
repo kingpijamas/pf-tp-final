@@ -27,3 +27,6 @@ ant = { position = coords 1 1
 
 setCargo : AntT -> Cargo -> AntT
 setCargo ant cargo' = { ant | cargo <- cargo' }
+
+setPosition : AntT -> Coords -> AntT
+setPosition ant coords' = { ant | position <- coords' }

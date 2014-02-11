@@ -40,9 +40,9 @@ ld terrain ldrPos fd = let load' pos = case pos.occupant of
                                             Nothing -> return ((foodChunk fd, Nothing), cast pos asFood)
                                             _ -> Nothing
 
-                           asAnt' pos ant (cargo',rem) = return (pos `setOccupant` Just (asAnt (ant `setCargo` cargo')), rem)
+                           asAnt' pos ant (cargo',rem) = return (pos `setOccupant'` (asAnt (ant `setCargo` cargo')), rem)
 
-                           cast pos castF (occ',rem) = return (pos `setOccupant` ((return . castF) occ'), rem)
+                           cast pos castF (occ',rem) = return (pos `setOccupant'` (castF occ'), rem)
 
                            updatePos ((occ',rem), cast') = cast' (occ',rem) 
 
