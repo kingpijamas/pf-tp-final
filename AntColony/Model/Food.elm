@@ -1,4 +1,4 @@
-module AntColony.Model.Data.Food where
+module AntColony.Model.Food where
   
 import open AntColony.Utils.Maybe
 

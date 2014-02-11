@@ -1,10 +1,10 @@
-module AntColony.Model.Moving where
+module AntColony.Logic.Moving where
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
-import open AntColony.Model.Data.Terrain
-import open AntColony.Model.Data.AntT
+import open AntColony.Model.Terrain
+import open AntColony.Model.AntT
 
 import open AntColony.Utils.Maybe
 import open AntColony.Utils.Tuple

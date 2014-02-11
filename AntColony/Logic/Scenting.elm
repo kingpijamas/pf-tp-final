@@ -1,9 +1,9 @@
-module AntColony.Model.Scenting where
+module AntColony.Logic.Scenting where
 
-import open AntColony.Model.Data.Terrain
+import open AntColony.Model.Terrain
 import open AntColony.Geography.Area
 
-import AntColony.Model.Data.Scentable as Sc
+import AntColony.Model.Scentable as Sc
 import open AntColony.Utils.Maybe
 
 

@@ -1,4 +1,4 @@
-module AntColony.Model.Loading where
+module AntColony.Logic.Loading where
 
 import open AntColony.Utils.SignalFunction
 import open AntColony.Utils.Maybe
@@ -8,9 +8,9 @@ import open AntColony.Utils.Tuple
 
 import open AntColony.Geography.Area
 
-import open AntColony.Model.Data.Terrain
-import open AntColony.Model.Data.Food
-import open AntColony.Model.Data.AntT
+import open AntColony.Model.Terrain
+import open AntColony.Model.Food
+import open AntColony.Model.AntT
 
 load : Terrain -> Coords -> Coords -> Maybe(Terrain)
 load terrain ldrPos unldrPos = let load' ldrPos (terrain',cargo) = ld terrain' ldrPos cargo

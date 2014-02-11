@@ -1,8 +1,8 @@
-module AntColony.Model.LoadSensing where
+module AntColony.Logic.LoadSensing where
 
-import open AntColony.Model.Perceiving
-import open AntColony.Model.Data.Food
-import open AntColony.Model.Data.Terrain
+import open AntColony.Logic.Perceiving
+import open AntColony.Model.Food
+import open AntColony.Model.Terrain
 import open AntColony.Utils.Maybe
 
 type Load = FoodCarrier {}

@@ -1,11 +1,11 @@
-module AntColony.Model.Data.Terrain where
+module AntColony.Model.Terrain where
 
 import Dict
 import open AntColony.Geography.Area
-import open AntColony.Model.Data.Food
-import open AntColony.Model.Data.AntT
-import open AntColony.Model.Data.AntNestT
-import open AntColony.Model.Data.Scentable
+import open AntColony.Model.Food
+import open AntColony.Model.AntT
+import open AntColony.Model.AntNestT
+import open AntColony.Model.Scentable
 
 type Terrain = Area Position
 
@@ -21,15 +21,13 @@ terrain width height tiles = area width height tiles
 empty width height = empty width height
 --}
 
+{-- Position --}
 type Position = Scentable { occupant : Maybe(Occupant) }
 
 data Occupant = Rock
               | FoodChunk FoodChunkT
               | Ant AntT
               | AntNest AntNestT
-
-positionFor : Occupant -> Position
-positionFor occ = position (Just occ) Nothing
 
 position : Maybe(Occupant) -> Maybe(Pheromone) -> Position
 position occ scent = { occupant = occ
@@ -45,6 +43,7 @@ setOccupant' pos occ = { pos | occupant <- Just occ }
 empty : Position -> Position
 empty pos = { pos | occupant <- Nothing }
 
+{-- Casts --}
 asAnt : AntT -> Occupant
 asAnt x = Ant x
 
@@ -55,14 +54,14 @@ asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
 
 getAnts : Terrain -> [Occupant]
-getAnts terrain = Dict.values terrain.elems |> asOccupants
-    |> filter (\occupant -> case occupant of 
-                                Just (Ant ant) -> True
-                                _ -> False)
-    |> map (\maybeOcc -> case maybeOcc of Just x -> x)
-
-asOccupants : [Position] -> [Maybe Occupant]
-asOccupants = map (\scentable -> scentable.occupant) 
+getAnts terrain = Dict.values terrain.elems |> map (\position -> position.occupant)
+                                            |> filter (\occupant -> case occupant of 
+                                                                         Just (Ant ant) -> True
+                                                                         _ -> False
+                                                      )
+                                            |> map (\mbOcc -> case mbOcc of
+                                                                   Just x -> x
+                                                   ) -- FIXME: what about the Nothing case?
 
 
 

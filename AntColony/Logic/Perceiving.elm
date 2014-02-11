@@ -1,6 +1,6 @@
-module AntColony.Model.Perceiving where
+module AntColony.Logic.Perceiving where
 
-import open AntColony.Model.Data.Terrain
+import open AntColony.Model.Terrain
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction

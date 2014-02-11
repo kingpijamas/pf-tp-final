@@ -1,4 +1,4 @@
-module AntColony.Model.Behaviour where
+module AntColony.Logic.Behaviour where
 
 import open Maybe
 import open List
@@ -10,18 +10,18 @@ import open AntColony.Utils.SignalFunction
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
-import open AntColony.Model.Data.Terrain
-import open AntColony.Model.Data.Scentable
-import open AntColony.Model.Data.AntT
+import open AntColony.Model.Terrain
+import open AntColony.Model.Scentable
+import open AntColony.Model.AntT
 
-import open AntColony.Model.Perceiving
-import open AntColony.Model.LoadSensing
-import open AntColony.Model.Loading
-import open AntColony.Model.Moving
-import open AntColony.Model.Rotating
-import open AntColony.Model.Scenting
-import open AntColony.Model.Seeing
-import open AntColony.Model.Smelling
+import open AntColony.Logic.Perceiving
+import open AntColony.Logic.LoadSensing
+import open AntColony.Logic.Loading
+import open AntColony.Logic.Moving
+import open AntColony.Logic.Rotating
+import open AntColony.Logic.Scenting
+import open AntColony.Logic.Seeing
+import open AntColony.Logic.Smelling
 
 type SensorData = ([Maybe(Sight)],[Maybe(Smell)],Maybe(Load))
 

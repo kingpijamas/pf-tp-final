@@ -1,10 +1,10 @@
-module AntColony.Model.Data.AntT where
+module AntColony.Model.AntT where
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
-import open AntColony.Model.Data.Food
-import open AntColony.Model.Data.Scentable
+import open AntColony.Model.Food
+import open AntColony.Model.Scentable
 
 import open Dict
 

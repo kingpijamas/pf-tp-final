@@ -2,30 +2,16 @@ module AntColony.Main where
 
 import Window
 import Dict
-import AntColony.Model.Data.Terrain as T
-
+import AntColony.Model.Terrain as T
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
-import open AntColony.Model.Data.AntT
-import open AntColony.Model.Data.AntNestT
-import open AntColony.Model.Data.Food
+import open AntColony.Model.AntT
+import open AntColony.Model.AntNestT
+import open AntColony.Model.Food
 
-import open AntColony.Utils.Maybe
-import open AntColony.Utils.Tuple
-import open AntColony.Utils.SignalFunction
-
-import AntColony.Model.Perceiving
-import AntColony.Model.LoadSensing
-import AntColony.Model.Loading
-import AntColony.Model.Moving
-import AntColony.Model.Rotating
-import AntColony.Model.Scenting
-import AntColony.Model.Seeing
-import AntColony.Model.Smelling
-
-import AntColony.Model.Behaviour
+import AntColony.Logic.Behaviour
 
 tileSize = 20
 width = 10
@@ -34,25 +20,25 @@ height = 12
 main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
 
 simulation : T.Terrain
-simulation = let
-                 pos' occ ph = T.position (Just occ) ph
-                 tiles = [ (coords 3 3, T.positionFor (T.Ant ant))
-                         , (coords 2 2, T.positionFor (T.Ant ant))
-                         , (coords 4 4, T.positionFor (T.AntNest antNest))
-                         , (coords 9 10, T.positionFor (T.FoodChunk (foodChunk 5)))
-                     ] ++ (buildSurroundingStones width height)
-             in 
-                T.terrain width height tiles
+simulation = let pos' occ = T.position (Just occ) Nothing
+                 
+                 tiles = [ (coords 3 3, pos' (T.Ant ant))
+                         , (coords 2 2, pos' (T.Ant ant))
+                         , (coords 4 4, pos' (T.AntNest antNest))
+                         , (coords 9 10, pos' (T.FoodChunk (foodChunk 5)))
+                         ] ++ (buildSurroundingStones width height)
+              in 
+                 T.terrain width height tiles
 
 buildSurroundingStones : Int -> Int -> [(Coords, T.Position)]
-buildSurroundingStones w h = foldl (\coord list -> (buildRock coord) :: list) []
-    <| 
-        (map (\y -> (1, y)) [1..h]) ++ (map (\y -> (w, y)) [1..h])
-        ++ (map (\x -> (x, 1)) [2..w - 1]) ++ (map (\x -> (x, h)) [2..w - 1])
-
-
-buildRock : (Int, Int) -> (Coords, T.Position)
-buildRock (x,y) = (coords x y, T.positionFor T.Rock)
+buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just T.Rock) Nothing)
+                              in 
+                                 foldl (\coord list -> (buildRock coord) :: list) [] 
+                                  <| 
+                                     (map (\y -> (1, y)) [1..h])
+                                     ++ (map (\y -> (w, y)) [1..h])
+                                     ++ (map (\x -> (x, 1)) [2..w - 1])
+                                     ++ (map (\x -> (x, h)) [2..w - 1])
 
 step : Float->T.Terrain->T.Terrain
 step t terrain = signalAnts <| terrain 
