@@ -2,7 +2,7 @@ module AntColony.Logic.Smelling where
 
 import open AntColony.Logic.Perceiving
 import open AntColony.Model.Terrain
-import open AntColony.Model.Scentable
+import open AntColony.Model.Scent
 
 type Smell = Pheromone
 

@@ -3,7 +3,7 @@ module AntColony.Logic.Scenting where
 import open AntColony.Model.Terrain
 import open AntColony.Geography.Area
 
-import AntColony.Model.Scentable as Sc
+import AntColony.Model.Scent as Sc
 import open AntColony.Utils.Maybe
 
 

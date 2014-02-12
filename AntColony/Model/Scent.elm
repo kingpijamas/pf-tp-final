@@ -1,4 +1,4 @@
-module AntColony.Model.Scentable where
+module AntColony.Model.Scent where
 
 type Pheromone = Int
 

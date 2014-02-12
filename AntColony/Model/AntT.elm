@@ -4,7 +4,7 @@ import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Food
-import open AntColony.Model.Scentable
+import open AntColony.Model.Scent
 
 import open Dict
 

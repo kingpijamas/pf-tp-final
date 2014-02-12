@@ -34,6 +34,12 @@ first sf1 = sf1 *** identity
 second : SF b c -> SF (d,b) (d,c)
 second sf1 = identity *** sf1
 
+--The force is strong in this one. Seems to be right though
+loop : SF (b,d) (c,d) -> SF b c
+loop (SF f sf) = let loop' f b = let (c,d) = f (b,d) in c
+                  in
+                     arr (loop' f)
+
 {-- Automaton --}
 impure : (a->Maybe b) -> SF (Maybe a) (Maybe b)
 impure f = arr (\mbx -> mbx >>= f)
@@ -44,4 +50,4 @@ combine sfs = let f' : SF a b -> SF a [b] -> SF a [b]
                in
                   case sfs of
                     [sf] -> sf >>> (arr (\x -> [x]))
-                    sf::sfs' -> f' sf (combine sfs')
+                    (sf::sfs') -> f' sf (combine sfs')

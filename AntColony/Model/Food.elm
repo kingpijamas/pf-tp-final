@@ -8,9 +8,6 @@ food : Int -> Maybe(Food)
 food x = if x > 0
          then Just(x)
          else Nothing
-         
-newFood : Int -> Food
-newFood amount = amount
 
 type FoodCarrier a = { a | food:Maybe(Food), limit:Maybe(Int) }
 

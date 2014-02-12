@@ -11,7 +11,7 @@ import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
 
-import AntColony.Logic.Behaviour
+import AntColony.Logic.AntLogic
 
 tileSize = 20
 width = 10
