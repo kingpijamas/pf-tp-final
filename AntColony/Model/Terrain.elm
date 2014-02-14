@@ -33,6 +33,9 @@ position occ scent = { occupant = occ
                      , scent = scent
                      }
 
+getOccupant : Position -> Maybe(Occupant)
+getOccupant pos = pos.occupant
+
 setOccupant : Position -> Maybe(Occupant) -> Position
 setOccupant pos occ = { pos | occupant <- occ }
 
@@ -53,11 +56,13 @@ asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
 
 getAnts : Terrain -> [Occupant]
-getAnts terrain = values terrain |> map (\position -> position.occupant)
-                                 |> filter (\occupant -> case occupant of 
-                                                              Just (Ant ant) -> True
-                                                              _ -> False
-                                           )
-                                 |> map (\mbOcc -> case mbOcc of
-                                                        Just x -> x
-                                        ) -- FIXME: what about the Nothing case?
+getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
+                      
+                      hasAnt pos = case pos.occupant of
+                                        Just (Ant _) -> True
+                                        _ -> False
+
+                      decont justAntPos = case justAntPos.occupant of
+                                               Just ant -> ant
+                   in
+                      map decont justAntPoss

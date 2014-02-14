@@ -23,9 +23,18 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
+--animateAnts : SF (Terrain) (Maybe(Terrain))
+--animateAnts = (identity &&& (arr getAnts)) --  SF Terrain (Terrain,[AntT])
+--               >>> loop animate
 
---animate : (Terrain, Ant) -> Maybe(Terrain)
---animate =  
+
+
+animate : SF (Terrain, [AntT]) (Maybe(Terrain), [AntT])--(Maybe(Terrain), [AntT])--Maybe(Terrain, [AntT])
+animate = let getFirst = arr (\(terrain, ants) -> ((terrain, head ants), tail ants) )
+           in getFirst                            -- : SF (Terrain, [AntT]) ((Terrain, AntT), [AntT])
+               >>> (first (identity &&& sense))   -- : SF ((Terrain, AntT), [AntT]) (((Terrain, AntT),(SensorData)), [AntT])
+               >>> (first (arr act))              -- : SF (((Terrain, AntT), SensorData), [AntT]) (Maybe(Terrain), [AntT])
+               -- >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
 
 
 type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
@@ -33,16 +42,15 @@ type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
 getSensingDirs : Direction -> [Direction]
 getSensingDirs orientation = [orientation, lft orientation, rght orientation]
 
---come las coords de la hormiga
 sense : SF (Terrain, AntT) SensorData
 sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs ant.orientation) terrain ant.position
-            eyes = arr (dirPerceptors see)             -- : SF (Terrain, Ant) [Maybe(Sight)]
-            antennae = arr (dirPerceptors smell)       -- : SF (Terrain, Ant) [Maybe(Smell)]
+            eyes = arr (dirPerceptors see)                    -- : SF (Terrain, AntT) [Maybe(Sight)]
+            antennae = arr (dirPerceptors smell)              -- : SF (Terrain, AntT) [Maybe(Smell)]
 
             perceptor' pf (terrain, ant) = perceive pf terrain ant.position
-            loadSensor  =  arr (perceptor' senseLoad)  -- : SF (Terrain, Ant) Maybe(Cargo)
+            loadSensor  =  arr (perceptor' senseLoad)         -- : SF (Terrain, AntT) Maybe(Cargo)
          in
-            (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF (Terrain, Ant) (SensorData)
+            (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)
 
 act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 act ((terrain,ant)
@@ -51,9 +59,6 @@ act ((terrain,ant)
                                     frontPos = currPos `addDir` forward
                                     toNest = currPos `dirTo` ant.nestPos
 
-                                    frontSight = head seen
-                                    frontSmell = head smelled
-            
                                     loadFrom = load terrain currPos
                                     unloadTo = unload terrain currPos
                                     turn times = clckN times terrain currPos -- TODO: turn randomly!
@@ -65,7 +70,7 @@ act ((terrain,ant)
                                                                Just dir -> dirF dir
                                                                Nothing -> turn 2
                                  in
-                                    case (frontSight, frontSmell, currLoad) of
+                                    case (head seen, head smelled, currLoad) of
                                          (Just (FoodChunk _), _, Nothing)    -> frontPos >>= loadFrom 
                                          (Just (FoodChunk _), _, Just cargo) -> turnAround -- could probably be removed
                                          (Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
