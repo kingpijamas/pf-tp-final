@@ -1,4 +1,4 @@
-module AntColony.Logic.AntLogic where
+module AntColony.Logic.Ant where
 
 import open Maybe
 import open List
@@ -28,22 +28,21 @@ import open AntColony.Logic.Smelling
 --animate =  
 
 
-
 type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
 
 getSensingDirs : Direction -> [Direction]
 getSensingDirs orientation = [orientation, lft orientation, rght orientation]
 
 --come las coords de la hormiga
-sensors : (Terrain, AntT) -> SF Coords SensorData
-sensors (terrain, ant) = let orientation = ant.orientation
-                             sensingDirs = getSensingDirs orientation
+sense : SF (Terrain, AntT) SensorData
+sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs ant.orientation) terrain ant.position
+            eyes = arr (dirPerceptors see)             -- : SF (Terrain, Ant) [Maybe(Sight)]
+            antennae = arr (dirPerceptors smell)       -- : SF (Terrain, Ant) [Maybe(Smell)]
 
-                             eyes = perceptors see sensingDirs terrain             -- : SF Coords [Maybe(Occupant)]
-                             antennae = perceptors smell sensingDirs terrain       -- : SF Coords [Maybe(Pheromone)]
-                             loadSensor = perceptor senseLoad terrain              -- : SF Coords Cargo
-                          in
-                             (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF Coords SensorData
+            perceptor' pf (terrain, ant) = perceive pf terrain ant.position
+            loadSensor  =  arr (perceptor' senseLoad)  -- : SF (Terrain, Ant) Maybe(Cargo)
+         in
+            (eyes &&& antennae &&& loadSensor) >>> (arr flatten)  -- : SF (Terrain, Ant) (SensorData)
 
 act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 act ((terrain,ant)

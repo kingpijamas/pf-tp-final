@@ -31,7 +31,7 @@ identity = arr id
 first : SF b c -> SF (b,d) (c,d)
 first sf1 = sf1 *** identity
 
-second : SF b c -> SF (d,b) (d,c)
+second : SF a b -> SF (c,a) (c,b)
 second sf1 = identity *** sf1
 
 --The force is strong in this one. Seems to be right though

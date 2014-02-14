@@ -18,10 +18,8 @@ perceiveInDir : PerceptionF p -> Direction -> Terrain -> Coords -> Maybe(p)
 perceiveInDir pf dir terrain from = (from `addDir` dir)            -- : Maybe(Coords)
                                      >>= (perceive pf terrain)     -- : Coords -> Maybe(Perception p)
 
-perceptor : PerceptionF p -> Terrain -> SF Coords (Maybe(p))
-perceptor pf terrain = arr (perceive pf terrain)
+perceiveInDirs : PerceptionF p -> [Direction] -> Terrain -> Coords -> [Maybe(p)]
+perceiveInDirs pf dirs terrain from = map (\dir -> perceiveInDir pf dir terrain from) dirs
 
-perceptors : PerceptionF p -> [Direction] -> Terrain -> SF Coords [Maybe(p)]
-perceptors pf sensingDirs terrain = let p dir = arr (perceiveInDir pf dir terrain)
-                                     in
-                                        combine (map p sensingDirs)
+perceptor : PerceptionF p -> SF (Terrain, Coords) (Maybe p)
+perceptor pf = arr (uncurry (perceive pf))
