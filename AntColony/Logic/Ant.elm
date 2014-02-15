@@ -23,17 +23,31 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
--- animateAnts : SF (Terrain) (Maybe(Terrain))
--- animateAnts = (identity &&& (arr getAnts)) --  SF Terrain (Terrain,[AntT])
---               >>> loop animate
+animateAnts : SF Terrain (Terrain,[AntT]) --SF (Terrain) (Maybe(Terrain))
+animateAnts = let getAnts' terrain = map (\occ -> case occ of
+                                                       (Ant ant) -> ant) (getAnts terrain)
 
-animate : SF (Terrain, [AntT]) (Maybe(Terrain, [AntT]))
+                  hasAnt (_,ants) = not <| isEmpty ants
+               in
+                  (identity &&& (arr getAnts'))              -- : SF Terrain (Terrain,[AntT])
+--                  >>> loop (fork hasAnt animate identity)  -- : SF (Terrain) (Maybe(Terrain))
+
+
+-- (&&&) : SF a b -> SF a c -> SF a (b,c)
+-- identity : SF a a
+-- SF Terrain [Occupant]
+
+
+-- loop : SF (b,d) (c,d) -> SF b c
+-- fork : (a -> Bool) -> SF a b -> SF a b -> SF a b
+
+animate : SF (Terrain, [AntT]) (Maybe(Terrain), [AntT])
 animate = let getFirst = arr (\(terrain, ants) -> ((terrain, head ants), tail ants))
            in 
               getFirst                            -- : SF (Terrain, [AntT]) ((Terrain, AntT), [AntT])
                >>> (first (identity &&& sense))   -- : SF ((Terrain, AntT), [AntT]) (((Terrain, AntT),(SensorData)), [AntT])
                >>> (first (arr act))              -- : SF (((Terrain, AntT), SensorData), [AntT]) (Maybe(Terrain), [AntT])
-               >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
+--               >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
 
 
 type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
