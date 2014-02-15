@@ -40,8 +40,9 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
                                      ++ (map (\x -> (x, 1)) [2..w - 1])
                                      ++ (map (\x -> (x, h)) [2..w - 1])
 
-step : Float->T.Terrain->T.Terrain
-step t terrain = signalAnts <| terrain 
+step : Float -> T.Terrain -> T.Terrain
+step t terrain = terrain
+-- signalAnts <|
 
 --TODO: mover esto a Behaviour (o donde tenga que ir...)
 signalAnts : T.Terrain -> T.Terrain
@@ -88,7 +89,7 @@ translateTile x y tileSize form =
     in move (xOffsset, yOffsset) form
 
 squarePath : Float -> Path
-squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]                          
+squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]
 
 terrainTilesAsForm : T.Terrain -> [Form]
 terrainTilesAsForm terrain = map (\(position, pos) -> terrainTileForm position pos tileSize) <| asTileList terrain

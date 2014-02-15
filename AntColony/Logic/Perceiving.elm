@@ -21,5 +21,5 @@ perceiveInDir pf dir terrain from = (from `addDir` dir)            -- : Maybe(Co
 perceiveInDirs : PerceptionF p -> [Direction] -> Terrain -> Coords -> [Maybe(p)]
 perceiveInDirs pf dirs terrain from = map (\dir -> perceiveInDir pf dir terrain from) dirs
 
-perceptor : PerceptionF p -> SF (Terrain, Coords) (Maybe p)
-perceptor pf = arr (uncurry (perceive pf))
+-- perceptor : PerceptionF p -> SF (Terrain, Coords) (Maybe p)
+-- perceptor pf = arr (uncurry (perceive pf))

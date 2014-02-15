@@ -33,26 +33,27 @@ unload terrain unldrPos ldrPos = load terrain ldrPos unldrPos
 
 {-- Auxiliary, model-specific methods --}
 ld : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))    -- : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))
-ld terrain ldrPos fd = let load' pos = case pos.occupant of
-                                            Just(Ant ant) -> joinFst (ant.cargo `loadFood` fd, asAnt' pos ant)
-                                            Just(AntNest nest) -> joinFst (nest `loadFood` fd, cast pos asNest)
-                                            Just(FoodChunk chunk) -> joinFst (chunk `loadFood` fd, cast pos asFood)
+ld terrain ldrPos fd = (terrain `get` ldrPos)                                 -- Maybe(Position) 
+--                        >>= (updateOccupant (\occupant -> Just occupant))    -- Position -> Maybe(Position)
+                        >>= (\x -> Just (terrain, Nothing))
+
+{-
+    let load' pos = case pos.occupant of
+                                            Just(Ant ant) -> joinFst (loadFood ant.cargo fd, asAnt' pos ant)
+                                            Just(AntNest nest) -> joinFst (loadFood nest fd, cast pos asNest)
+                                            Just(FoodChunk chunk) -> joinFst (loadFood chunk fd, cast pos asFood)
                                             Nothing -> return ((foodChunk fd, Nothing), cast pos asFood)
                                             _ -> Nothing
-
-                           asAnt' pos ant (cargo',rem) = return (pos `setOccupant'` (asAnt (ant `setCargo` cargo')), rem)
-
-                           cast pos castF (occ',rem) = return (pos `setOccupant'` (castF occ'), rem)
-
+                           asAnt' pos ant (cargo',rem) = Nothing -- return (pos `setOccupant2` (asAnt (ant `setCargo` cargo')), rem)
+                           cast pos castF (occ',rem) = Nothing -- return (pos `setOccupant2` (castF occ'), rem)
                            updatePos ((occ',rem), cast') = cast' (occ',rem) 
-
                            updateTerrain (pos',rem) = joinFst (terrain `add` pos', rem)
-                        in 
+                        in
                            (terrain `get` ldrPos)            -- : Maybe(Position)
                             >>= load'                        -- : Position -> Maybe((Occupant, Maybe(Food)), (Occupant, Maybe(Food))->Maybe(Position,Maybe(Food)))
                             >>= updatePos                    -- : ((Occupant, Maybe(Food)), (Occupant, Maybe(Food))->Maybe(Position,Maybe(Food))) -> Maybe(Position,Maybe(Food))
                             >>= updateTerrain                -- : (Position, Maybe(Food)) -> Maybe(Terrain,Maybe(Food))
-
+-}
 
 unld : Terrain -> Coords -> Maybe(Terrain, Food)    -- : Terrain -> Coords -> Maybe(Terrain, Food)
 unld terrain unldrPos = let unload' pos = case pos.occupant of
@@ -62,16 +63,13 @@ unld terrain unldrPos = let unload' pos = case pos.occupant of
                                                _ -> Nothing
 
                             asAnt' pos ant (cargo',food) = return (pos `setOccupant` Just (asAnt (ant `setCargo` cargo')), food)
-                            
                             asNest' = return . asNest
-
                             cast pos castF (occ',fd) = return (pos `setOccupant` (castF occ'), fd)
-
                             updatePos ((occ',fd), cast') = cast' (occ',fd)
-
                             updateTerrain (pos',fd) = joinFst (terrain `add` pos', fd)
                         in
                            (terrain `get` unldrPos)          -- : Maybe(Position)
                             >>= unload'                      -- : Position -> Maybe ((Occupant, Food), (Occupant, Food) -> Maybe(Position, Food))
                             >>= updatePos                    -- : ((Occupant, Food), (Occupant, Food) -> Maybe(Position, Food)) -> Maybe(Position, Food)
                             >>= updateTerrain                -- : (Position, Food) -> Maybe(Terrain, Food)
+

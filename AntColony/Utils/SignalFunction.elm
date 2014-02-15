@@ -7,6 +7,9 @@ import open AntColony.Utils.Maybe
 
 data SF a b = SF (a -> b) (Signal a -> Signal b) | Switch 
 
+bindToEvent : Signal a -> SF a b -> Signal b
+bindToEvent signal (SF _ sf)  = sf signal
+
 arr : (a -> b) -> SF a b
 arr f = SF f (lift f)
 
@@ -46,6 +49,11 @@ loop (SF f sf) = let loop' f b = let (c,d) = f (b,d) in c
                   in
                      arr (loop' f)
 
+fork : (a -> Bool) -> SF a b -> SF a b -> SF a b
+fork cond (SF f1 _) (SF f2 _) = let iff a = if (cond a) then f1 a else f2 a
+                                 in
+                                    arr iff
+
 --type Event e = Maybe e
 
 --switch : SF a (b,Event c) -> (c -> SF a b) -> SF a b
@@ -75,3 +83,4 @@ parB sfs = let f' : SF a b -> SF a [b] -> SF a [b]
                case sfs of
                     [sf] -> sf >>> (arr (\x -> [x]))
                     (sf::sfs') -> f' sf (parB sfs')
+

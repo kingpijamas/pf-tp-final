@@ -37,8 +37,8 @@ evict terrain from = let evict' pos = case pos.occupant of
 
 occupy : Terrain -> Coords -> Occupant -> Maybe(Terrain)
 occupy terrain whr occ = let occupy' pos = case (pos.occupant, occ) of
-                                                (Nothing, Ant ant) -> return (pos `setOccupant'` (asAnt (ant `setPosition` whr)))
-                                                (Nothing, _) -> return (pos `setOccupant'` occ) -- TODO: should probably remove this
+                                                (Nothing, Ant ant) -> return (pos `setOccupant2` (asAnt (ant `setPosition` whr)))
+                                                (Nothing, _) -> return (pos `setOccupant2` occ) -- TODO: should probably remove this
                                                 _ -> Nothing
 
                              updateTerrain pos' = add terrain whr pos'

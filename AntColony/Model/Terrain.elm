@@ -33,27 +33,30 @@ position occ scent = { occupant = occ
                      , scent = scent
                      }
 
+updateOccupant : Position -> (Maybe(Occupant)->Maybe(Occupant)) -> Position
+updateOccupant pos update = setOccupant pos (update pos.occupant)
+
 getOccupant : Position -> Maybe(Occupant)
 getOccupant pos = pos.occupant
 
 setOccupant : Position -> Maybe(Occupant) -> Position
 setOccupant pos occ = { pos | occupant <- occ }
 
-setOccupant' : Position -> Occupant -> Position
-setOccupant' pos occ = { pos | occupant <- Just occ }
+setOccupant2 : Position -> Occupant -> Position
+setOccupant2 pos occ = { pos | occupant <- Just occ }
 
 empty : Position -> Position
 empty pos = { pos | occupant <- Nothing }
 
 {-- Casts --}
 asAnt : AntT -> Occupant
-asAnt x = Ant x
+asAnt x = Rock
 
 asNest : AntNestT -> Occupant
-asNest x = AntNest x
+asNest x = Rock
 
 asFood : FoodChunkT -> Occupant
-asFood x = FoodChunk x
+asFood x = Rock
 
 getAnts : Terrain -> [Occupant]
 getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
@@ -66,3 +69,5 @@ getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
                                                Just ant -> ant
                    in
                       map decont justAntPoss
+
+

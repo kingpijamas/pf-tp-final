@@ -23,18 +23,17 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
---animateAnts : SF (Terrain) (Maybe(Terrain))
---animateAnts = (identity &&& (arr getAnts)) --  SF Terrain (Terrain,[AntT])
+-- animateAnts : SF (Terrain) (Maybe(Terrain))
+-- animateAnts = (identity &&& (arr getAnts)) --  SF Terrain (Terrain,[AntT])
 --               >>> loop animate
 
-
-
-animate : SF (Terrain, [AntT]) (Maybe(Terrain), [AntT])--(Maybe(Terrain), [AntT])--Maybe(Terrain, [AntT])
-animate = let getFirst = arr (\(terrain, ants) -> ((terrain, head ants), tail ants) )
-           in getFirst                            -- : SF (Terrain, [AntT]) ((Terrain, AntT), [AntT])
+animate : SF (Terrain, [AntT]) (Maybe(Terrain, [AntT]))
+animate = let getFirst = arr (\(terrain, ants) -> ((terrain, head ants), tail ants))
+           in 
+              getFirst                            -- : SF (Terrain, [AntT]) ((Terrain, AntT), [AntT])
                >>> (first (identity &&& sense))   -- : SF ((Terrain, AntT), [AntT]) (((Terrain, AntT),(SensorData)), [AntT])
                >>> (first (arr act))              -- : SF (((Terrain, AntT), SensorData), [AntT]) (Maybe(Terrain), [AntT])
-               -- >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
+               >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
 
 
 type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
@@ -47,11 +46,11 @@ sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs 
             eyes = arr (dirPerceptors see)                    -- : SF (Terrain, AntT) [Maybe(Sight)]
             antennae = arr (dirPerceptors smell)              -- : SF (Terrain, AntT) [Maybe(Smell)]
 
-            perceptor' pf (terrain, ant) = perceive pf terrain ant.position
-            loadSensor  =  arr (perceptor' senseLoad)         -- : SF (Terrain, AntT) Maybe(Cargo)
+            perceptor pf (terrain, ant) = perceive pf terrain ant.position
+            loadSensor  =  arr (perceptor senseLoad)         -- : SF (Terrain, AntT) Maybe(Cargo)
          in
-            (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)
-
+            (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)          
+          
 act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 act ((terrain,ant)
     ,(seen,smelled,currLoad)) = let currPos = ant.position
@@ -63,8 +62,6 @@ act ((terrain,ant)
                                     unloadTo = unload terrain currPos
                                     turn times = clckN times terrain currPos -- TODO: turn randomly!
                                     turnAround = turn 4
-                                    scent' = scent terrain
-                                    moveInDir' = moveInDir terrain currPos
 
                                     towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
                                                                Just dir -> dirF dir
@@ -76,12 +73,11 @@ act ((terrain,ant)
                                          (Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
                                          (Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
                                          (Just _, _, _)                      -> turn 1
-                                         (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent' currPos) 
-                                                                                                >> (moveInDir' dir))
-                                         (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent' currPos)
-                                                                                                       >> (moveInDir' dir))
-                                         (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir' dir)
-                                         (_, _, _) -> moveInDir' forward -- should walk randomly!
+                                         (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos) >> (moveInDir terrain currPos dir))
+                                         (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
+                                                                                                       >> (moveInDir terrain currPos dir))
+                                         (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
+                                         (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
@@ -93,12 +89,12 @@ findPath goal paths = let isPathToGoal (dir,_,_) = goal == dir
 
                           occAndSmell (_,mbocc,mbsmell) = (isJust mbocc, mbsmell)
 
-                          better p p' = case (occAndSmell p, occAndSmell p') of
-                                             ((True, _), (False, _)) -> p'
-                                             ((False, Just sm), (False, Just sm')) -> if sm >= sm'
-                                                                                      then p
-                                                                                      else p'
-                                             (_,_) -> p
+                          better p1 p2 = case (occAndSmell p1, occAndSmell p2) of
+                                              ((True, _), (False, _)) -> p2
+                                              ((False, Just sm1), (False, Just sm2)) -> if sm1 >= sm2
+                                                                                        then p1
+                                                                                        else p2
+                                              (_,_) -> p1
 
                           findPathIn goalP paths = foldl better goalP paths
                        in
