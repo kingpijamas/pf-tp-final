@@ -6,8 +6,6 @@ import open AntColony.Utils.Maybe
 import open AntColony.Utils.SignalFunction
 
 import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Terrain
@@ -88,8 +86,8 @@ act ((terrain,ant)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
                                          --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
-                                         --(_,_,_) -> turn 1 --move terrain currPos (5,5)
-                                         (_,_,_) -> return terrain
+                                         --(_,_,_) -> move terrain currPos (5,5)
+                                         --(_,_,_) -> turn 1
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 

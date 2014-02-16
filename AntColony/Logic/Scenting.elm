@@ -2,8 +2,6 @@ module AntColony.Logic.Scenting where
 
 import open AntColony.Model.Terrain
 import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 
 import AntColony.Model.Scent as Sc
 import open AntColony.Utils.Maybe

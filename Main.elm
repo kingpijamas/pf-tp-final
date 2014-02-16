@@ -5,8 +5,6 @@ import Dict
 import AntColony.Model.Terrain as T
 
 import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 import open AntColony.Utils.SignalFunction
 import open AntColony.Utils.Tuple
@@ -23,12 +21,12 @@ tileSize = 20
 width = 10
 height = 12
 
-main = lift2 display Window.dimensions (loop step (Just simulation) <| (fps 30))
+main = lift2 display Window.dimensions (loop step (Just simulation) <| (fps 1))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
                 
-                 nestPos = coords 4 4
+                 nestPos = coords 2 2
 
                  addNest position = (position, pos' (T.AntNest antNest))
                  
@@ -38,8 +36,8 @@ simulation = let pos' occ = T.position (Just occ) Nothing
 
                  tiles = [ addNest nestPos
                          --, addAnt (coords 2 2) N
-                         , addAnt (coords 3 3) S
-                         , addFood (coords 5 5) 5
+                         , addAnt (coords 4 4) S
+                         --, addFood (coords 5 5) 5
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
@@ -69,7 +67,7 @@ terrainAsForm terrain =
     let 
         ground = terrainMatrixForms terrain
         occupants = terrainTilesAsForm terrain
-    in (ground ++ occupants)
+    in (toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]

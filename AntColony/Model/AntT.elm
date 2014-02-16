@@ -1,8 +1,6 @@
 module AntColony.Model.AntT where
 
 import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Food

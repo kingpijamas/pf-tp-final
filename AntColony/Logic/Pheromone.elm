@@ -3,8 +3,6 @@ module AntColony.Logic.Pheromone where
 import open AntColony.Utils.Maybe
 import open AntColony.Utils.SignalFunction
 import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 import open AntColony.Model.Terrain
 import open AntColony.Logic.Scenting
 

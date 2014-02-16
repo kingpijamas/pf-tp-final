@@ -4,11 +4,8 @@ import open AntColony.Utils.SignalFunction
 import open AntColony.Utils.Maybe
 import open AntColony.Utils.Tuple
 
+import open AntColony.Geography.Coords
 
-
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
-import open AntColony.Geography.Coords
 
 import open AntColony.Model.Terrain
 import open AntColony.Model.Food
