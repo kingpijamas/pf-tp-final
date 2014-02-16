@@ -23,32 +23,23 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
-animateAnts : SF Terrain (Terrain,[AntT]) --SF (Terrain) (Maybe(Terrain))
+animateAnts : SF Terrain (Maybe(Terrain))
 animateAnts = let getAnts' terrain = map (\occ -> case occ of
                                                        (Ant ant) -> ant) (getAnts terrain)
 
-                  hasAnt (_,ants) = not <| isEmpty ants
+                  hasAnts (_,ants) = not <| isEmpty ants
                in
-                  (identity &&& (arr getAnts'))              -- : SF Terrain (Terrain,[AntT])
---                  >>> loop (fork hasAnt animate identity)  -- : SF (Terrain) (Maybe(Terrain))
+                  ((arr return) &&& (arr getAnts'))                                               -- : SF Terrain (Maybe(Terrain),[AntT])
+                   >>> (loopUntil animate (\(mbterr,ants) -> isNothing mbterr || isEmpty ants))   -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain))
 
 
--- (&&&) : SF a b -> SF a c -> SF a (b,c)
--- identity : SF a a
--- SF Terrain [Occupant]
-
-
--- loop : SF (b,d) (c,d) -> SF b c
--- fork : (a -> Bool) -> SF a b -> SF a b -> SF a b
-
-animate : SF (Terrain, [AntT]) (Maybe(Terrain), [AntT])
-animate = let getFirst = arr (\(terrain, ants) -> ((terrain, head ants), tail ants))
+animate : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain), [AntT])
+animate = let getFirst = arr (\(justTerrain, ants) -> case justTerrain of
+                                                           Just terrain -> ((terrain, head ants), tail ants))
            in 
-              getFirst                            -- : SF (Terrain, [AntT]) ((Terrain, AntT), [AntT])
+              getFirst                            -- : SF (Maybe(Terrain), [AntT]) ((Terrain, AntT), [AntT])
                >>> (first (identity &&& sense))   -- : SF ((Terrain, AntT), [AntT]) (((Terrain, AntT),(SensorData)), [AntT])
                >>> (first (arr act))              -- : SF (((Terrain, AntT), SensorData), [AntT]) (Maybe(Terrain), [AntT])
---               >>^ (joinFst)                      -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain, [AntT]))
-
 
 type SensorData = ([Maybe(Sight)], [Maybe(Smell)], Maybe(Load))
 
@@ -87,8 +78,9 @@ act ((terrain,ant)
                                          (Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
                                          (Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
                                          (Just _, _, _)                      -> turn 1
-                                         (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos) >> (moveInDir terrain currPos dir))
-                                         (Nothing, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
+                                         (_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
+                                                                                                       >> (moveInDir terrain currPos dir))
+                                         (_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
                                                                                                        >> (moveInDir terrain currPos dir))
                                          (_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
                                          (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!

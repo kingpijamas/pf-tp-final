@@ -12,6 +12,7 @@ type Terrain = Area Position
 add = add
 remove = remove
 get = get
+toList = toList
 
 terrain : Int -> Int -> [(Coords,Position)]-> Terrain
 terrain width height tiles = area width height tiles
@@ -69,5 +70,3 @@ getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
                                                Just ant -> ant
                    in
                       map decont justAntPoss
-
-

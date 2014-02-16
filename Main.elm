@@ -12,6 +12,7 @@ import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
 
 import AntColony.Logic.Ant
+import AntColony.Logic.Pheromone
 
 tileSize = 20
 width = 10

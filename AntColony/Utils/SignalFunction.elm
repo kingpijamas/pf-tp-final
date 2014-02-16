@@ -5,10 +5,10 @@ import open List
 import open AntColony.Utils.Tuple
 import open AntColony.Utils.Maybe
 
-data SF a b = SF (a -> b) (Signal a -> Signal b) | Switch 
+data SF a b = SF (a -> b) (Signal a -> Signal b)
 
-bindToEvent : Signal a -> SF a b -> Signal b
-bindToEvent signal (SF _ sf)  = sf signal
+bindToEvent : SF a b -> Signal a -> Signal b
+bindToEvent (SF _ sf) signal = sf signal
 
 arr : (a -> b) -> SF a b
 arr f = SF f (lift f)
@@ -43,17 +43,25 @@ first sf1 = sf1 *** identity
 second : SF a b -> SF (c,a) (c,b)
 second sf1 = identity *** sf1
 
---The force is strong in this one. Seems to be right though
-loop : SF (b,d) (c,d) -> SF b c
-loop (SF f sf) = let loop' f b = let (c,d) = f (b,d) in c
-                  in
-                     arr (loop' f)
+-- ad hoc loop
+loopUntil : SF (b,d) (b,d) -> ((b,d)-> Bool) -> SF (b,d) b
+loopUntil (SF f _) cond = let loop (b,d) = if (cond (b,d))
+                                           then b
+                                           else loop (f (b,d))
+                           in
+                              arr loop
 
 --ad hoc rSwitch
 fork : (a -> Bool) -> SF a b -> SF a b -> SF a b
 fork cond (SF f1 _) (SF f2 _) = let iff a = if (cond a) then f1 a else f2 a
                                  in
                                     arr iff
+
+--impure : SF a b -> SF (Maybe a) b
+--impure (SF f _) = let f mba = case mba of
+--                                   Just a -> f a
+--                   in
+--                      arr f
 
 parB : [SF a b] -> SF a [b]
 parB sfs = let f' : SF a b -> SF a [b] -> SF a [b]

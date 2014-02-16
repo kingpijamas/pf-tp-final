@@ -65,3 +65,6 @@ remove area pos = if pos `isWithinBounds` area
 
 values : Area v -> [v]
 values area = Dict.values area.elems
+
+toList : Area v -> [(Coords,v)]
+toList area = Dict.toList area.elems
