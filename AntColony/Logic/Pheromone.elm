@@ -14,7 +14,7 @@ decayAll = let getPositions terrain = map (\(coords,pos)->coords) (filter (\(coo
 
 decay : SF (Maybe(Terrain), [Coords]) (Maybe(Terrain), [Coords])
 decay = let getFirst = arr (\(justTerrain, poss) -> case justTerrain of
-                                                          Just terrain -> ((terrain, head poss), tail poss))
+                                                         Just terrain -> ((terrain, head poss), tail poss))
          in 
             getFirst                                -- : SF (Maybe(Terrain), [Coords]) ((Terrain, Coords), [Coords])
              >>> (first (arr <| uncurry unscent))   -- : SF ((Terrain, Coords), [Coords]) (Maybe[Terrain], [Coords])

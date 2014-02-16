@@ -25,10 +25,14 @@ main = lift2 display Window.dimensions (loop step (Just simulation) <| (fps 30))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
-                 
-                 tiles = [ (coords 3 3, pos' (T.Ant ant))
-                         , (coords 2 2, pos' (T.Ant ant))
-                         , (coords 4 4, pos' (T.AntNest antNest))
+                
+                 nestPos = coords 4 4
+
+                 addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
+
+                 tiles = [ (nestPos, pos' (T.AntNest antNest))
+                         , addAnt (coords 2 2) N
+                         , addAnt (coords 3 3) S
                          , (coords 9 10, pos' (T.FoodChunk (foodChunk 5)))
                          ] ++ (buildSurroundingStones width height)
               in 
@@ -47,7 +51,7 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
 step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
         >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
-        >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 display : (Int,Int) -> Maybe(T.Terrain) -> Element
 display (w, h) mbterrain = case mbterrain of

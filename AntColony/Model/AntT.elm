@@ -16,14 +16,14 @@ type AntT = { position : Coords
             , nestPos : Coords
             }
 
-ant : AntT
-ant = { position = coords 1 1
-      , orientation = N
-      , cargo = { food = Nothing
-                , limit = Just 1
-                }
-      , nestPos = coords 0 0
-      }
+ant : Coords -> Coords -> Direction -> AntT
+ant nestPos position orientation = { position = position
+                                   , orientation = orientation
+                                   , cargo = { food = Nothing
+                                             , limit = Just 1
+                                             }
+                                   , nestPos = nestPos
+                                   }
 
 setCargo : AntT -> Cargo -> AntT
 setCargo ant cargo' = { ant | cargo <- cargo' }
