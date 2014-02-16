@@ -47,6 +47,9 @@ second sf1 = identity *** sf1
 --const value = arr (\_ -> value)
 
 -- ad hoc loop
+loop : SF (a,b) b -> b -> Signal a -> Signal b
+loop (SF f sf) base = foldp (curry f) base
+
 loopUntil : SF (b,d) (b,d) -> ((b,d)-> Bool) -> SF (b,d) b
 loopUntil (SF f _) cond = let loop (b,d) = if (cond (b,d))
                                            then b

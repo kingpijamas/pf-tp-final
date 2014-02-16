@@ -6,19 +6,21 @@ import AntColony.Model.Terrain as T
 
 import open AntColony.Geography.Area
 import open AntColony.Geography.Direction
+import open AntColony.Utils.SignalFunction
+import open AntColony.Utils.Tuple
 
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
 
-import AntColony.Logic.Ant
-import AntColony.Logic.Pheromone
+import AntColony.Logic.Ant as Ant
+import AntColony.Logic.Pheromone as Pheromone
 
 tileSize = 20
 width = 10
 height = 12
 
-main = lift2 display Window.dimensions (foldp step simulation <| (fps 30))
+main = lift2 display Window.dimensions (loop step (Just simulation) <| (fps 30))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
@@ -41,20 +43,15 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
                                      ++ (map (\x -> (x, 1)) [2..w - 1])
                                      ++ (map (\x -> (x, h)) [2..w - 1])
 
-step : Float -> T.Terrain -> T.Terrain
-step t terrain = terrain
--- signalAnts <|
+step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
+step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
+        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
---TODO: mover esto a Behaviour (o donde tenga que ir...)
-signalAnts : T.Terrain -> T.Terrain
-signalAnts terrain = foldl signalAnt terrain <| (T.getAnts terrain)
-
-signalAnt : T.Occupant -> T.Terrain -> T.Terrain
-signalAnt ant terrain = terrain
--- ============================================
-
-display : (Int,Int) -> T.Terrain -> Element
-display (w, h) terrain = collage w h <| terrainAsForm terrain
+display : (Int,Int) -> Maybe(T.Terrain) -> Element
+display (w, h) mbterrain = case mbterrain of
+                                Just terrain -> collage w h <| terrainAsForm terrain
+                                _ -> asText "Oops, there was an error"
 
 asTileList : T.Terrain -> [(Coords, T.Position)]
 asTileList terrain = Dict.toList terrain.elems
