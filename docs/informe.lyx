@@ -1,0 +1,443 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Functional Reactive Programming
+\end_layout
+
+\begin_layout Author
+Gonzalo Castiglione, Juan Pablo Rey
+\end_layout
+
+\begin_layout Section*
+Abstract
+\end_layout
+
+\begin_layout Standard
+Para el presente trabajo se decidió aplicar Arrow-based Functional Reactive
+ Programming [1] junto a Elm para realizar una simulación de un 
+\begin_inset Quotes eld
+\end_inset
+
+ant colony
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+El objetivo consiste en aplicar lo aprendido en la materia Programación
+ Funcional junto con AFRP para realizar una demo en donde hormigas recorren
+ un tablero en busca de comida para luego traerla al hormiguero y guardarla.
+\end_layout
+
+\begin_layout Section*
+Aplicación
+\end_layout
+
+\begin_layout Standard
+Para la simulación se consideran las siguientes entidades:
+\end_layout
+
+\begin_layout Itemize
+Comida: Simplemente existe en algunos lugares del mapa.
+\end_layout
+
+\begin_layout Itemize
+Hormigas: Recorren el tablero en busca de comida.
+\end_layout
+
+\begin_layout Itemize
+Hormiguero: Representa un depósito de comida de las hormigas.
+\end_layout
+
+\begin_layout Itemize
+Piedras: Obstáculos que existen en el mapa que no pueden ser traspasados
+ ni movidos.
+\end_layout
+
+\begin_layout Itemize
+Feromona: Sustancia que las hormigas dejan en su camino al encontrar comdia
+ y vovler al homriguero.
+\end_layout
+
+\begin_layout Standard
+El funcionamiento de la apliación funciona de la siguiente forma: 
+\end_layout
+
+\begin_layout Standard
+Las hormigas reocrren el mapa en búsqueda de comida.
+ Cuando alguna encuentra comida, esta carga tanto como pueda (deja el resto
+ en el lugar) y la lleva directamente al hormiguero para almacenarla.
+ Durante su regreso al hormiguero, se libera feromona en cada paso.
+ Cuando una hormiga cruza un rastro de feromona, esta sigue con preferencia
+ el lado que mas feromona tenga.
+ Esto producirá que las fuenes de comida, atraigan con facilidad a muchas
+ hormigas.
+\end_layout
+
+\begin_layout Standard
+La feromona tiene una función de decaimiento dependiente del tiempo.
+ Es decir, la feromona que fue liberada solamente seguirá en el lugar durante
+ in cierto tiempo solamente.
+\end_layout
+
+\begin_layout Standard
+El algoritmo hormiga explicado en detalle escapa a los objetivos del proyecto
+ pero puede puede encontrarse en [2].
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Obstáculos
+\end_layout
+
+\begin_layout Standard
+Debido a que Elm se encuentra todavía en etapa de desarollo.
+ Aún no estan soportadas las type classes [3].
+ Por lo que las arrows no estan soportadas, simplemente existen primitivas
+ que permiten su implementación.
+ Se optó entonces por realizar la implementacón de las siguientes:
+\end_layout
+
+\begin_layout Itemize
+Arr
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/arr.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Arr
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Composición inversa - >>>
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/compos_inversa.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Composición Inversa
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+fork - &&&
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/ampersand.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+And
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+or - ***
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/parallel.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Or
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+first
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pics/first.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+First
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Otros
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+identity: Simplemente retorna en su output lo mismo que ingresó como input
+\end_layout
+
+\begin_layout Description
+composición (<<<): Es análoga a la composición inversa, con el orden de
+ aplicación intercambiado
+\end_layout
+
+\begin_layout Description
+second: Realiza lo mismo que first, con la diferencia que alimenta la segunda
+ parte de cada par de entrada con el arrow indicado en vez del primero
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Referencias
+\end_layout
+
+\begin_layout Itemize
+[1] - AFRP: 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.haskell.org/haskellwiki/Functional_Reactive_Programming"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+[2] - Algoritmo hormiga: 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+[3] - Type classes: 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://en.wikipedia.org/wiki/Type_class"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
