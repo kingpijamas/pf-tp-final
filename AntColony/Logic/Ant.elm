@@ -23,13 +23,13 @@ import open AntColony.Logic.Scenting
 import open AntColony.Logic.Seeing
 import open AntColony.Logic.Smelling
 
-animateAnts : SF Terrain (Maybe(Terrain))
-animateAnts = let getAnts' terrain = map (\occ -> case occ of
+animateAnts : SF (Maybe(Terrain)) (Maybe(Terrain))
+animateAnts = let getAntss terrain = map (\occ -> case occ of
                                                        (Ant ant) -> ant) (getAnts terrain)
 
                   hasAnts (_,ants) = not <| isEmpty ants
                in
-                  ((arr return) &&& (arr getAnts'))                                               -- : SF Terrain (Maybe(Terrain),[AntT])
+                  (identity &&& (impure (arr getAntss) []))                                       -- : SF (Maybe(Terrain)) (Maybe(Terrain),[AntT])
                    >>> (loopUntil animate (\(mbterr,ants) -> isNothing mbterr || isEmpty ants))   -- : SF (Maybe(Terrain), [AntT]) (Maybe(Terrain))
 
 

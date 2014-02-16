@@ -6,10 +6,10 @@ import open AntColony.Geography.Area
 import open AntColony.Model.Terrain
 import open AntColony.Logic.Scenting
 
-updateAll : SF Terrain (Maybe(Terrain))
+updateAll : SF (Maybe(Terrain)) (Maybe(Terrain))
 updateAll = let getPositions terrain = map (\(coords,pos)->coords) (filter (\(coords,pos) -> isJust pos.scent) (toList terrain))
              in
-                ((arr return) &&& (arr getPositions))                                            -- : SF Terrain (Maybe(Terrain), [Coords])
+                (identity &&& (arr getPositions))                                                -- : SF (Maybe(Terrain)) (Maybe(Terrain), [Coords])
                  >>> (loopUntil update (\(mbterr,coords) -> isNothing mbterr || isEmpty coords)) -- : SF (Maybe(Terrain), [Coords]) (Maybe(Terrain))
 
 update : SF (Maybe(Terrain), [Coords]) (Maybe(Terrain), [Coords])

@@ -43,6 +43,9 @@ first sf1 = sf1 *** identity
 second : SF a b -> SF (c,a) (c,b)
 second sf1 = identity *** sf1
 
+--const : b -> SF a b
+--const value = arr (\_ -> value)
+
 -- ad hoc loop
 loopUntil : SF (b,d) (b,d) -> ((b,d)-> Bool) -> SF (b,d) b
 loopUntil (SF f _) cond = let loop (b,d) = if (cond (b,d))
@@ -57,11 +60,8 @@ fork cond (SF f1 _) (SF f2 _) = let iff a = if (cond a) then f1 a else f2 a
                                  in
                                     arr iff
 
---impure : SF a b -> SF (Maybe a) b
---impure (SF f _) = let f mba = case mba of
---                                   Just a -> f a
---                   in
---                      arr f
+impure : SF a b -> b -> SF (Maybe a) b
+impure (SF f _) nothValue = arr (maybe nothValue f)
 
 parB : [SF a b] -> SF a [b]
 parB sfs = let f' : SF a b -> SF a [b] -> SF a [b]
