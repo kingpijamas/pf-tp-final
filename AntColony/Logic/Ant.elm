@@ -87,8 +87,8 @@ act ((terrain,ant)
                                          --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
-                                         --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
-                                         (_,_,_) -> turn 1 --move terrain currPos (5,5)
+                                         (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
+                                         -- (_,_,_) -> turn 1 --move terrain currPos (5,5)
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
