@@ -12,6 +12,7 @@ import open AntColony.Utils.Tuple
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
+import open AntColony.Model.Scent
 
 import AntColony.Logic.Ant as Ant
 import AntColony.Logic.Pheromone as Pheromone
@@ -53,31 +54,34 @@ display (w, h) mbterrain = case mbterrain of
                                 Just terrain -> collage w h <| terrainAsForm terrain
                                 _ -> asText "Oops, there was an error"
 
-asTileList : T.Terrain -> [(Coords, T.Position)]
-asTileList terrain = Dict.toList terrain.elems
-
 terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = 
     let 
-        ground = terrainMatrixForms terrain.width terrain.height tileSize
+        ground = terrainMatrixForms terrain
         occupants = terrainTilesAsForm terrain
     in (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
-terrainMatrixForms : Int -> Int -> Int -> [Form]
-terrainMatrixForms width height tileSize = map (\y -> terrainRowForms width y tileSize) [1..height] |> concat
+terrainMatrixForms : T.Terrain -> [Form]
+terrainMatrixForms terrain = map (\y -> terrainRowForms terrain y tileSize) [1..terrain.height] |> concat . concat
 
 -- Obtiene la lista de Elements para los tiles en una fila a dibujar
-terrainRowForms : Int -> Int -> Int -> [Form]
-terrainRowForms width y tileSize = map (\x -> terrainSqareForm x y tileSize) [1..width]
+terrainRowForms : T.Terrain -> Int -> Int -> [[Form]]
+terrainRowForms terrain y tileSize = 
+    map (\x -> terrainSqareForm terrain x y tileSize) [1..terrain.width]
 
 -- Obtiene el Element que representa el pos a dibujar
-terrainSqareForm : Int -> Int -> Int -> Form
-terrainSqareForm x y tileSize = 
+terrainSqareForm : T.Terrain -> Int -> Int -> Int -> [Form]
+terrainSqareForm terrain x y tileSize = 
     let
         xOffsset = toFloat (x * tileSize)
         yOffsset = toFloat (y * tileSize)
-    in squarePath (toFloat tileSize) |> traced (solid green) |> translateTile x y tileSize
+        pheromone x y = case (T.getScent terrain (coords x y)) of
+            Just pos -> pos
+            _ -> 0
+    in [squarePath (toFloat tileSize) |> traced (solid green) |> translateTile x y tileSize,
+         intToForm (pheromone x y) |> move (xOffsset, yOffsset)
+       ]
 
 translateTile : Int -> Int -> Int -> Form -> Form
 translateTile x y tileSize form =
@@ -90,28 +94,43 @@ squarePath : Float -> Path
 squarePath len = let hlen = len / 2 in path [(-hlen, -hlen), (hlen, -hlen), (hlen, hlen), (-hlen,hlen), (-hlen, -hlen)]
 
 terrainTilesAsForm : T.Terrain -> [Form]
-terrainTilesAsForm terrain = map (\(position, pos) -> terrainTileForm position pos tileSize) <| asTileList terrain
+terrainTilesAsForm terrain = asTileList terrain |> map (\(coord, tile) -> terrainTileForm coord tile tileSize) |> concat
 
-terrainTileForm : Coords -> T.Position -> Int-> Form
-terrainTileForm position pos tileSize = toForm (getImage pos) |> translateTile (getX position) (getY position) tileSize
+asTileList : T.Terrain -> [(Coords, T.Position)]
+asTileList terrain = Dict.toList terrain.elems
+
+terrainTileForm : Coords -> T.Position -> Int -> [Form]
+terrainTileForm position tile tileSize = 
+    let 
+        x = getX position
+        y = getY position
+        translate form = translateTile x y tileSize form
+    in
+        [toForm (getImage tile) |> translate, intToForm (getPheromone tile) |> translate]
 
 getImage : T.Position -> Element
-getImage pos = 
-    case pos.occupant of
+getImage tile = 
+    case tile.occupant of
         Just (T.Rock) -> stoneImg
         Just (T.Ant ant) -> antImg
         Just (T.AntNest nest) -> antNestImg
         Just (T.FoodChunk foodChunk) -> foodChunkImg
 
 antImg : Element
-antImg = image 20 20 "resources/ant.png"
+antImg = tileImage "resources/ant.png"
 
 stoneImg : Element
-stoneImg = image 20 20 "resources/stone.png"
+stoneImg = tileImage "resources/stone.png"
 
 antNestImg : Element
-antNestImg = image 20 20 "resources/anthill.jpg"
+antNestImg = tileImage "resources/anthill.jpg"
 
 foodChunkImg : Element
-foodChunkImg = image 20 20 "resources/apple.jpg"
+foodChunkImg = tileImage "resources/apple.jpg"
+
+tileImage : String -> Element
+tileImage resource = image 20 20 resource
+
+intToForm : Int -> Form
+intToForm v = (toForm . text . toText . show) v
 

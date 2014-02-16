@@ -11,7 +11,6 @@ type Terrain = Area Position
 {-- Exposing methods from terrain --}
 add = add
 remove = remove
-get = get
 toList = toList
 
 terrain : Int -> Int -> [(Coords,Position)]-> Terrain
@@ -70,3 +69,9 @@ getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
                                                Just ant -> ant
                    in
                       map decont justAntPoss
+         
+getScent : Terrain -> Coords -> Maybe Int
+getScent terrain from = case (terrain `get` from) of
+    Just p -> p.scent
+    _ -> Nothing
+
