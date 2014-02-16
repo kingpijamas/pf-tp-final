@@ -6,7 +6,9 @@ import open AntColony.Model.Terrain
 
 
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 rotate : (Direction -> Direction) -> Terrain -> Coords -> Maybe(Terrain)

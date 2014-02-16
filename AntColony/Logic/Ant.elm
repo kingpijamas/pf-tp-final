@@ -1,13 +1,13 @@
 module AntColony.Logic.Ant where
 
-import open Maybe
-import open List
 import open AntColony.Utils.List
 import open AntColony.Utils.Tuple
 import open AntColony.Utils.Maybe
 import open AntColony.Utils.SignalFunction
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Terrain
@@ -16,7 +16,7 @@ import open AntColony.Model.AntT
 
 import open AntColony.Logic.Perceiving
 import open AntColony.Logic.LoadSensing
-import open AntColony.Logic.Loading
+--import open AntColony.Logic.Loading
 import open AntColony.Logic.Moving
 import open AntColony.Logic.Rotating
 import open AntColony.Logic.Scenting
@@ -87,8 +87,9 @@ act ((terrain,ant)
                                          --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
-                                         (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
-                                         -- (_,_,_) -> turn 1 --move terrain currPos (5,5)
+                                         --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
+                                         --(_,_,_) -> turn 1 --move terrain currPos (5,5)
+                                         (_,_,_) -> return terrain
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 

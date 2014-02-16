@@ -4,7 +4,9 @@ import Window
 import Dict
 import AntColony.Model.Terrain as T
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 import open AntColony.Utils.SignalFunction
 import open AntColony.Utils.Tuple
@@ -15,7 +17,7 @@ import open AntColony.Model.Food
 import open AntColony.Model.Scent
 
 import AntColony.Logic.Ant as Ant
-import AntColony.Logic.Pheromone as Pheromone
+--import AntColony.Logic.Pheromone as Pheromone
 
 tileSize = 20
 width = 10
@@ -71,12 +73,12 @@ terrainAsForm terrain =
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]
-terrainMatrixForms terrain = map (\y -> terrainRowForms terrain y tileSize) [1..terrain.height] |> concat . concat
+terrainMatrixForms terrain = map (\y -> terrainRowForms terrain y tileSize) [1..(T.height terrain)] |> concat . concat
 
 -- Obtiene la lista de Elements para los tiles en una fila a dibujar
 terrainRowForms : T.Terrain -> Int -> Int -> [[Form]]
 terrainRowForms terrain y tileSize = 
-    map (\x -> terrainSqareForm terrain x y tileSize) [1..terrain.width]
+    map (\x -> terrainSqareForm terrain x y tileSize) [1..(T.width terrain)]
 
 -- Obtiene el Element que representa el pos a dibujar
 terrainSqareForm : T.Terrain -> Int -> Int -> Int -> [Form]
@@ -105,7 +107,7 @@ terrainTilesAsForm : T.Terrain -> [Form]
 terrainTilesAsForm terrain = asTileList terrain |> map (\(coord, tile) -> terrainTileForm coord tile tileSize) |> concat
 
 asTileList : T.Terrain -> [(Coords, T.Position)]
-asTileList terrain = Dict.toList terrain.elems
+asTileList terrain = T.toList terrain
 
 terrainTileForm : Coords -> T.Position -> Int -> [Form]
 terrainTileForm position tile tileSize = 

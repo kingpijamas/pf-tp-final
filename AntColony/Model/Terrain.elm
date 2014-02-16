@@ -1,20 +1,45 @@
 module AntColony.Model.Terrain where
 
-import open AntColony.Geography.Area
+import AntColony.Geography.Area as Area
+import open AntColony.Geography.Coords
 import open AntColony.Model.Food
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Scent
 
-type Terrain = Area Position
+import open AntColony.Utils.Maybe
+
+type Terrain = { area : Area.Area Position }
 
 {-- Exposing methods from terrain --}
-add = add
-remove = remove
-toList = toList
+isWithinBounds : Coords -> Terrain -> Bool
+isWithinBounds coords terrain = Area.isWithinBounds coords terrain.area
+
+add : Terrain -> Coords -> Position -> Maybe(Terrain)
+add terrain coords pos = (Area.add terrain.area coords pos)       -- : Maybe(Area Position)
+                          >>= (\area' -> return { area = area' }) -- : Area -> Maybe(Terrain)
+
+get : Terrain -> Coords -> Maybe(Position)
+get terrain pos = Area.get terrain.area pos
+
+remove : Terrain -> Coords -> Maybe(Terrain)
+remove terrain coords = (Area.remove terrain.area coords)         -- : Maybe(Area Position)
+                          >>= (\area' -> return { area = area' }) -- : Area -> Maybe(Terrain)
+
+values : Terrain -> [Position]
+values terrain = Area.values terrain.area
+
+toList : Terrain -> [(Coords,Position)]
+toList terrain = Area.toList terrain.area
 
 terrain : Int -> Int -> [(Coords,Position)]-> Terrain
-terrain width height tiles = area width height tiles
+terrain width height tiles = { area = Area.area width height tiles }
+
+width : Terrain -> Int
+width terrain = terrain.area.width
+
+height : Terrain -> Int
+height terrain = terrain.area.height
 
 {--empty : Int -> Int -> Terrain
 empty width height = empty width height

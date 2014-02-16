@@ -6,7 +6,9 @@ import open AntColony.Utils.Tuple
 
 
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 
 import open AntColony.Model.Terrain
 import open AntColony.Model.Food

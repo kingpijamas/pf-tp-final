@@ -1,6 +1,8 @@
 module AntColony.Logic.Moving where
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Terrain

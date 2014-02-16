@@ -2,7 +2,9 @@ module AntColony.Logic.Perceiving where
 
 import open AntColony.Model.Terrain
 
-import open AntColony.Geography.Area
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
+import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Utils.Maybe
