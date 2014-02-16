@@ -73,3 +73,4 @@ rghtN : Direction -> Int -> Direction
 rghtN dir times = case times of
                     0 -> dir
                     n -> rghtN (rght dir) (n-1)
+

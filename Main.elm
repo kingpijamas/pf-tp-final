@@ -110,7 +110,26 @@ terrainTileForm position tile tileSize =
         y = getY position
         translate form = translateTile x y tileSize form
     in
-        [toForm (getImage tile) |> translate, intToForm (getPheromone tile) |> translate]
+        [toForm (getImage tile) |> translate |> (rototateTile tile), intToForm (getPheromone tile) |> translate]
+
+rototateTile : T.Position -> Form -> Form
+rototateTile tile form = 
+    let angle tile = case tile.occupant of
+        Just (T.Ant ant) -> directionToRadians (ant.orientation)
+        _ -> 0
+    in
+        rotate (angle tile) form
+
+directionToRadians : Direction -> Float
+directionToRadians dir = 0.01745 * (case dir of
+    NE -> 315
+    E -> 270
+    SE -> 225
+    S -> 180
+    SW -> 135
+    W -> 90
+    NW -> 45
+    N -> 0)
 
 getImage : T.Position -> Element
 getImage tile = 
