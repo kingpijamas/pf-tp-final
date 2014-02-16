@@ -56,38 +56,39 @@ sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs 
          in
             (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)          
 
-act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
-act ((terrain,ant)
-    ,(seen,smelled,currLoad)) = return terrain
-
 --act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 --act ((terrain,ant)
---    ,(seen,smelled,currLoad)) = let currPos = ant.position
---                                    forward = ant.orientation
---                                    --frontPos = currPos `addDir` forward
---                                    --toNest = currPos `dirTo` ant.nestPos
+--    ,(seen,smelled,currLoad)) = return terrain
 
---                                    --loadFrom = load terrain currPos
---                                    --unloadTo = unload terrain currPos
---                                    --turn times = clckN times terrain currPos -- TODO: turn randomly!
---                                    --turnAround = turn 4
+act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
+act ((terrain,ant)
+    ,(seen,smelled,currLoad)) = let currPos = ant.position
+                                    forward = ant.orientation
+                                    --frontPos = currPos `addDir` forward
+                                    --toNest = currPos `dirTo` ant.nestPos
 
---                                    --towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
---                                    --                           Just dir -> dirF dir
---                                    --                           Nothing -> turn 2
---                                 in
---                                    case (head seen, head smelled, currLoad) of
---                                         --(Just (FoodChunk _), _, Nothing)    -> frontPos >>= loadFrom 
---                                         --(Just (FoodChunk _), _, Just cargo) -> turnAround -- could probably be removed
---                                         --(Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
---                                         --(Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
---                                         --(Just _, _, _)                      -> turn 1
---                                         --(_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
---                                         --                                                              >> (moveInDir terrain currPos dir))
---                                         --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
---                                         --                                                              >> (moveInDir terrain currPos dir))
---                                         --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
---                                         (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
+                                    --loadFrom = load terrain currPos
+                                    --unloadTo = unload terrain currPos
+                                    turn times = clckN times terrain currPos -- TODO: turn randomly!
+                                    --turnAround = turn 4
+
+                                    --towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
+                                    --                           Just dir -> dirF dir
+                                    --                           Nothing -> turn 2
+                                 in
+                                    case (head seen, head smelled, currLoad) of
+                                         --(Just (FoodChunk _), _, Nothing)    -> frontPos >>= loadFrom 
+                                         --(Just (FoodChunk _), _, Just cargo) -> turnAround -- could probably be removed
+                                         --(Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
+                                         --(Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
+                                         --(Just _, _, _)                      -> turn 1
+                                         --(_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
+                                         --                                                              >> (moveInDir terrain currPos dir))
+                                         --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
+                                         --                                                              >> (moveInDir terrain currPos dir))
+                                         --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
+                                         --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
+                                         (_,_,_) -> turn 1
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
