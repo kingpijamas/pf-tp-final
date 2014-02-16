@@ -50,13 +50,13 @@ empty pos = { pos | occupant <- Nothing }
 
 {-- Casts --}
 asAnt : AntT -> Occupant
-asAnt x = Rock
+asAnt x = Ant x
 
 asNest : AntNestT -> Occupant
-asNest x = Rock
+asNest x = AntNest x
 
 asFood : FoodChunkT -> Occupant
-asFood x = Rock
+asFood x = FoodChunk x
 
 getAnts : Terrain -> [Occupant]
 getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
@@ -72,6 +72,6 @@ getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
          
 getScent : Terrain -> Coords -> Maybe Int
 getScent terrain from = case (terrain `get` from) of
-    Just p -> p.scent
-    _ -> Nothing
+                             Just p -> p.scent
+                             _ -> Nothing
 
