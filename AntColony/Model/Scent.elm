@@ -17,3 +17,8 @@ unscent scentable = case scentable.scent of
                          Just sc -> if sc > 0
                                     then Just { scentable | scent <- Just sc }
                                     else Nothing
+
+getPheromone : Scentable a -> Int
+getPheromone scentable = case scentable.scent of
+  Just ph -> ph
+  _ -> 0
