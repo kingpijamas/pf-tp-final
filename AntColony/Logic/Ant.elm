@@ -11,7 +11,8 @@ import open AntColony.Geography.Direction
 import open AntColony.Model.Terrain
 import open AntColony.Model.Scent
 import open AntColony.Model.AntT
-import open AntColony.Model.Food
+--import open AntColony.Model.Food
+import open AntColony.Model.FoodCarrier
 
 import open AntColony.Logic.Perceiving
 import open AntColony.Logic.LoadSensing

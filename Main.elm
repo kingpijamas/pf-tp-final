@@ -11,6 +11,7 @@ import open AntColony.Utils.Tuple
 
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
+import open AntColony.Model.FoodChunkT
 import open AntColony.Model.Food
 
 --TODO: TEST!
@@ -58,15 +59,27 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
 step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (arr setWidthMF)
-        -->>> (arr (moveMF (4,4) (5,5)))
-        -->>> (arr (moveMF (5,5) (4,4)))
+        -- >>> (arr (moveMF (4,4) (5,5)))
+        -- >>> (arr (moveMF (5,5) (4,4)))
        -- >>> (arr (evictMF (2,2)))
        -- >>> (arr (occupyMF (3,3) T.Rock))
-       -->>> (arr (loadMF (4,4) (5,5)))
-       -->>> (arr (unloadMF (4,4) (5,5)))
-       -- >>> (arr (unloadMF (5,5) (4,4)))
-       >>> (arr (ldMF (4,4) 1))
-       -->>> (arr (unldMF (5,5)))
+       -- >>> (arr (loadMF (2,2) (5,5)))
+        -- >>> (arr (unloadMF (4,4) (5,5)))
+        -- >>> (arr (unloadMF (5,5) (4,4)))
+        
+        --FOOD
+         >>> (arr (ldMF (5,5) 1))
+         -->>> (arr (unldMF (5,5)))
+
+        --NEST
+        -- >>> (arr (ldMF (2,2) 1))
+
+        --ANT
+        -- >>> (arr (unldMF (4,4)))
+        -- >>> (arr (ldMF (4,4) 1))
+
+        -->>> (arr (ldMF (4,4) 1))
+        -->>> (arr (unldMF (4,4)))
        -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 

@@ -1,6 +1,6 @@
 module AntColony.Model.AntNestT where
 
-import open AntColony.Model.Food
+import open AntColony.Model.FoodCarrier
 
 type AntNestT = FoodCarrier {}
 

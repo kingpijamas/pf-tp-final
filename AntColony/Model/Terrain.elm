@@ -5,6 +5,7 @@ import open AntColony.Geography.Coords
 import open AntColony.Model.Food
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
+import open AntColony.Model.FoodChunkT
 import open AntColony.Model.Scent
 
 import open AntColony.Utils.Maybe
@@ -130,6 +131,18 @@ getFood terrain = let hasFood pos = case pos.occupant of
                    in
                       map decont justFoodPoss
 
+getNest : Terrain -> Occupant
+getNest terrain = let hasNest pos = case pos.occupant of
+                                         Just (AntNest _) -> True
+                                         _ -> False
+
+                      justNestPoss = filter hasNest (values terrain)
+
+
+                      decont justNestPos = case justNestPos.occupant of
+                                                Just nest -> nest
+                   in
+                      head (map decont justNestPoss)
 
 getScent : Terrain -> Coords -> Maybe Int
 getScent terrain from = case (terrain `get` from) of
