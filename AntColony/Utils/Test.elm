@@ -14,7 +14,7 @@ import open AntColony.Model.AntT
 
 import open AntColony.Logic.Perceiving
 import open AntColony.Logic.LoadSensing
---import open AntColony.Logic.Loading
+import open AntColony.Logic.Loading
 import open AntColony.Logic.Moving
 import open AntColony.Logic.Rotating
 import open AntColony.Logic.Scenting
