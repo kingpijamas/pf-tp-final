@@ -18,7 +18,7 @@ import open AntColony.Model.Scent
 import open AntColony.Utils.Test
 
 import AntColony.Logic.Ant as Ant
---import AntColony.Logic.Pheromone as Pheromone
+import AntColony.Logic.Pheromone as Pheromone
 
 tileSize = 20
 width = 10

@@ -14,7 +14,7 @@ import open AntColony.Model.AntT
 
 import open AntColony.Logic.Perceiving
 import open AntColony.Logic.LoadSensing
---import open AntColony.Logic.Loading
+import open AntColony.Logic.Loading
 import open AntColony.Logic.Moving
 import open AntColony.Logic.Rotating
 import open AntColony.Logic.Scenting
@@ -87,7 +87,6 @@ act ((terrain,ant)
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
                                          --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
                                          (_,_,_) -> moveInDir terrain currPos forward
-                                         --(_,_,_) -> turn 1
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
 
