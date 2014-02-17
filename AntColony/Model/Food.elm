@@ -11,6 +11,17 @@ food x = if x > 0
 
 type FoodCarrier a = { a | food:Maybe(Food), limit:Maybe(Int) }
 
+data LoadStatus = Empty | Full
+
+getStatus : (FoodCarrier a) -> LoadStatus
+getStatus carrier = case (carrier.limit, carrier.food) of
+                         (Nothing, _) -> Empty
+                         (Just lmt, Nothing) -> Empty
+                         (Just lmt, Just cargo) -> if cargo < lmt
+                                                   then Empty
+                                                   else Full
+
+
 loadFood : (FoodCarrier a) -> Food -> Maybe (FoodCarrier a, Maybe(Food))
 loadFood ldr fd = let assertValid fd = food fd
 

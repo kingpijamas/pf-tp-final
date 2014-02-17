@@ -106,17 +106,31 @@ asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
 
 getAnts : Terrain -> [Occupant]
-getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
-                      
-                      hasAnt pos = case pos.occupant of
+getAnts terrain = let hasAnt pos = case pos.occupant of
                                         Just (Ant _) -> True
                                         _ -> False
+
+                      justAntPoss = filter hasAnt (values terrain)
 
                       decont justAntPos = case justAntPos.occupant of
                                                Just ant -> ant
                    in
                       map decont justAntPoss
-         
+
+getFood : Terrain -> [Occupant]
+getFood terrain = let hasFood pos = case pos.occupant of
+                                         Just (FoodChunk _) -> True
+                                         _ -> False
+
+                      justFoodPoss = filter hasFood (values terrain)
+
+
+                      decont justFoodPos = case justFoodPos.occupant of
+                                                Just foodChunk -> foodChunk
+                   in
+                      map decont justFoodPoss
+
+
 getScent : Terrain -> Coords -> Maybe Int
 getScent terrain from = case (terrain `get` from) of
                              Just p -> p.scent

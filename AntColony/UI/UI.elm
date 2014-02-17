@@ -17,7 +17,8 @@ terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = let ground = terrainMatrixForms terrain
                             occupants = terrainTilesAsForm terrain
                          in
-                            (toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
+                            {-(toForm . asText <| (T.getAnts terrain)) ::-}
+                            (toForm . asText <| (T.getFood terrain)) :: (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]
@@ -28,13 +29,12 @@ terrainRowForms : T.Terrain -> Int -> Int -> [[Form]]
 terrainRowForms terrain y tileSize = map (\x -> terrainSqareForm terrain x y tileSize)
                                          [1..(T.width terrain)]
 
+offset : Int -> Float
+offset x = toFloat (x * tileSize)
+
 -- Obtiene el Element que representa el pos a dibujar
 terrainSqareForm : T.Terrain -> Int -> Int -> Int -> [Form]
-terrainSqareForm terrain x y tileSize = let xOffsset = toFloat (x * tileSize)
-
-                                            yOffsset = toFloat (y * tileSize)
-
-                                            pheromone x y = case (T.getScent terrain (coords x y)) of
+terrainSqareForm terrain x y tileSize = let pheromone x y = case (T.getScent terrain (coords x y)) of
                                                                  Just pos -> pos
                                                                  _ -> 0
                                          in
@@ -42,15 +42,11 @@ terrainSqareForm terrain x y tileSize = let xOffsset = toFloat (x * tileSize)
                                               |> traced (solid green)
                                               |> translateTile x y tileSize
                                             , intToForm (pheromone x y)
-                                              |> move (xOffsset, yOffsset)
+                                              |> move (offset x, offset y)
                                             ]
 
 translateTile : Int -> Int -> Int -> Form -> Form
-translateTile x y tileSize form = let xOffsset = toFloat (x * tileSize)
-                                     
-                                      yOffsset = toFloat (y * tileSize)
-                                   in
-                                      move (xOffsset, yOffsset) form
+translateTile x y tileSize form = move (offset x, offset y) form
 
 squarePath : Float -> Path
 squarePath len = let hlen = len / 2
@@ -71,18 +67,18 @@ asTileList : T.Terrain -> [(Coords, T.Position)]
 asTileList terrain = T.toList terrain
 
 terrainTileForm : Coords -> T.Position -> Int -> [Form]
-terrainTileForm position tile tileSize = let x = getX position
+terrainTileForm coords tile tileSize = let x = getX coords
                                           
-                                             y = getY position
+                                           y = getY coords
 
-                                             translate form = translateTile x y tileSize form
-                                          in
-                                             [ toForm (getImage tile) 
-                                                |> translate
-                                                |> (rototateTile tile)
-                                             , intToForm (getPheromone tile)
-                                                |> translate
-                                             ]
+                                           translate form = translateTile x y tileSize form
+                                        in
+                                           [ toForm (getImage tile) 
+                                              |> translate
+                                              |> (rototateTile tile)
+                                           , intToForm (getPheromone tile)
+                                              |> translate
+                                           ]
 
 rototateTile : T.Position -> Form -> Form
 rototateTile tile form = let angle tile = case tile.occupant of
