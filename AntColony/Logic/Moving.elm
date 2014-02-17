@@ -19,9 +19,7 @@ moveInDir terrain from dir = (from `addDir` dir)      -- : Maybe(Coords)
 move : Terrain -> Coords -> Coords -> Maybe(Terrain)
 move terrain from to = let occupy' (terrain', occ) = occupy terrain' to occ
                         in
-                          -- return terrain
                           (terrain `evict` from)     -- : Maybe (Terrain, Occupant)
-                          --  >>= (\(terrain',occ)->return terrain')          --TODO: TEST!
                             >>= (occupy')           -- : (Terrain, Occupant) -> Maybe(Terrain)
 
 
@@ -41,13 +39,11 @@ evict terrain from = let evict' pos = case pos.occupant of
 occupy : Terrain -> Coords -> Occupant -> Maybe(Terrain)
 occupy terrain whr occ = let occupy' pos = case (pos.occupant, occ) of
                                                 (Nothing, Ant ant) -> return (pos `setOccupant2` (asAnt (ant `setPosition` whr)))
-                                                (Nothing, _) -> return (pos `setOccupant2` Rock) -- TODO
                                                 _ -> Nothing
 
                              updateTerrain pos' = add terrain whr pos'
                           in
                              (terrain `get` whr)     -- : Maybe(Position)
-                              -- >>= (\pos-> return terrain)    -- : TODO
                                >>= (occupy')          -- : Position -> Maybe(Position)
                                >>= (updateTerrain)    -- : Position -> Maybe(Terrain)
 

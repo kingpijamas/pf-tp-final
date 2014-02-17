@@ -58,11 +58,11 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
 step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (arr setWidthMF)
-        >>> (arr (moveMF (2,2) (3,3)))
-        >>> (arr (moveMF (3,3) (2,2)))
+        -->>> (arr (moveMF (4,4) (5,5)))
+        -->>> (arr (moveMF (5,5) (4,4)))
        -- >>> (arr (evictMF (2,2)))
        -- >>> (arr (occupyMF (3,3) T.Rock))
-       -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 display : (Int,Int) -> Maybe(T.Terrain) -> Element

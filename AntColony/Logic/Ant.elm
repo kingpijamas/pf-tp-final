@@ -79,14 +79,14 @@ act ((terrain,ant)
                                          --(Just (FoodChunk _), _, Just cargo) -> turnAround -- could probably be removed
                                          --(Just (AntNest _), _, Just cargo)   -> frontPos >>= unloadTo
                                          --(Just (AntNest _), _, Nothing)      -> turnAround -- could probably be removed
-                                         --(Just _, _, _)                      -> turn 1
+                                         (Just _, _, _) -> turn 1
                                          --(_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
                                          --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
-                                         (_,_,_) -> move terrain currPos (4,4)
+                                         (_,_,_) -> moveInDir terrain currPos forward
                                          --(_,_,_) -> turn 1
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
