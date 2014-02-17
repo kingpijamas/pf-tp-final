@@ -61,7 +61,7 @@ act ((terrain,ant)
     ,(seen,smelled,loadStatus)) = let currPos = ant.position
                                       forward = ant.orientation
                                       front = currPos `addDir` forward
-                                      --toNest = currPos `dirTo` ant.nestPos
+                                      toNest = currPos `dirTo` ant.nestPos
 
                                       loadFrom = load terrain currPos
                                       unloadTo = unload terrain currPos
@@ -74,8 +74,8 @@ act ((terrain,ant)
                                    in
                                       case (head seen, head smelled, loadStatus) of
                                            (Just (FoodChunk _), _, Just(Empty))    -> front >>= loadFrom
-                                           --(Just (FoodChunk _), _, Just Full) -> turnAround -- could probably be removed
-                                           --(Just (AntNest _), _, Just Full)   -> front >>= unloadTo
+                                           (Just (FoodChunk _), _, Just Full) -> turnAround -- could probably be removed
+                                           (Just (AntNest _), _, Just Full)   -> front >>= unloadTo
                                            (Just (AntNest _), _, Just(Empty))      -> turnAround -- could probably be removed
                                            (Just _, _, _) -> turn 1
                                            --(_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
@@ -83,6 +83,7 @@ act ((terrain,ant)
                                            --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
                                            --                                                              >> (moveInDir terrain currPos dir))
                                            --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
+                                           --(_, _, _) -> (moveInDir terrain currPos forward) >>= (\terr -> scent terr currPos)
                                            (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
 
 

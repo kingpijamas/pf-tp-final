@@ -89,7 +89,7 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
 
         -- >>> (arr (ldMF (4,4) 1))
         -- >>> (arr (unldMF (4,4)))
-        -->>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 

@@ -40,9 +40,9 @@ asCoords dir = case dir of
 
 
 dirTo : Coords -> Coords -> Direction  -- TODO: should probably be a maybe dir (case (0,0))
-dirTo from to = let vers x = if x == 0
-                             then x
-                             else abs(x)
+dirTo from to = let vers x = if | x > 0  -> 1
+                                | x == 0 -> 0
+                                | x < 0  -> (-1)
 
                     subt = to `subtCoord` from
 
@@ -56,7 +56,7 @@ dirTo from to = let vers x = if x == 0
                                        ((-1),0)    -> W
                                        ((-1),1)    -> NW
                  in
-                    asDir (vers (getX subt),vers (getY subt))
+                    asDir (vers (getX subt), vers (getY subt))
 
 
 addDir : Coords -> Direction -> Maybe(Coords)
