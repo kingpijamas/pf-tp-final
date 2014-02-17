@@ -68,23 +68,24 @@ act ((terrain,ant)
                                       turn times = clckN times terrain currPos -- TODO: turn randomly!
                                       turnAround = turn 4
 
-                                      --towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
-                                      --                           Just dir -> dirF dir
-                                      --                           Nothing -> turn 2
+                                      walk scenting dir = if not scenting
+                                                          then moveInDir terrain currPos dir
+                                                          else (scent terrain currPos) >>= (\terr -> moveInDir terr currPos dir)
+
+                                      towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
+                                                                 Just dir -> dirF dir
+                                                                 Nothing -> turn 2
                                    in
                                       case (head seen, head smelled, loadStatus) of
                                            (Just (FoodChunk _), _, Just(Empty))    -> front >>= loadFrom
-                                           (Just (FoodChunk _), _, Just Full) -> turnAround -- could probably be removed
-                                           (Just (AntNest _), _, Just Full)   -> front >>= unloadTo
+                                           (Just (FoodChunk _), _, Just(Full))     -> turnAround -- could probably be removed
+                                           (Just (AntNest _), _, Just (Full))      -> front >>= unloadTo
                                            (Just (AntNest _), _, Just(Empty))      -> turnAround -- could probably be removed
                                            (Just _, _, _) -> turn 1
-                                           --(_, Nothing, Just cargo) -> towardsDo toNest (\dir -> (scent terrain currPos)
-                                           --                                                              >> (moveInDir terrain currPos dir))
-                                           --(_, Just ph, Just cargo) -> towardsDo forward (\dir -> (scent terrain currPos)
-                                           --                                                              >> (moveInDir terrain currPos dir))
-                                           --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
-                                           --(_, _, _) -> (moveInDir terrain currPos forward) >>= (\terr -> scent terr currPos)
-                                           (_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
+                                           (_, Nothing, Just cargo) -> towardsDo toNest (walk True)
+                                           --(_, Just ph, Just cargo) -> towardsDo forward (walk True)
+                                           --(_, Just ph, Nothing) -> towardsDo forward (walk False)
+                                           (_, _, _) -> walk False forward
 
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))

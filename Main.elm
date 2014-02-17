@@ -84,7 +84,7 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
         -- >>> (arr (unldMF (4,4)))
         -- >>> (arr (ldMF (4,4) 1))
 
-        >>> (arr (scentMF (8,8)))
+        -->>> (arr (scentMF (8,8)))
         -->>> (arr (unscentMF (8,8)))
 
         -- >>> (arr (ldMF (4,4) 1))
