@@ -81,7 +81,7 @@ position occ scent = { occupant = occ
                      }
 
 updateOccupant : Position -> (Maybe(Occupant)->Maybe(Occupant)) -> Position
-updateOccupant pos update = setOccupant pos (update pos.occupant)
+updateOccupant pos update = pos `setOccupant` (update pos.occupant)
 
 getOccupant : Position -> Maybe(Occupant)
 getOccupant pos = pos.occupant

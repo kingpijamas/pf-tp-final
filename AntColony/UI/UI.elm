@@ -17,8 +17,8 @@ terrainAsForm : T.Terrain -> [Form]
 terrainAsForm terrain = let ground = terrainMatrixForms terrain
                             occupants = terrainTilesAsForm terrain
                          in
-                            {-(toForm . asText <| (T.getAnts terrain)) ::-}
-                            (toForm . asText <| (T.getFood terrain)) :: (ground ++ occupants)
+                            (toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
+                            --(toForm . asText <| (T.getFood terrain)) :: (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]

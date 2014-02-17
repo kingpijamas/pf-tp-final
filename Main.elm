@@ -41,7 +41,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 5 5) N
                          --, addAnt (coords 6 6) E
                          --, addAnt (coords 7 7) W
-                         , addFood (coords 8 8) 5
+                         , addFood (coords 5 5) 500
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
@@ -62,5 +62,23 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
         -->>> (arr (moveMF (5,5) (4,4)))
        -- >>> (arr (evictMF (2,2)))
        -- >>> (arr (occupyMF (3,3) T.Rock))
-        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+       -->>> (arr (loadMF (4,4) (5,5)))
+       -->>> (arr (unloadMF (4,4) (5,5)))
+       -- >>> (arr (unloadMF (5,5) (4,4)))
+       >>> (arr (ldMF (4,4) 1))
+       -->>> (arr (unldMF (5,5)))
+       -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+
+
+--loadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+--loadMF ldrPos unldrPos mbterr
+
+--unloadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+--unloadMF unldrPos ldrPos mbterr
+
+--ldMF : Coords -> Food -> (Maybe(Terrain)) -> (Maybe(Terrain))
+--ldMF ldrCoords fd mbterr
+
+--unldMF : Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+--unldMF unldrPos mbterr

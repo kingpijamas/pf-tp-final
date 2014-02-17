@@ -57,3 +57,35 @@ occupyMF whr occ mbterr = let occupy' terrain = occupy terrain whr occ
                            in
                               mbterr
                                >>= occupy'
+
+
+
+--load : Terrain -> Coords -> Coords -> Maybe(Terrain)
+loadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+loadMF ldrPos unldrPos mbterr = let load' terrain = load terrain ldrPos unldrPos
+                                 in
+                                    mbterr
+                                     >>= load'
+
+--unload : Terrain -> Coords -> Coords -> Maybe(Terrain)
+unloadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+unloadMF unldrPos ldrPos mbterr = let unload' terrain = unload terrain unldrPos ldrPos
+                                   in
+                                      mbterr
+                                       >>= unload'
+
+--ld : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))
+ldMF : Coords -> Food -> (Maybe(Terrain)) -> (Maybe(Terrain))
+ldMF ldrCoords fd mbterr = let ld' terrain = ld terrain ldrCoords fd
+                            in
+                               mbterr
+                                >>= ld'
+                                >>= (return . fst)
+
+--unld : Terrain -> Coords -> Maybe(Terrain, Food)
+unldMF : Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+unldMF unldrPos mbterr = let unld' terrain = unld terrain unldrPos
+                          in
+                             mbterr
+                              >>= unld'
+                              >>= (return . fst)

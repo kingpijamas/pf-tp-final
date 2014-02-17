@@ -8,9 +8,14 @@ mbx >>= f = case mbx of
                 Just x -> f x
                 _   -> Nothing
 
---join : Maybe (Maybe a) -> Maybe a
---join mm = mm 						-- : Maybe(Maybe a) 
---		   >>= (id)					-- : Maybe a -> Maybe a
+fmap : (a -> b) -> Maybe a -> Maybe b
+fmap f mba = mba >>= (return . f)
+
+(<$>) : (a -> b) -> Maybe a -> Maybe b
+(<$>) = fmap
+
+(>>=^) : Maybe a -> (a -> b) -> Maybe b
+(>>=^) = flip fmap 
 
 --TODO: get real name for this one!
 (>>) : Maybe a -> Maybe b -> Maybe b
