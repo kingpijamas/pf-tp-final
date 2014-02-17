@@ -28,7 +28,13 @@ add terrain coords pos = (Area.add terrain.area coords pos)       -- : Maybe(Are
                                                 }) -- : Area -> Maybe(Terrain)
 
 get : Terrain -> Coords -> Maybe(Position)
-get terrain pos = Area.get terrain.area pos
+get terrain coords = let mbpos = Area.get terrain.area coords
+                      in
+                         case mbpos of
+                              Just pos -> Just pos
+                              Nothing -> if (isWithinBounds coords terrain) 
+                                         then Just (position Nothing Nothing)
+                                         else Nothing
 
 remove : Terrain -> Coords -> Maybe(Terrain)
 remove terrain coords = (Area.remove terrain.area coords)         -- : Maybe(Area Position)
@@ -46,6 +52,10 @@ terrain : Int -> Int -> [(Coords,Position)]-> Terrain
 terrain width height tiles = { area = Area.area width height tiles 
                              , debug = ""
                              }
+
+--TODO: for testing!
+terrainMF : Int -> Int -> [(Coords,Position)] -> Terrain
+terrainMF = terrain
 
 width : Terrain -> Int
 width terrain = terrain.area.width

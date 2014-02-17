@@ -48,14 +48,14 @@ second sf1 = identity *** sf1
 
 -- ad hoc loop
 loop : SF (a,b) b -> b -> Signal a -> Signal b
-loop (SF f sf) base = foldp (curry f) base
+loop (SF f _) base signal = foldp (curry f) base signal
 
 loopUntil : SF (b,d) (b,d) -> ((b,d)-> Bool) -> SF (b,d) b
-loopUntil (SF f _) cond = let loop (b,d) = if (cond (b,d))
-                                           then b
-                                           else loop (f (b,d))
+loopUntil (SF f _) cond = let l (b,d) = if (cond (b,d))
+                                        then b
+                                        else l (f (b,d))
                            in
-                              arr loop
+                              arr l
 
 --ad hoc rSwitch
 fork : (a -> Bool) -> SF a b -> SF a b -> SF a b

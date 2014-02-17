@@ -24,7 +24,7 @@ tileSize = 20
 width = 10
 height = 12
 
-main = lift2 display Window.dimensions (loop step (Just simulation) <| (fps 1))
+main = lift2 display Window.dimensions (loop step (Just simulation) (fps 1))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
@@ -57,10 +57,13 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
 
 step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
-        >>> (arr (evictMF (1,1)))
-
-        -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
-        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+       -- >>> (arr setWidthMF)
+        >>> (arr (moveMF (2,2) (3,3)))
+        >>> (arr (moveMF (3,3) (2,2)))
+       -- >>> (arr (evictMF (2,2)))
+       -- >>> (arr (occupyMF (3,3) T.Rock))
+       -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+       -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 display : (Int,Int) -> Maybe(T.Terrain) -> Element
 display (w, h) mbterrain = case mbterrain of
@@ -147,6 +150,10 @@ getImage tile =
         Just (T.Ant ant) -> antImg
         Just (T.AntNest nest) -> antNestImg
         Just (T.FoodChunk foodChunk) -> foodChunkImg
+        _ -> asText "" -- TODO 
+
+soilImg : Element
+soilImg = tileImage "resources/floor.png"
 
 antImg : Element
 antImg = tileImage "resources/ant.png"
