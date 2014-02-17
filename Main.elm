@@ -42,7 +42,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 5 5) N
                          --, addAnt (coords 6 6) E
                          --, addAnt (coords 7 7) W
-                         , addFood (coords 5 5) 500
+                         , addFood (coords 5 5) 500 -- this amount of food is to avoid the food source from being depleted
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
@@ -64,25 +64,32 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
        -- >>> (arr (evictMF (2,2)))
        -- >>> (arr (occupyMF (3,3) T.Rock))
        -->>> (arr (loadMF (2,2) (5,5)))
-       >>> (arr (loadMF (5,5) (5,5)))
-       >>> (arr (unloadMF (5,5) (5,5)))
+       -->>> (arr (loadMF (5,5) (5,5)))
+       -->>> (arr (unloadMF (5,5) (5,5)))
        -- >>> (arr (unloadMF (4,4) (5,5)))
        -- >>> (arr (unloadMF (5,5) (4,4)))
         
+        -->>> (arr (loadMF (4,4) (5,5)))
+        -->>> (arr (unloadMF (4,4) (2,2)))
+
         --FOOD
         -- >>> (arr (ldMF (5,5) 1))
         -- >>> (arr (unldMF (5,5)))
 
         --NEST
-        -- >>> (arr (ldMF (2,2) 1))
+         -->>> (arr (ldMF (2,2) 1))
+         -->>> (arr (unldMF (2,2)))
 
         --ANT
         -- >>> (arr (unldMF (4,4)))
         -- >>> (arr (ldMF (4,4) 1))
 
+        >>> (arr (scentMF (8,8)))
+        -->>> (arr (unscentMF (8,8)))
+
         -- >>> (arr (ldMF (4,4) 1))
         -- >>> (arr (unldMF (4,4)))
-       -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        -->>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
        -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 

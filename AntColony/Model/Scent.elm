@@ -14,11 +14,10 @@ scent scentable = let scent' = case scentable.scent of
 unscent : Scentable a -> Maybe(Scentable a)
 unscent scentable = case scentable.scent of
                          Nothing -> Nothing
-                         Just sc -> if sc > 0
-                                    then Just { scentable | scent <- Just sc }
-                                    else Nothing
+                         Just sc -> Just { scentable | scent <- Just (sc - 1) }
+
 
 getPheromone : Scentable a -> Int
 getPheromone scentable = case scentable.scent of
-  Just ph -> ph
-  _ -> 0
+                              Just ph -> ph
+                              _ -> 0

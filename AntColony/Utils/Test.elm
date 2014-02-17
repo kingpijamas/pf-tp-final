@@ -24,7 +24,7 @@ import open AntColony.Logic.Smelling
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
-import open AntColony.Model.Scent
+import AntColony.Model.Scent as Scent
 
 --step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 --step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
@@ -89,3 +89,24 @@ unldMF unldrPos mbterr = let unld' terrain = unld terrain unldrPos
                              mbterr
                               >>= unld'
                               >>= (return . fst)
+
+--scent : Terrain -> Coords -> Maybe(Terrain)
+scentMF : Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+scentMF coords mbterr = let scent' terrain = scent terrain coords
+                         in
+                            mbterr
+                             >>= scent'
+
+--unscent : Terrain -> Coords -> Maybe(Terrain)
+unscentMF : Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
+unscentMF coords mbterr = let unscent' terrain = unscent terrain coords
+                           in
+                              mbterr
+                               >>= unscent'
+
+--scentUnscentMF : (Position -> Maybe(Position)) -> Terrain -> Coords -> Maybe(Terrain)
+--scentUnscent scf terrain whr = let updateTerrain pos' = add terrain whr pos'
+--                                in
+--                                   (terrain `get` whr)   -- : Maybe(Position)
+--                                    >>= scf              -- : Position -> Maybe(Position)
+--                                    >>= updateTerrain    -- : Position -> Maybe(Terrain)

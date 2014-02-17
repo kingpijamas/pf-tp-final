@@ -17,7 +17,7 @@ load terrain ldrPos unldrPos = let load' ldrPos (terrain',cargo) = ld terrain' l
 
                                    returnRemnantTo unldrPos (terrain'',rem) = case rem of
                                                                                    Just rem' -> load' unldrPos (terrain'',rem')
-                                                                                   _ -> return (terrain'',Nothing)
+                                                                                   _ -> return (terrain'', Nothing)
 
                                    getTerrain (terrain',_) = return terrain'
                                 in
@@ -53,7 +53,9 @@ ld : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))
 ld terrain ldrCoords food = let loadPos pos = case pos.occupant of
                                                    Just(Ant ant) -> doLoad (ant.cargo) (updateAnt pos ant)
                                                    Just(AntNest nest) -> doLoad nest (updateNest pos)
-                                                   Just(FoodChunk chunk) -> doLoad chunk (updateFoodChunk pos)
+                                                   Just(FoodChunk chunk) -> if food > 0
+                                                                            then doLoad chunk (updateFoodChunk pos)
+                                                                            else return (empty pos, Nothing) -- <-- FIXME: this is never being reached!
                                                    _ -> Nothing
 
                                 doLoad ldee updateF = Carrier.load ldee food >>=^ (mapFst updateF)
