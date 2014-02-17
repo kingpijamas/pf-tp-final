@@ -52,7 +52,7 @@ sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs 
             perceptor pf (terrain, ant) = perceive pf terrain ant.position
             loadSensor  =  arr (perceptor senseLoad)         -- : SF (Terrain, AntT) Maybe(Cargo)
          in
-            (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)          
+            (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)
 
 --act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
 --act ((terrain,ant)
@@ -86,7 +86,7 @@ act ((terrain,ant)
                                          --                                                              >> (moveInDir terrain currPos dir))
                                          --(_, Just ph, Nothing) -> towardsDo forward (\dir -> moveInDir terrain currPos dir)
                                          --(_, _, _) -> moveInDir terrain currPos forward -- should walk randomly!
-                                         --(_,_,_) -> move terrain currPos (5,5)
+                                         (_,_,_) -> move terrain currPos (4,4)
                                          --(_,_,_) -> turn 1
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))

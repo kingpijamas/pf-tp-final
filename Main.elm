@@ -14,6 +14,9 @@ import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
 import open AntColony.Model.Scent
 
+--TODO: TEST!
+import open AntColony.Utils.Test
+
 import AntColony.Logic.Ant as Ant
 --import AntColony.Logic.Pheromone as Pheromone
 
@@ -54,7 +57,9 @@ buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just
 
 step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
-        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+        >>> (arr (evictMF (1,1)))
+
+        -- >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
         -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 display : (Int,Int) -> Maybe(T.Terrain) -> Element
@@ -67,7 +72,7 @@ terrainAsForm terrain =
     let 
         ground = terrainMatrixForms terrain
         occupants = terrainTilesAsForm terrain
-    in (toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
+    in (toForm . asText <| {- terrain.debug -} (T.getAnts terrain)) :: (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]

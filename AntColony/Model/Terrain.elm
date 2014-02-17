@@ -9,7 +9,13 @@ import open AntColony.Model.Scent
 
 import open AntColony.Utils.Maybe
 
-type Terrain = { area : Area.Area Position }
+type Terrain = { area : Area.Area Position 
+               , debug : String --TODO: for debugging!
+               }
+
+--TODO : for debugging!
+log : Terrain -> String -> Terrain
+log terrain text = { terrain | debug <- (terrain.debug ++ text) }
 
 {-- Exposing methods from terrain --}
 isWithinBounds : Coords -> Terrain -> Bool
@@ -17,14 +23,18 @@ isWithinBounds coords terrain = Area.isWithinBounds coords terrain.area
 
 add : Terrain -> Coords -> Position -> Maybe(Terrain)
 add terrain coords pos = (Area.add terrain.area coords pos)       -- : Maybe(Area Position)
-                          >>= (\area' -> return { area = area' }) -- : Area -> Maybe(Terrain)
+                          >>= (\area' -> return { area = area'
+                                                , debug = terrain.debug
+                                                }) -- : Area -> Maybe(Terrain)
 
 get : Terrain -> Coords -> Maybe(Position)
 get terrain pos = Area.get terrain.area pos
 
 remove : Terrain -> Coords -> Maybe(Terrain)
 remove terrain coords = (Area.remove terrain.area coords)         -- : Maybe(Area Position)
-                          >>= (\area' -> return { area = area' }) -- : Area -> Maybe(Terrain)
+                          >>= (\area' -> return { area = area'
+                                                , debug = terrain.debug
+                                                }) -- : Area -> Maybe(Terrain)
 
 values : Terrain -> [Position]
 values terrain = Area.values terrain.area
@@ -33,7 +43,9 @@ toList : Terrain -> [(Coords,Position)]
 toList terrain = Area.toList terrain.area
 
 terrain : Int -> Int -> [(Coords,Position)]-> Terrain
-terrain width height tiles = { area = Area.area width height tiles }
+terrain width height tiles = { area = Area.area width height tiles 
+                             , debug = ""
+                             }
 
 width : Terrain -> Int
 width terrain = terrain.area.width
