@@ -1,4 +1,4 @@
-module AntColony.Model.Scent where
+module AntColony.Model.Scentable where
 
 type Pheromone = Int
 
@@ -17,7 +17,7 @@ unscent scentable = case scentable.scent of
                          Just sc -> Just { scentable | scent <- Just (sc - 1) }
 
 
-getPheromone : Scentable a -> Int
+getPheromone : Scentable a -> Pheromone
 getPheromone scentable = case scentable.scent of
                               Just ph -> ph
                               _ -> 0

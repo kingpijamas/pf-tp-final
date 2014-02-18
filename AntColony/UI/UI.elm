@@ -2,7 +2,7 @@ module AntColony.UI.UI where
 
 import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
-import open AntColony.Model.Scent
+import open AntColony.Model.Scentable
 
 import AntColony.Model.Terrain as T
 

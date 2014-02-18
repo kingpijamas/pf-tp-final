@@ -9,7 +9,7 @@ import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
 import open AntColony.Model.Terrain
-import open AntColony.Model.Scent
+import open AntColony.Model.Scentable
 import open AntColony.Model.AntT
 
 import open AntColony.Logic.Perceiving
@@ -24,7 +24,7 @@ import open AntColony.Logic.Smelling
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.Food
-import AntColony.Model.Scent as Scent
+import AntColony.Model.Scentable as Scent
 
 --step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
 --step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))

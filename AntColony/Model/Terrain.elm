@@ -6,7 +6,7 @@ import open AntColony.Model.Food
 import open AntColony.Model.AntT
 import open AntColony.Model.AntNestT
 import open AntColony.Model.FoodChunkT
-import open AntColony.Model.Scent
+import open AntColony.Model.Scentable
 
 import open AntColony.Utils.Maybe
 

@@ -4,8 +4,19 @@ import open AntColony.Model.Terrain
 import open AntColony.Geography.Coords
 import open AntColony.Geography.Direction
 
-import AntColony.Model.Scent as Scent
+import AntColony.Model.Scentable as Scentable
 import open AntColony.Utils.Maybe
+
+scentInDirs : Terrain -> Coords -> [Direction] -> Maybe(Terrain)
+scentInDirs terrain from dirs = let scentInDir' dir terrain = scentInDir terrain from dir
+        
+                                    scentStep dir mbterr = mbterr >>= (scentInDir' dir)
+                                 in
+                                    foldr scentStep (Just terrain) dirs
+
+--foldr : (a -> b -> b) -> b -> [a] -> b
+--foldr : (Direction -> Maybe(Terrain) -> Maybe(Terrain)) -> Maybe(Terrain) -> [Direction] -> Maybe(Terrain)
+
 
 scentInDir : Terrain -> Coords -> Direction -> Maybe(Terrain)
 scentInDir terrain from dir = (from `addDir` dir)   -- : Maybe(Coords)
@@ -16,11 +27,10 @@ unscentInDir terrain from dir = (from `addDir` dir)     -- : Maybe(Coords)
                                  >>= (unscent terrain)  -- : Coords -> Maybe(Terrain)
 
 scent : Terrain -> Coords -> Maybe(Terrain)
-scent = scentUnscent (return . Scent.scent)
+scent = scentUnscent (return . Scentable.scent)
 
 unscent : Terrain -> Coords -> Maybe(Terrain)
-unscent = scentUnscent Scent.unscent
-
+unscent = scentUnscent Scentable.unscent
 
 scentUnscent : (Position -> Maybe(Position)) -> Terrain -> Coords -> Maybe(Terrain)
 scentUnscent scf terrain whr = let updateTerrain pos' = add terrain whr pos'

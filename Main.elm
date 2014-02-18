@@ -32,6 +32,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
 
                  nestPos = coords 2 2
 
+                 addScent position scent = (position, T.position Nothing (Just scent))
                  addNest position = (position, pos' (T.AntNest antNest))                 
                  addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
@@ -40,6 +41,8 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 2 5) N
                          --, addAnt (coords 2 3) N
                          , addAnt (coords 4 4) N
+                         --, addScent (coords 5 5) 10
+                         --, addScent (coords 3 5) 5
                          --, addAnt (coords (width-1) 3) W
                          --, addAnt (coords 4 5) E
                          --, addAnt (coords 4 6) E
@@ -52,7 +55,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 5 5) N
                          --, addAnt (coords 6 6) E
                          --, addAnt (coords 3 3) W
-                         , addFood (coords 5 5) 1
+                         , addFood (coords 5 5) 500
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
