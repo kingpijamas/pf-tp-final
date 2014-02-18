@@ -22,7 +22,7 @@ import AntColony.UI.UI as UI
 import AntColony.Logic.Ant as Ant
 import AntColony.Logic.Pheromone as Pheromone
 
-width = 10
+width = 3
 height = 12
 
 main = lift2 UI.display Window.dimensions (loop step (Just simulation) (fps 1))
@@ -37,12 +37,21 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
 
                  tiles = [ addNest nestPos
-                         --, addAnt (coords 2 2) N
-                         , addAnt (coords 4 4) NE
+                         , addAnt (coords 2 5) N
+                         , addAnt (coords 2 3) N
+                         --, addAnt (coords (width-1) 3) W
+                         --, addAnt (coords 4 5) E
+                         --, addAnt (coords 4 6) E
+                         --, addAnt (coords 5 6) S
+                         --, addAnt (coords 6 6) S
+                         --, addAnt (coords 6 5) W
+                         --, addAnt (coords 6 4) W
+                         --, addAnt (coords 5 4) N
+
                          --, addAnt (coords 5 5) N
                          --, addAnt (coords 6 6) E
-                         --, addAnt (coords 7 7) W
-                         , addFood (coords 5 5) 500 -- this amount of food is to avoid the food source from being depleted
+                         --, addAnt (coords 3 3) W
+                         , addFood (coords 2 9) 500 -- this amount of food is to avoid the food source from being depleted
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
@@ -84,6 +93,7 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
         -- >>> (arr (unldMF (4,4)))
         -- >>> (arr (ldMF (4,4) 1))
 
+        -->>> (arr (scentMF (4,5)))
         -->>> (arr (scentMF (8,8)))
         -->>> (arr (unscentMF (8,8)))
 

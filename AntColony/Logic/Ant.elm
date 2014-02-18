@@ -57,35 +57,82 @@ sense = let dirPerceptors pf (terrain, ant) = perceiveInDirs pf (getSensingDirs 
             (eyes &&& antennae &&& loadSensor) >>^ (flatten)  -- : SF (Terrain, AntT) (SensorData)
 
 act : ((Terrain, AntT), SensorData) -> Maybe(Terrain)
-act ((terrain,ant)
-    ,(seen,smelled,loadStatus)) = let currPos = ant.position
-                                      forward = ant.orientation
-                                      front = currPos `addDir` forward
-                                      toNest = currPos `dirTo` ant.nestPos
+act ((terrain,ant),(seen,smelled,loadStatus)) =
+    let currPos = ant.position
+        forward = ant.orientation
+        toNest = currPos `dirTo` ant.nestPos
 
-                                      loadFrom = load terrain currPos
-                                      unloadTo = unload terrain currPos
-                                      turn times = clckN times terrain currPos -- TODO: turn randomly!
-                                      turnAround = turn 4
+        turn times = clckN times terrain currPos
+        turnTo goal = turn (turnsTo forward goal rght)
 
-                                      walk scenting dir = if not scenting
-                                                          then moveInDir terrain currPos dir
-                                                          else (scent terrain currPos) >>= (\terr -> moveInDir terr currPos dir)
+        walk scenting goal = if goal /= forward
+                             then turnTo goal
+                             else (if not scenting
+                                   then moveInDir terrain currPos goal
+                                   else (scent terrain currPos) 
+                                         >>= (\terr -> moveInDir terr currPos goal))
 
-                                      towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
-                                                                 Just dir -> dirF dir
-                                                                 Nothing -> turn 2
-                                   in
-                                      case (head seen, head smelled, loadStatus) of
-                                           (Just (FoodChunk _), _, Just(Empty))    -> front >>= loadFrom
-                                           (Just (FoodChunk _), _, Just(Full))     -> turnAround -- could probably be removed
-                                           (Just (AntNest _), _, Just (Full))      -> front >>= unloadTo
-                                           (Just (AntNest _), _, Just(Empty))      -> turnAround -- could probably be removed
-                                           (Just _, _, _) -> turn 1
-                                           (_, Nothing, Just cargo) -> towardsDo toNest (walk True)
-                                           --(_, Just ph, Just cargo) -> towardsDo forward (walk True)
-                                           --(_, Just ph, Nothing) -> towardsDo forward (walk False)
-                                           (_, _, _) -> walk False forward
+        loadFrom path = loadInDir terrain currPos (getDir path)
+        unloadTo path terrain = unloadInDir terrain currPos (getDir path)
+
+        getDir (dir,_,_) = dir
+        getSmell (_, _, mbsmell) = mbsmell
+
+        hasFood (_,mbocc,_) = case mbocc of
+                                   Just(FoodChunk _) -> True
+                                   _ -> False
+        hasNest (_,mbocc,_) = case mbocc of
+                                   Just(AntNest _) -> True
+                                   _ -> False
+
+        isEmpty (_, mbsth, _) = isNothing mbsth
+        
+        hasPheromone (_,_,mbph) = isJust mbph
+
+        smellier p1 p2 = case (getSmell p1, getSmell p2) of
+                              (Just sm1, Just sm2) -> if sm1 >= sm2 then p1 else p2
+                              (_,_) -> p1
+
+        --type Path = (Direction, Maybe(Sight), Maybe(Smell))                                      
+
+        sensed = asPaths forward seen smelled
+        
+        foodPs = filter hasFood sensed
+        emptyPs = filter isEmpty sensed
+        nestPs = filter hasNest sensed
+
+        smelliestP ps = case filter hasPheromone ps of
+                             [] -> Nothing
+                             _  -> return (foldr1 smellier ps)
+
+     in
+        case loadStatus of
+             Just (Empty) -> case (foodPs, smelliestP emptyPs, emptyPs) of
+                                  ((fp::fps), _, _)    -> loadFrom fp
+                                  (_, Just smp, _)     -> walk False <| getDir smp
+                                  (_, _, (ep::eps))    -> walk False <| getDir ep
+                                  (_, _, _)            -> turn 1
+             Just (Full) -> case (smelliestP emptyPs, nestPs, emptyPs) of
+                                 (Just smp, _, _)      -> walk True <| getDir smp
+                                 (_, (np::nps), _)     -> (scent terrain currPos) >>= (unloadTo np)
+                                 (_, _, (ep::eps))     -> walk True <| toNest 
+                                 (_, _, _)             -> turn 1
+
+
+
+--towardsDo goal dirF = case (findPath goal (asPaths forward seen smelled)) of
+--                           Just dir -> dirF dir
+--                           Nothing -> turn 2
+--case (head seen, head smelled, loadStatus) of
+--     (Just (FoodChunk _), _, Just(Empty))    -> front >>= loadFrom
+--     (Just (FoodChunk _), _, Just(Full))     -> turnAround -- could probably be removed
+--     (Just (AntNest _), _, Just (Full))      -> front >>= unloadTo
+--     (Just (AntNest _), _, Just(Empty))      -> turnAround -- could probably be removed
+--     (Just _, _, _) -> turn 1
+--     (_, Nothing, Just cargo) -> towardsDo toNest (walk True)
+--     (_, Just ph, Just cargo) -> towardsDo forward (walk True)
+--     (_, Just ph, Nothing) -> towardsDo forward (walk False)
+--     (_, _, _) -> walk False forward
 
 
 type Path = (Direction, Maybe(Sight), Maybe(Smell))
@@ -94,21 +141,18 @@ asPaths : Direction -> [Maybe(Sight)] -> [Maybe(Smell)] -> [Path]
 asPaths forward sight smell = flatZip (getSensingDirs forward) (zip sight smell)
 
 findPath : Direction -> [Path] -> Maybe(Direction)
-findPath goal paths = let isPathToGoal (dir,_,_) = goal == dir
+findPath goal paths = let freePaths = filter isEmpty paths
+                          
+                          isEmpty (_, mbsth, _) = isNothing mbsth
 
-                          occAndSmell (_,mbocc,mbsmell) = (isJust mbocc, mbsmell)
+                          smell (_, _, mbsmell) = mbsmell
 
-                          better p1 p2 = case (occAndSmell p1, occAndSmell p2) of
-                                              ((True, _), (False, _)) -> p2
-                                              ((False, Just sm1), (False, Just sm2)) -> if sm1 >= sm2
-                                                                                        then p1
-                                                                                        else p2
+                          better p1 p2 = case (smell p1, smell p2) of
+                                              (Just sm1, Just sm2) -> if sm1 >= sm2 then p1 else p2
                                               (_,_) -> p1
 
-                          findPathIn goalP paths = foldl better goalP paths
+                          getDirection (dir, _, _) = dir
                        in
-                          case (filter isPathToGoal paths) of
-                                [] -> Nothing
-                                [goalP] -> case (findPathIn goalP paths) of
-                                                 (dir, Nothing, _) -> Just dir
-                                                 _ -> Nothing
+                          case freePaths of
+                              [] -> Nothing
+                              _ -> foldl better (head freePaths) freePaths |> return . getDirection

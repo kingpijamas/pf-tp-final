@@ -106,12 +106,22 @@ asNest x = AntNest x
 asFood : FoodChunkT -> Occupant
 asFood x = FoodChunk x
 
-getAnts : Terrain -> [Occupant]
-getAnts terrain = let hasAnt pos = case pos.occupant of
-                                        Just (Ant _) -> True
-                                        _ -> False
+hasAnt : Position -> Bool
+hasAnt pos = case pos.occupant of
+                  Just (Ant _) -> True
+                  _ -> False
 
-                      justAntPoss = filter hasAnt (values terrain)
+hasFood : Position -> Bool
+hasFood pos = case pos.occupant of
+                   Just (FoodChunk _) -> True
+                   _ -> False
+
+hasNest pos = case pos.occupant of
+                   Just (AntNest _) -> True
+                   _ -> False
+
+getAnts : Terrain -> [Occupant]
+getAnts terrain = let justAntPoss = filter hasAnt (values terrain)
 
                       decont justAntPos = case justAntPos.occupant of
                                                Just ant -> ant
@@ -119,11 +129,7 @@ getAnts terrain = let hasAnt pos = case pos.occupant of
                       map decont justAntPoss
 
 getFood : Terrain -> [Occupant]
-getFood terrain = let hasFood pos = case pos.occupant of
-                                         Just (FoodChunk _) -> True
-                                         _ -> False
-
-                      justFoodPoss = filter hasFood (values terrain)
+getFood terrain = let justFoodPoss = filter hasFood (values terrain)
 
 
                       decont justFoodPos = case justFoodPos.occupant of
@@ -132,11 +138,7 @@ getFood terrain = let hasFood pos = case pos.occupant of
                       map decont justFoodPoss
 
 getNest : Terrain -> Occupant
-getNest terrain = let hasNest pos = case pos.occupant of
-                                         Just (AntNest _) -> True
-                                         _ -> False
-
-                      justNestPoss = filter hasNest (values terrain)
+getNest terrain = let justNestPoss = filter hasNest (values terrain)
 
 
                       decont justNestPos = case justNestPos.occupant of

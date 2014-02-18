@@ -58,6 +58,12 @@ dirTo from to = let vers x = if | x > 0  -> 1
                  in
                     asDir (vers (getX subt), vers (getY subt))
 
+turnsTo : Direction -> Direction -> (Direction -> Direction) -> Int
+turnsTo curr goal df = let rec curr goal df n = if curr == goal
+                                                then n
+                                                else rec (df curr) goal df (n+1)
+                        in
+                           rec curr goal df 0
 
 addDir : Coords -> Direction -> Maybe(Coords)
 addDir a dir = case (asCoords dir) of

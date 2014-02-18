@@ -6,7 +6,7 @@ import open AntColony.Model.Scent
 
 import AntColony.Model.Terrain as T
 
-tileSize = 20 -- px
+tileSize = 30 -- px
 
 display : (Int,Int) -> Maybe(T.Terrain) -> Element
 display (w, h) mbterrain = case mbterrain of
@@ -18,8 +18,8 @@ terrainAsForm terrain = let ground = terrainMatrixForms terrain
                             occupants = terrainTilesAsForm terrain
                          in
                             --(toForm . asText <| (T.getNest terrain)) :: (ground ++ occupants)
-                            --(toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
-                            (toForm . asText <| (T.getFood terrain)) :: (ground ++ occupants)
+                            (toForm . asText <| (T.getAnts terrain)) :: (ground ++ occupants)
+                            --(toForm . asText <| (T.getFood terrain)) :: (ground ++ occupants)
 
 -- Obtiene la lista de Elements de los tiles en la matriz a dibujar
 terrainMatrixForms : T.Terrain -> [Form]
@@ -92,14 +92,14 @@ directionToRadians : Direction -> Float
 directionToRadians dir = let dPerRad = 0.01745
 
                              rads dir = case dir of
-                                             SW -> 0
-                                             S -> 45
-                                             SE -> 90
-                                             E -> 135
-                                             NE -> 180
-                                             N -> 225
-                                             NW -> 270
-                                             W -> 315
+                                             N -> 0
+                                             NW -> 45
+                                             W -> 90
+                                             SW -> 135
+                                             S -> 180
+                                             SE -> 225
+                                             E -> 270
+                                             NE -> 315
                           in 
                              dPerRad * (rads dir)
 
@@ -109,13 +109,13 @@ getImage tile = case tile.occupant of
                      Just (T.Ant ant) -> antImg
                      Just (T.AntNest nest) -> antNestImg
                      Just (T.FoodChunk foodChunk) -> foodChunkImg
-                     _ -> asText "" -- TODO 
+                     _ -> plainText ""
 
 soilImg : Element
 soilImg = tileImage "resources/floor.png"
 
 antImg : Element
-antImg = tileImage "resources/ant.png"
+antImg = tileImage "resources/ant2.png"
 
 stoneImg : Element
 stoneImg = tileImage "resources/stone.png"

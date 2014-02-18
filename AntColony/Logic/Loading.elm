@@ -5,12 +5,21 @@ import open AntColony.Utils.Maybe
 import open AntColony.Utils.Tuple
 
 import open AntColony.Geography.Coords
+import open AntColony.Geography.Direction
 
 import AntColony.Model.FoodCarrier as Carrier
 
 import open AntColony.Model.Terrain
 import open AntColony.Model.Food
 import open AntColony.Model.AntT
+
+loadInDir : Terrain -> Coords -> Direction -> Maybe(Terrain)
+loadInDir terrain from dir = (from `addDir` dir)      -- : Maybe(Coords)
+                              >>= (load terrain from) -- : Coords -> Maybe(Terrain)
+
+unloadInDir : Terrain -> Coords -> Direction -> Maybe(Terrain)
+unloadInDir terrain from dir = (from `addDir` dir)        -- : Maybe(Coords)
+                                >>= (unload terrain from) -- : Coords -> Maybe(Terrain)
 
 load : Terrain -> Coords -> Coords -> Maybe(Terrain)
 load terrain ldrPos unldrPos = let load' ldrPos (terrain',cargo) = ld terrain' ldrPos cargo

@@ -15,7 +15,7 @@ fmap f mba = mba >>= (return . f)
 (<$>) = fmap
 
 (>>=^) : Maybe a -> (a -> b) -> Maybe b
-(>>=^) = flip fmap 
+(>>=^) = flip fmap
 
 --TODO: get real name for this one!
 (>>) : Maybe a -> Maybe b -> Maybe b
