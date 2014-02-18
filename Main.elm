@@ -20,10 +20,10 @@ import AntColony.UI.UI as UI
 import AntColony.Logic.Ant as Ant
 import AntColony.Logic.Pheromone as Pheromone
 
-width = 7
-height = 3
+width = 10
+height = 10
 
-main = lift2 UI.display Window.dimensions (loop step (Just simulation) (Time.every <| 1000 * Time.millisecond))--(fps 1))
+main = lift2 UI.display Window.dimensions (loop step (Just simulation) (Time.every <| 500 * Time.millisecond))--(fps 1))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
@@ -35,29 +35,28 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
                  addRock position = (position, pos' (T.Rock))
-               
-                 --makeAnts = map (uncurry ant)
-                 --makeFoods = map (uncurry food)
-
-                 --ants = []
-                 --foods = [
-                 --        --,food (coords 5 5, 5)
-                 --        --,food (coords 5 7, 4)
-                 --        --,food (coords 6 8, 1)
-                 --        --,food (coords 2 2, 20)
-                 --        --,food (coords 9 4, 100)
-                 --        ]
 
                  tiles = [ addNest nestPos
-                         , addFood (coords 3 2) 45
-                         , addAnt (coords 4 2) N
-                         , addAnt (coords 5 2) N
+                         , addRock (coords 2 4)
+                         , addFood (coords 4 8) 10
+                         , addRock (coords 6 4)
+                         , addFood (coords 8 4) 5 
+                         , addRock (coords 2 6)
+                         , addRock (coords 4 6)
+                         , addRock (coords 6 6)
+                         , addFood (coords 8 6) 100
+                         , addRock (coords 2 9)
+                         , addRock (coords 4 9)
+                         , addRock (coords 6 9)
+                         , addFood (coords 8 9) 1000
                          , addFood (coords 6 2) 5
-                         
-                         --, addRock (coords 4 2)
-                         
-                         --, addAnt (coords 3 2) N
-                         --, addAnt (coords 2 4) N
+                         --, addAnt (coords 4 2) N
+                         --, addAnt (coords 5 2) N
+                         --, addAnt (coords 2 3) N
+                         --, addAnt (coords 3 2) E
+                         , addAnt (coords 2 3) SE
+                         --, addAnt (coords 2 5) SW
+
                          --, addAnt (coords 3 4) N
                          --, addFood (coords 2 5) 400
                          --, addFood (coords 3 5) 100
