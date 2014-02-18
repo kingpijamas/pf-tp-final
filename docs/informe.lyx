@@ -86,8 +86,9 @@ ant colony
 
 \begin_layout Standard
 El objetivo consiste en aplicar lo aprendido en la materia Programación
- Funcional junto con AFRP para realizar una demo en donde hormigas recorren
- un tablero en busca de comida para luego traerla al hormiguero y guardarla.
+ Funcional junto con AFRP para realizar una demostración en donde hormigas
+ recorren un tablero en busca de comida para luego traerla al hormiguero
+ y guardarla.
 \end_layout
 
 \begin_layout Section*
@@ -107,7 +108,8 @@ Hormigas: Recorren el tablero en busca de comida.
 \end_layout
 
 \begin_layout Itemize
-Hormiguero: Representa un depósito de comida de las hormigas.
+Hormiguero: Representa el depósito de comida de las hormigas.
+ Admite infinita comida.
 \end_layout
 
 \begin_layout Itemize
@@ -116,29 +118,30 @@ Piedras: Obstáculos que existen en el mapa que no pueden ser traspasados
 \end_layout
 
 \begin_layout Itemize
-Feromona: Sustancia que las hormigas dejan en su camino al encontrar comdia
- y vovler al homriguero.
+Feromona: Sustancia que las hormigas dejan en su camino al encontrar comida
+ y volver al homriguero.
+ Se evapora con el tiempo.
 \end_layout
 
 \begin_layout Standard
-El funcionamiento de la apliación funciona de la siguiente forma: 
+La apliación funciona de la siguiente forma:
 \end_layout
 
 \begin_layout Standard
-Las hormigas reocrren el mapa en búsqueda de comida.
+Las hormigas recorren el mapa en búsqueda de comida.
  Cuando alguna encuentra comida, esta carga tanto como pueda (deja el resto
  en el lugar) y la lleva directamente al hormiguero para almacenarla.
  Durante su regreso al hormiguero, se libera feromona en cada paso.
- Cuando una hormiga cruza un rastro de feromona, esta sigue con preferencia
- el lado que mas feromona tenga.
- Esto producirá que las fuenes de comida, atraigan con facilidad a muchas
- hormigas.
+ Cuando una hormiga cruza un rastro de feromona, esta camina hacia la posición
+ vacía que percibió que más feromona tenga.
+ Esto producirá que las fuenes de comida -pasado un breve tiempo- atraigan
+ con facilidad a muchas hormigas.
 \end_layout
 
 \begin_layout Standard
 La feromona tiene una función de decaimiento dependiente del tiempo.
  Es decir, la feromona que fue liberada solamente seguirá en el lugar durante
- in cierto tiempo solamente.
+ un cierto tiempo solamente.
 \end_layout
 
 \begin_layout Standard
@@ -154,15 +157,15 @@ El algoritmo hormiga explicado en detalle escapa a los objetivos del proyecto
 \end_layout
 
 \begin_layout Section*
-Obstáculos
+Dificultades encontradas
 \end_layout
 
 \begin_layout Standard
-Debido a que Elm se encuentra todavía en etapa de desarollo.
- Aún no estan soportadas las type classes [3].
- Por lo que las arrows no estan soportadas, simplemente existen primitivas
- que permiten su implementación.
- Se optó entonces por realizar la implementacón de las siguientes:
+Debido a que Elm se encuentra todavía en etapa de desarollo, aún no soporta
+ type classes.
+ Por este motivo, si bien existen primitivas que permiten su implementación,
+ las arrows a la usanza de Yampa [4] no están soportadas, simplemente .
+ Se optó entonces por realizar la implementación de las siguientes:
 \end_layout
 
 \begin_layout Itemize
@@ -433,6 +436,17 @@ target "http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms"
 \begin_inset CommandInset href
 LatexCommand href
 target "http://en.wikipedia.org/wiki/Type_class"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+[4] - Introducción arrows Yampa - 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.cs.yale.edu/homes/hudak/CS429F04/LectureSlides/YampaForCs429.ppt"
 
 \end_inset
 
