@@ -14,10 +14,6 @@ scentInDirs terrain from dirs = let scentInDir' dir terrain = scentInDir terrain
                                  in
                                     foldr scentStep (Just terrain) dirs
 
---foldr : (a -> b -> b) -> b -> [a] -> b
---foldr : (Direction -> Maybe(Terrain) -> Maybe(Terrain)) -> Maybe(Terrain) -> [Direction] -> Maybe(Terrain)
-
-
 scentInDir : Terrain -> Coords -> Direction -> Maybe(Terrain)
 scentInDir terrain from dir = (from `addDir` dir)   -- : Maybe(Coords)
                                >>= (scent terrain)  -- : Coords -> Maybe(Terrain)

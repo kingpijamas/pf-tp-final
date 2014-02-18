@@ -4,18 +4,24 @@ type Pheromone = Int
 
 type Scentable a = { a | scent : Maybe(Pheromone) }
 
+scentIncrement = 100
+scentDecrement = 5
+
 scent : Scentable a -> Scentable a
 scent scentable = let scent' = case scentable.scent of
-                                    Nothing -> 1
-                                    Just sc -> sc + 1
+                                    Nothing -> scentIncrement
+                                    Just sc -> sc + scentIncrement
                    in 
                       { scentable | scent <- Just scent' }
 
 unscent : Scentable a -> Maybe(Scentable a)
-unscent scentable = case scentable.scent of
-                         Nothing -> Nothing
-                         Just sc -> Just { scentable | scent <- Just (sc - 1) }
-
+unscent scentable = let zeroAsNothing x = if x == 0
+                                          then Nothing
+                                          else Just x
+                     in
+                        case scentable.scent of
+                             Nothing -> Nothing
+                             Just sc -> Just { scentable | scent <- zeroAsNothing (sc-scentDecrement) }
 
 getPheromone : Scentable a -> Pheromone
 getPheromone scentable = case scentable.scent of

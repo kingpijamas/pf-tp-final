@@ -32,7 +32,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
 
                  nestPos = coords 2 2
 
-                 addScent position scent = (position, T.position Nothing (Just scent))
+                 addPheromone position scent = (position, T.position Nothing (Just scent))
                  addNest position = (position, pos' (T.AntNest antNest))                 
                  addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
@@ -40,6 +40,9 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  tiles = [ addNest nestPos
                          --, addAnt (coords 2 5) N
                          --, addAnt (coords 2 3) N
+                         , addPheromone (coords 8 8) 10
+                         --, addPheromone (coords 3 3) 10
+                         --, addPheromone (coords 4 4) 10
                          , addAnt (coords 4 4) N
                          --, addScent (coords 5 5) 10
                          --, addScent (coords 3 5) 5
@@ -55,8 +58,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 5 5) N
                          --, addAnt (coords 6 6) E
                          --, addAnt (coords 3 3) W
-                         , addFood (coords 5 5) 500
-
+                         , addFood (coords 5 5) 10
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
@@ -100,12 +102,12 @@ step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.T
 
         -->>> (arr (scentMF (4,5)))
         -->>> (arr (scentMF (8,8)))
-        -->>> (arr (unscentMF (8,8)))
+        -- >>> (arr (unscentMF (2,2)))
 
         -- >>> (arr (ldMF (4,4) 1))
         -- >>> (arr (unldMF (4,4)))
-        >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
-       -- >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+         >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+         >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
 
 
 --loadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
