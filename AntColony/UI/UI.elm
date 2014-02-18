@@ -115,7 +115,7 @@ soilImg : Element
 soilImg = tileImage "resources/floor.png"
 
 antImg : Element
-antImg = tileImage "resources/ant2.png"
+antImg = tileImage "resources/ant.png"
 
 stoneImg : Element
 stoneImg = tileImage "resources/stone.png"

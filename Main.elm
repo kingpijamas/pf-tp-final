@@ -20,8 +20,8 @@ import AntColony.UI.UI as UI
 import AntColony.Logic.Ant as Ant
 import AntColony.Logic.Pheromone as Pheromone
 
-width = 5
-height = 12
+width = 7
+height = 3
 
 main = lift2 UI.display Window.dimensions (loop step (Just simulation) (Time.every <| 1000 * Time.millisecond))--(fps 1))
 
@@ -34,7 +34,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  addNest position = (position, pos' (T.AntNest antNest))                 
                  addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
-
+                 addRock position = (position, pos' (T.Rock))
                
                  --makeAnts = map (uncurry ant)
                  --makeFoods = map (uncurry food)
@@ -49,13 +49,19 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  --        ]
 
                  tiles = [ addNest nestPos
-                         , addAnt (coords 2 3) N
-                         , addAnt (coords 3 2) N
-                         , addAnt (coords 2 4) N
-                         , addAnt (coords 3 4) N
-                         , addFood (coords 2 5) 400
-                         , addFood (coords 3 5) 100
-                         , addFood (coords 4 5) 200
+                         , addFood (coords 3 2) 45
+                         , addAnt (coords 4 2) N
+                         , addAnt (coords 5 2) N
+                         , addFood (coords 6 2) 5
+                         
+                         --, addRock (coords 4 2)
+                         
+                         --, addAnt (coords 3 2) N
+                         --, addAnt (coords 2 4) N
+                         --, addAnt (coords 3 4) N
+                         --, addFood (coords 2 5) 400
+                         --, addFood (coords 3 5) 100
+                         --, addFood (coords 4 5) 200
                          --, addFood (coords 9 4) 100
                          --, pheromone (coords 8 8) 10
                          --, pheromone (coords 3 3) 10
