@@ -4,8 +4,8 @@ type Pheromone = Int
 
 type Scentable a = { a | scent : Maybe(Pheromone) }
 
-scentIncrement = 100
-scentDecrement = 5
+scentIncrement = 20
+scentDecrement = 1
 
 scent : Scentable a -> Scentable a
 scent scentable = let scent' = case scentable.scent of

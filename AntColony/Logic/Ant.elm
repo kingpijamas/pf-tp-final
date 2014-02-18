@@ -71,6 +71,7 @@ act ((terrain,ant),(seen,smelled,loadStatus)) =
         getDir (dir,_,_) = dir
         getSmell (_, _, mbsmell) = mbsmell
 
+
         hasFood (_,mbocc,_) = case mbocc of
                                    Just(FoodChunk _) -> True
                                    _ -> False
@@ -79,7 +80,7 @@ act ((terrain,ant),(seen,smelled,loadStatus)) =
                                    _ -> False
 
         isEmpty (_,mbsth,_) = isNothing mbsth
-        
+
         hasPheromone (_,_,mbph) = isJust mbph
 
         smellier p1 p2 = case (getSmell p1, getSmell p2) of

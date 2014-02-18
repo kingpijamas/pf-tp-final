@@ -2,6 +2,7 @@ module AntColony.Main where
 
 import Window
 import Dict
+import Time as Time
 import AntColony.Model.Terrain as T
 
 import open AntColony.Geography.Coords
@@ -14,18 +15,15 @@ import open AntColony.Model.AntNestT
 import open AntColony.Model.FoodChunkT
 import open AntColony.Model.Food
 
---TODO: TEST!
-import open AntColony.Utils.Test
-
 import AntColony.UI.UI as UI
 
 import AntColony.Logic.Ant as Ant
 import AntColony.Logic.Pheromone as Pheromone
 
-width = 10--3
+width = 5
 height = 12
 
-main = lift2 UI.display Window.dimensions (loop step (Just simulation) (fps 1))
+main = lift2 UI.display Window.dimensions (loop step (Just simulation) (Time.every <| 1000 * Time.millisecond))--(fps 1))
 
 simulation : T.Terrain
 simulation = let pos' occ = T.position (Just occ) Nothing
@@ -37,87 +35,63 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                  addAnt position orientation = (position, pos' (T.Ant (ant nestPos position orientation)))
                  addFood position x = (position, pos' (T.FoodChunk (foodChunk x)))
 
-                 tiles = [ addNest nestPos
-                         --, addAnt (coords 2 5) N
-                         --, addAnt (coords 2 3) N
-                         , addPheromone (coords 8 8) 10
-                         --, addPheromone (coords 3 3) 10
-                         --, addPheromone (coords 4 4) 10
-                         , addAnt (coords 4 4) N
-                         --, addScent (coords 5 5) 10
-                         --, addScent (coords 3 5) 5
-                         --, addAnt (coords (width-1) 3) W
-                         --, addAnt (coords 4 5) E
-                         --, addAnt (coords 4 6) E
-                         --, addAnt (coords 5 6) S
-                         --, addAnt (coords 6 6) S
-                         --, addAnt (coords 6 5) W
-                         --, addAnt (coords 6 4) W
-                         --, addAnt (coords 5 4) N
+               
+                 --makeAnts = map (uncurry ant)
+                 --makeFoods = map (uncurry food)
 
-                         --, addAnt (coords 5 5) N
-                         --, addAnt (coords 6 6) E
-                         --, addAnt (coords 3 3) W
-                         , addFood (coords 5 5) 10
-                         ] ++ (buildSurroundingStones width height)
+                 --ants = []
+                 --foods = [
+                 --        --,food (coords 5 5, 5)
+                 --        --,food (coords 5 7, 4)
+                 --        --,food (coords 6 8, 1)
+                 --        --,food (coords 2 2, 20)
+                 --        --,food (coords 9 4, 100)
+                 --        ]
+
+                 tiles = [ addNest nestPos
+                         , addAnt (coords 2 3) N
+                         , addAnt (coords 3 2) N
+                         , addAnt (coords 2 4) N
+                         , addAnt (coords 3 4) N
+                         , addFood (coords 2 5) 400
+                         , addFood (coords 3 5) 100
+                         , addFood (coords 4 5) 200
+                         --, addFood (coords 9 4) 100
+                         --, pheromone (coords 8 8) 10
+                         --, pheromone (coords 3 3) 10
+                         --, pheromone (coords 4 4) 10
+                         --, scent (coords 5 5) 10
+                         --, scent (coords 3 5) 5
+                         --, ant (coords (width-1) 3) W
+                         --, ant (coords 4 5) E
+                         --, ant (coords 4 6) E
+                         --, ant (coords 5 6) S
+                         --, ant (coords 6 6) S
+                         --, ant (coords 6 5) W
+                         --, ant (coords 6 4) W
+                         --, ant (coords 5 4) N
+
+                         --, ant (coords 5 5) N
+                         --, ant (coords 6 6) E
+                         --, ant (coords 3 3) W
+                         ] ++ surroundingStones 
+                           --++ (makeAnts ants)
+                           --++ (makeFoods foods)
               in 
                  T.terrain width height tiles
 
-buildSurroundingStones : Int -> Int -> [(Coords, T.Position)]
-buildSurroundingStones w h = let buildRock (x,y) = (coords x y, T.position (Just T.Rock) Nothing)
-                              in 
-                                 foldl (\coord list -> (buildRock coord) :: list) [] 
-                                  <| (map (\y -> (1, y)) [1..h])
-                                     ++ (map (\y -> (w, y)) [1..h])
-                                     ++ (map (\x -> (x, 1)) [2..w - 1])
-                                     ++ (map (\x -> (x, h)) [2..w - 1])
+surroundingStones : [(Coords, T.Position)]
+surroundingStones = let buildRock (x,y) = (coords x y, T.position (Just T.Rock) Nothing)
+                     in 
+                        foldl (\coord list -> (buildRock coord) :: list) [] (rect (width,height))
 
-step : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
-step = (arr snd)                    -- : SF (Float, Maybe(T.Terrain)) (Maybe(T.Terrain))
-       -- >>> (arr setWidthMF)
-       -- >>> (arr (moveMF (4,4) (5,5)))
-       -- >>> (arr (moveMF (5,5) (4,4)))
-       -- >>> (arr (evictMF (2,2)))
-       -- >>> (arr (occupyMF (3,3) T.Rock))
-       -->>> (arr (loadMF (2,2) (5,5)))
-       -->>> (arr (loadMF (5,5) (5,5)))
-       -->>> (arr (unloadMF (5,5) (5,5)))
-       -- >>> (arr (unloadMF (4,4) (5,5)))
-       -- >>> (arr (unloadMF (5,5) (4,4)))
-        
-        -->>> (arr (loadMF (4,4) (5,5)))
-        -->>> (arr (unloadMF (4,4) (2,2)))
+rect : Coords -> [Coords]
+rect (w,h) = (map (\y -> (1, y)) [1..h])
+              ++ (map (\y -> (w, y)) [1..h])
+              ++ (map (\x -> (x, 1)) [2..w - 1])
+              ++ (map (\x -> (x, h)) [2..w - 1])
 
-        --FOOD
-        -- >>> (arr (ldMF (5,5) 1))
-        -- >>> (arr (unldMF (5,5)))
-
-        --NEST
-         -->>> (arr (ldMF (2,2) 1))
-         -->>> (arr (unldMF (2,2)))
-
-        --ANT
-        -- >>> (arr (unldMF (4,4)))
-        -- >>> (arr (ldMF (4,4) 1))
-
-        -->>> (arr (scentMF (4,5)))
-        -->>> (arr (scentMF (8,8)))
-        -- >>> (arr (unscentMF (2,2)))
-
-        -- >>> (arr (ldMF (4,4) 1))
-        -- >>> (arr (unldMF (4,4)))
-         >>> (Ant.animateAnts)       -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
-         >>> (Pheromone.decayAll)    -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
-
-
---loadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
---loadMF ldrPos unldrPos mbterr
-
---unloadMF : Coords -> Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
---unloadMF unldrPos ldrPos mbterr
-
---ldMF : Coords -> Food -> (Maybe(Terrain)) -> (Maybe(Terrain))
---ldMF ldrCoords fd mbterr
-
---unldMF : Coords -> (Maybe(Terrain)) -> (Maybe(Terrain))
---unldMF unldrPos mbterr
+step : SF (a, Maybe(T.Terrain)) (Maybe(T.Terrain))
+step = (arr snd)                    -- : SF (a, Maybe(T.Terrain)) (Maybe(T.Terrain))
+         >>> (Ant.animateAnts)      -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
+         >>> (Pheromone.decayAll)   -- : SF (Maybe(T.Terrain)) (Maybe(T.Terrain))
