@@ -25,17 +25,10 @@ load ldr fd = let loadAndLimit = return (nothingAsZero (ldr.food), ldr.limit)
                                                                    else (food lmt, food (fd - lmt))
                                                        Nothing -> (food (ldrFood + fd), Nothing)
 
-
-
-                  --loadAndLimit = (nothingAsZero (ldr.food), nothingAsZero (ldr.limit))
-                  
                   nothingAsZero mbx = case mbx of
                                            Nothing -> 0
                                            Just x -> x
 
-                  --separateLoad (ldrFood, lmt) = if (ldrFood + fd) < lmt
-                  --                              then (food (ldrFood + fd), food 0)
-                  --                              else (food lmt, food (fd - lmt))
 
                   load' (ld,rem) = return ({ldr | food <- ld}, rem)
                in 

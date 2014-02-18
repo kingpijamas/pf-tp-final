@@ -12,6 +12,7 @@ import AntColony.Model.FoodCarrier as Carrier
 import open AntColony.Model.Terrain
 import open AntColony.Model.Food
 import open AntColony.Model.AntT
+import open AntColony.Model.FoodChunkT
 
 loadInDir : Terrain -> Coords -> Direction -> Maybe(Terrain)
 loadInDir terrain from dir = (from `addDir` dir)      -- : Maybe(Coords)
@@ -50,7 +51,7 @@ unld terrain unldrCoords = let unloadPos pos = case pos.occupant of
                                doUnload unldee updateF = Carrier.unload unldee >>=^ (mapFst updateF)
 
                                updateAnt pos ant cargo' = pos `setOccupant2` (Ant (ant `setCargo` cargo'))
-                               updateFoodChunk pos chunk' = pos `setOccupant2` (FoodChunk chunk')
+                               updateFoodChunk pos chunk' = empty pos
 
                                updateTerrain (pos', food) = joinFst (add terrain unldrCoords pos', food)
                             in
@@ -62,9 +63,8 @@ ld : Terrain -> Coords -> Food -> Maybe(Terrain, Maybe(Food))
 ld terrain ldrCoords food = let loadPos pos = case pos.occupant of
                                                    Just(Ant ant) -> doLoad (ant.cargo) (updateAnt pos ant)
                                                    Just(AntNest nest) -> doLoad nest (updateNest pos)
-                                                   Just(FoodChunk chunk) -> if food > 0
-                                                                            then doLoad chunk (updateFoodChunk pos)
-                                                                            else return (empty pos, Nothing) -- <-- FIXME: this is never being reached!
+                                                   --Just(FoodChunk chunk) -> doLoad chunk (updateFoodChunk pos)
+                                                   Nothing -> return (updateFoodChunk pos (foodChunk food), Nothing)
                                                    _ -> Nothing
 
                                 doLoad ldee updateF = Carrier.load ldee food >>=^ (mapFst updateF)
