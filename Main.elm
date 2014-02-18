@@ -56,6 +56,7 @@ simulation = let pos' occ = T.position (Just occ) Nothing
                          --, addAnt (coords 6 6) E
                          --, addAnt (coords 3 3) W
                          , addFood (coords 5 5) 500
+
                          ] ++ (buildSurroundingStones width height)
               in 
                  T.terrain width height tiles
